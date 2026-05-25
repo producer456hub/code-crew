@@ -498,17 +498,64 @@ function react(type){
     void d.offsetWidth; d.classList.add(cls);
     clearTimeout(d._rt); d._rt=setTimeout(()=>d.classList.remove(cls),(type==="win"||type==="lose")?2200:1200);
   });
-  const arr=LINES[type]||[]; const text=arr[Math.random()*arr.length|0];
-  const both=(type==="combo"||type==="bonus"||type==="win"||type==="lose");
-  if(both){ bubble("L",text,type); bubble("R",text,type); }
-  else { bubFlip=!bubFlip; bubble(bubFlip?"L":"R",text,type); }
 }
 function bubble(side,text,type){
   const b=$("#bub"+side); if(!b)return;
   b.className="bubble bubble"+side+" "+type; b.textContent=text;
   void b.offsetWidth; b.classList.add("show");
-  clearTimeout(b._t); b._t=setTimeout(()=>b.classList.remove("show"),1300);
+  clearTimeout(b._t); b._t=setTimeout(()=>b.classList.remove("show"),1800);
 }
+/* ---- the two bots talk to each other about the player's performance ---- */
+let lastActivity=Date.now(), cvT=null;
+function converse(m,c,cls){
+  lastActivity=Date.now();
+  bubble("L",m,cls);                                   // Dr. Magenta speaks
+  clearTimeout(cvT); cvT=setTimeout(()=>bubble("R",c,cls),850);  // Dr. Cyan replies
+}
+function pickPair(a){return a[Math.random()*a.length|0];}
+function banter(ctx){
+  if(ctx.timedOut) return Object.assign({cls:'bad'},pickPair([
+    {m:"Too slow — missed the window!",c:"Watch the clock, doctor."},
+    {m:"Time's up on that one!",c:"Quicker on the next call."}]));
+  if(!ctx.right){
+    if(ctx.hp<=20) return Object.assign({cls:'bad'},pickPair([
+      {m:"They're CRASHING!",c:"We can't lose another one!"},
+      {m:"Flatline warning!",c:"Pull it together, doctor!"}]));
+    if(ctx.hp<=45) return Object.assign({cls:'bad'},pickPair([
+      {m:"Wrong call — vitals dipping.",c:"Shake it off, refocus."},
+      {m:"That one hurt the patient.",c:"Read the chart next time."}]));
+    return Object.assign({cls:'bad'},pickPair([
+      {m:"Oof, not quite.",c:"Happens — stay sharp."},
+      {m:"That's not the one.",c:"We'll get the next."}]));
+  }
+  if(ctx.bonus) return Object.assign({cls:'bonus'},pickPair([
+    {m:"Bonus nailed — double points!",c:"Now THAT'S a doctor!"},
+    {m:"Jackpot tile, clean hit!",c:"Show-off."}]));
+  if(ctx.streak>=6) return Object.assign({cls:'combo'},pickPair([
+    {m:"They're UNSTOPPABLE!",c:ctx.streak+" straight — record pace!"},
+    {m:"Can't miss today!",c:"Best run all shift!"}]));
+  if(ctx.streak>=3) return Object.assign({cls:'combo'},pickPair([
+    {m:"Another clean call!",c:"That's "+ctx.streak+" in a row!"},
+    {m:"On a roll!",c:"Keep that combo alive!"}]));
+  if(ctx.hp>=90) return Object.assign({cls:'good'},pickPair([
+    {m:"Patient's thriving.",c:"Textbook work, doctor."},
+    {m:"Vitals look perfect.",c:"Nice and steady."}]));
+  return Object.assign({cls:'good'},pickPair([
+    {m:"Good call.",c:"Vitals holding."},
+    {m:"Correct — nice.",c:"Onward, doctor."}]));
+}
+function idleBanter(){
+  let p;
+  if(patientHP<=45) p=pickPair([{m:"Rough one tonight…",c:"Stay with it, doctor."},{m:"We're slipping behind.",c:"Focus on the next call."}]);
+  else if(cleared>=4 && correct>=cleared*0.8) p=pickPair([{m:"This one's good.",c:"Best shift in weeks."},{m:"Smooth so far.",c:"Don't jinx it."}]);
+  else p=pickPair([{m:"Quiet moment.",c:"Enjoy it while it lasts."},{m:"How's our patient?",c:"Holding… for now."}]);
+  converse(p.m,p.c,'good');
+}
+setInterval(()=>{                                       // ambient chatter when the player pauses
+  if(!document.getElementById('board')) return;         // only during an active board
+  if(Date.now()-lastActivity < 16000) return;
+  idleBanter();
+},5000);
 function vflash(color){ const v=$("#vflash"); if(!v)return; v.style.background=color; v.classList.remove("go"); void v.offsetWidth; v.classList.add("go"); }
 let patientHP=100, codeBlueHappened=false;
 function refreshStatus(){ const st=$("#pStatus"); if(!st)return; let t,c;
@@ -665,7 +712,7 @@ function stopTimer(){ if(timerRAF){cancelAnimationFrame(timerRAF); timerRAF=null
 
 function quizOpen(cell){
   if(cell.classList.contains("used"))return;
-  stopTimer();
+  stopTimer(); lastActivity=Date.now();
   initAudio(); SFX.click();
   cell.classList.add("flip");
   const item=QUIZ[cell.dataset.cat][+cell.dataset.r];
@@ -725,6 +772,7 @@ function quizAnswer(o,b,item,cell,isBonus){
     $("#qCorrect").textContent=correct;
     react(streak>=4 && streak%2===0 ? 'combo' : 'good');
     healPatient();
+    { const bt=banter({right:true,bonus:isBonus,streak,hp:patientHP,correct}); converse(bt.m,bt.c,bt.cls); }
     const bonusBump=$("#multi"); bonusBump.classList.remove("bump"); void bonusBump.offsetWidth; bonusBump.classList.add("bump");
     fb.className="feedback ok show";
     fb.innerHTML=`✅ <span class="term">${item.a}</span> — ${TERMS[item.a]||''}<br>
@@ -737,6 +785,7 @@ function quizAnswer(o,b,item,cell,isBonus){
     SFX.wrong();
     app.classList.remove("shake"); void app.offsetWidth; app.classList.add("shake");
     react('bad'); hurtPatient();
+    { const bt=banter({right:false,timedOut,hp:patientHP,streak,correct}); converse(bt.m,bt.c,bt.cls); }
     fb.className="feedback no show";
     fb.innerHTML=`${timedOut?'⏱️ <b>OUT OF TIME!</b> ':'❌ '}Answer: <span class="term">${item.a}</span> — ${TERMS[item.a]||''}<br><span style="color:var(--muted);font-size:17px">Combo reset.</span>`;
   }
