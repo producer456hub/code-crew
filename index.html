@@ -213,7 +213,47 @@
   @keyframes bubpop{0%{opacity:0;transform:translateY(8px) scale(.6)}15%{opacity:1;transform:translateY(0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-6px) scale(.95)}}
   .bubble.good{color:var(--good);} .bubble.bad{color:var(--bad);}
   .bubble.combo,.bubble.bonus{color:var(--gold);} .bubble.win,.bubble.lose{color:var(--purple);}
-  @media(max-width:1240px){.doc,.bubble{display:none;}}
+  /* ---- responsive: tablets & phones ---- */
+  @media(max-width:1240px){
+    .bubble{display:none;}                 /* no room for speech bubbles; bots still react */
+    .doc{width:88px;bottom:6px;}
+    .doc.left{left:4px;} .doc.right{right:4px;}
+    #patient{bottom:8px;}
+    main{padding-bottom:152px;}
+  }
+  @media(max-width:600px){
+    body{font-size:18px;letter-spacing:0;}
+    header{padding:8px 10px;}
+    header .logo{font-size:11px;gap:6px;}
+    header .tagline{display:none;}
+    .iconbtn,.backbtn{font-size:9px;padding:8px;}
+    main{padding:12px 10px 128px;}
+    .game h2{font-size:13px;}
+    .game .sub{font-size:15px;}
+    .stat{font-size:14px;padding:5px 8px;} .stat b{font-size:11px;}
+    .combo{margin-left:0;width:100%;justify-content:flex-start;}
+    .combobar{width:90px;}
+    .board{gap:4px;}
+    .cat{font-size:10px;min-height:34px;padding:4px 1px;line-height:1.05;}
+    .cell{font-size:13px;padding:12px 1px;}
+    .prompt{font-size:17px;padding:12px;}
+    .choice{font-size:17px;padding:12px;}
+    .feedback{font-size:16px;}
+    .doc{width:54px;}
+    .doc.left{left:2px;} .doc.right{right:2px;}
+    #patient{gap:8px;padding:6px 8px;}
+    .pscreen{width:44px;height:44px;}
+    .pface{width:40px;height:40px;}
+    .phpbar{width:92px;}
+    .plabel{font-size:8px;margin-bottom:3px;} .pstatus{font-size:9px;margin-top:3px;}
+    .verdict{font-size:16px;padding:12px;}
+    .diagnosis{font-size:18px;} .diagnosis b{font-size:12px;}
+    .rep-bubble{font-size:16px;padding:9px 10px;} .rep-bubble b{font-size:10px;}
+    .repface{width:46px;}
+    .rep-title{font-size:10px;}
+    .done-screen .big{font-size:30px;}
+    .rank-badge{font-size:15px;}
+  }
 
   /* ===== patient ===== */
   #patient{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;display:flex;align-items:center;gap:12px;background:var(--panel);box-shadow:var(--bevel),0 4px 0 #0a0418;padding:8px 14px;border-top:3px solid var(--line);}
@@ -245,7 +285,7 @@
   #vflash{position:fixed;inset:0;pointer-events:none;z-index:45;opacity:0;background:#ff3b3b;}
   #vflash.go{animation:vflashk 1s;}
   @keyframes vflashk{0%{opacity:0}12%{opacity:.30}100%{opacity:0}}
-  @media(max-width:1240px){#patient{display:none;}}
+  /* #patient is repositioned (not hidden) for small screens in the responsive block below */
 
   #fx{position:fixed;inset:0;pointer-events:none;z-index:40;}
   footer{font-family:var(--rt);padding:10px 18px;text-align:center;color:var(--muted);font-size:17px;border-top:4px solid var(--line);position:relative;z-index:2;}
