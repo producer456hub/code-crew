@@ -127,6 +127,21 @@
   .done-screen .big{font-family:var(--px);font-size:40px;color:var(--gold);text-shadow:0 0 24px var(--gold);margin:8px 0;}
   .donestats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0;}
   .reviewlist{text-align:left;max-width:620px;margin:0 auto;display:grid;gap:10px;}
+  /* splash / intro screen */
+  .splash{max-width:680px;margin:0 auto;text-align:center;padding-top:6px;animation:reportin .5s cubic-bezier(.2,1.2,.4,1);}
+  .splash-bots{display:flex;gap:26px;justify-content:center;margin-bottom:4px;}
+  .splash-bots .repbot{display:inline-block;animation:docbob 3s ease-in-out infinite;}
+  .splash-bots .repbot:last-child{animation-delay:.6s;}
+  .splash-bots .repface{width:92px;}
+  .splash-title{font-family:var(--px);font-size:30px;color:var(--quiz);text-shadow:0 0 12px var(--quiz);margin:8px 0;line-height:1.35;}
+  .splash-sub{color:var(--muted);font-size:19px;margin:0 0 18px;line-height:1.4;}
+  .splash-card{background:var(--panel2);box-shadow:var(--bevel);padding:16px 18px;text-align:left;display:grid;gap:11px;font-size:20px;line-height:1.4;max-width:580px;margin:0 auto 18px;}
+  .splash-card p{margin:0;}
+  .splash-card b{color:var(--gold);}
+  .splash-ask{font-family:var(--px);font-size:15px;color:var(--good);margin:8px 0 16px;text-shadow:0 0 6px var(--good);}
+  .splash-go{font-size:22px;padding:16px 44px;animation:gopulse 1.3s ease-in-out infinite;}
+  @keyframes gopulse{0%,100%{transform:translateY(0);filter:drop-shadow(0 0 4px var(--quiz))}50%{transform:translateY(-3px);filter:drop-shadow(0 0 18px var(--quiz))}}
+
   .rounds{margin-top:22px;}
   .rounds-head{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
   .rounds-cap{font-family:var(--px);font-size:12px;color:var(--muted);text-align:left;line-height:1.6;max-width:380px;}
@@ -254,6 +269,12 @@
     #ticker{font-size:14px;bottom:92px;padding:7px 10px;}
     .game h2{font-size:13px;}
     .game .sub{font-size:15px;}
+    .splash-title{font-size:19px;}
+    .splash-sub{font-size:16px;}
+    .splash-card{font-size:17px;gap:9px;padding:13px 14px;}
+    .splash-bots .repface{width:66px;}
+    .splash-ask{font-size:12px;}
+    .splash-go{font-size:18px;padding:14px 34px;}
     .stat{font-size:14px;padding:5px 8px;} .stat b{font-size:11px;}
     .combo{margin-left:0;width:100%;justify-content:flex-start;}
     .combobar{width:90px;}
@@ -773,9 +794,6 @@ const SFX={
     [[262,0,.5],[392,.5,.42]].forEach(n=>tone(n[0],n[1],n[2],"triangle",.09));
   }
 };
-/* play the welcome jingle on the first interaction (which also unlocks audio) */
-function ccUnlock(){ initAudio(); setTimeout(()=>SFX.welcome(),120); window.removeEventListener("pointerdown",ccUnlock,true); }
-window.addEventListener("pointerdown",ccUnlock,true);
 
 /* ===================== PIXEL CONFETTI ===================== */
 const fx=$("#fx"), fxc=fx.getContext("2d");
@@ -1162,7 +1180,29 @@ function quizSummary(){
   animateNum($("#finalScore"),score);
 }
 
-renderQuiz();
+/* ===================== SPLASH / INTRO ===================== */
+function renderSplash(){
+  stopTimer();
+  restartBtn.classList.add("hidden");
+  main.innerHTML=`
+    <div class="splash">
+      <div class="splash-bots">${repAvatar('#ff3ca6')}${repAvatar('#2ad4ff')}</div>
+      <h1 class="splash-title">CODE QUIZ: STAT!</h1>
+      <p class="splash-sub">A retro med-sim study game · EMT · ECG Tech · Phlebotomist</p>
+      <div class="splash-card">
+        <p>🩺 Tap tiles on the board and answer the A&amp;P call before the timer runs out.</p>
+        <p>🔥 Chain right answers for <b>combo multipliers</b> · ⚡ <b>bonus tiles</b> pay double.</p>
+        <p>❤️ Correct answers <b>heal</b> the patient; wrong ones <b>hurt</b> them — keep them alive!</p>
+        <p>🤖 Dr. Magenta &amp; Dr. Cyan quiz you and call the diagnosis at shift's end.</p>
+        <p style="color:var(--muted)">⏱ Prefer no pressure? Toggle <b>TIMED MODE</b> off any time.</p>
+      </div>
+      <p class="splash-ask">Ready for your shift, doctor?</p>
+      <button class="btn splash-go" id="goBtn">▶ GO!</button>
+    </div>`;
+  $("#goBtn").onclick=()=>{ initAudio(); setTimeout(()=>SFX.welcome(),120); renderQuiz(); };
+}
+
+renderSplash();
 </script>
 </body>
 </html>
