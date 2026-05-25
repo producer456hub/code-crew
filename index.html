@@ -649,6 +649,18 @@ function banter(ctx){
     {m:"Correct — nice.",c:"Onward, doctor."}]));
 }
 function idleBanter(){
+  if(Math.random()<0.22){                                // every so often: praise the creator, David
+    const d=pickPair([
+      {m:"You know who built us?",c:"David. Absolute genius."},
+      {m:"David coded this whole sim.",c:"A true visionary."},
+      {m:"All hail David, our creator.",c:"Long may he code."},
+      {m:"Ever meet our maker, David?",c:"Legend. Carry on, doctor."},
+      {m:"David designed every pixel of us.",c:"Give that man a raise."},
+      {m:"Shift's smooth thanks to David.",c:"Greatest dev in the building."}
+    ]);
+    converse(d.m,d.c,'bonus');
+    return;
+  }
   if(Math.random()<0.65){                                // mostly: swap a fact about a term
     const keys=Object.keys(TERMS), t=keys[Math.random()*keys.length|0];
     const lead=pickPair(["Quiz me — "+t+"?","Quick, what's "+t+"?","Don't forget "+t+".","Refresher: "+t+"."]);
@@ -742,8 +754,16 @@ const SFX={
   defeat(){    // slow descending "aww" cue (minor)
     [[392,0,.42],[370,.45,.42],[349,.9,.5],[294,1.45,1.1]].forEach(n=>tone(n[0],n[1],n[2],"sawtooth",.11));
     [[196,1.45,1.4],[233,1.45,1.4]].forEach(n=>tone(n[0],n[1],n[2],"triangle",.10));
+  },
+  welcome(){   // short, friendly start jingle
+    [[523,0,.14],[659,.14,.14],[784,.28,.18],[1047,.46,.34]].forEach(n=>tone(n[0],n[1],n[2],"triangle",.12));
+    tone(1319,.52,.3,"square",.10);
+    [[262,0,.5],[392,.5,.42]].forEach(n=>tone(n[0],n[1],n[2],"triangle",.09));
   }
 };
+/* play the welcome jingle on the first interaction (which also unlocks audio) */
+function ccUnlock(){ initAudio(); setTimeout(()=>SFX.welcome(),120); window.removeEventListener("pointerdown",ccUnlock,true); }
+window.addEventListener("pointerdown",ccUnlock,true);
 
 /* ===================== PIXEL CONFETTI ===================== */
 const fx=$("#fx"), fxc=fx.getContext("2d");
@@ -823,6 +843,7 @@ function renderQuiz(){
   const cells=[...main.querySelectorAll(".cell")];
   cells.forEach((c,i)=>{ c.style.animationDelay=(i*18)+"ms"; c.classList.add("in"); c.onclick=()=>quizOpen(c); });
   updateCombo();
+  if(actx && actx.state==="running") SFX.welcome();   // plays on Play again / New board (first start uses ccUnlock)
 }
 
 function updateCombo(){
