@@ -222,10 +222,10 @@
   .doc.react-good .docsvg{filter:drop-shadow(0 0 9px #fff);}
   .doc.react-bad .docsvg{filter:drop-shadow(0 0 7px var(--bad));}
   .doc.react-combo .docsvg,.doc.react-bonus .docsvg,.doc.react-win .docsvg{filter:drop-shadow(0 0 9px var(--gold));}
-  .bubble{position:fixed;z-index:7;bottom:300px;font-family:var(--rt);font-size:17px;line-height:1.25;padding:9px 11px;max-width:200px;text-align:center;background:var(--panel2);color:var(--text);box-shadow:var(--bevel),0 4px 0 #0a0418;opacity:0;pointer-events:none;}
+  .bubble{position:fixed;z-index:7;bottom:300px;font-family:var(--rt);font-size:18px;line-height:1.3;padding:9px 11px;max-width:210px;text-align:center;background:var(--panel2);color:var(--text);box-shadow:var(--bevel),0 4px 0 #0a0418;opacity:0;pointer-events:none;transition:opacity .35s;}
   .bubbleL{left:18px;} .bubbleR{right:18px;}
-  .bubble.show{animation:bubpop 1.3s;}
-  @keyframes bubpop{0%{opacity:0;transform:translateY(8px) scale(.6)}15%{opacity:1;transform:translateY(0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-6px) scale(.95)}}
+  .bubble.show{opacity:1;animation:bubin .3s;}
+  @keyframes bubin{0%{opacity:0;transform:translateY(10px) scale(.7)}100%{opacity:1;transform:none}}
   .bubble.good{color:var(--good);} .bubble.bad{color:var(--bad);}
   .bubble.combo,.bubble.bonus{color:var(--gold);} .bubble.win,.bubble.lose{color:var(--purple);}
   /* ---- responsive: tablets & phones ---- */
@@ -332,7 +332,7 @@
   <header>
     <div class="logo"><span class="pulse">♥</span> CODE QUIZ: STAT! <span class="tagline">EMT·ECG·PHLEB</span></div>
     <div class="spacer"></div>
-    <button class="iconbtn" id="timerBtn" title="Timed mode on/off">⏱ ON</button>
+    <button class="iconbtn" id="timerBtn" title="Timed mode on/off">⏱ TIMED MODE ON</button>
     <button class="iconbtn" id="muteBtn" title="Sound on/off">SND</button>
     <button class="backbtn hidden" id="restartBtn">↻ NEW</button>
   </header>
@@ -595,7 +595,7 @@ function bubble(side,text,type){
   const b=$("#bub"+side); if(!b)return;
   b.className="bubble bubble"+side+" "+type; b.textContent=text;
   void b.offsetWidth; b.classList.add("show");
-  clearTimeout(b._t); b._t=setTimeout(()=>b.classList.remove("show"),1800);
+  clearTimeout(b._t); b._t=setTimeout(()=>b.classList.remove("show"),5000);
 }
 /* ---- the two bots talk to each other about the player's performance ---- */
 let lastActivity=Date.now(), cvT=null;
@@ -706,7 +706,7 @@ const muteBtn=$("#muteBtn");
 muteBtn.onclick=()=>{soundOn=!soundOn; muteBtn.textContent=soundOn?"SND":"MUTE";};
 let timed=true; try{ timed=localStorage.getItem('cc_timed')!=='off'; }catch(e){}
 const timerBtn=$("#timerBtn");
-function updTimerBtn(){ if(timerBtn) timerBtn.textContent=timed?"⏱ ON":"⏱ OFF"; }
+function updTimerBtn(){ if(timerBtn) timerBtn.textContent=timed?"⏱ TIMED MODE ON":"⏱ TIMED MODE OFF"; }
 if(timerBtn) timerBtn.onclick=()=>{ timed=!timed; try{localStorage.setItem('cc_timed',timed?'on':'off');}catch(e){} updTimerBtn(); };
 updTimerBtn();
 function initAudio(){ if(!actx){ try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(actx&&actx.state==="suspended") actx.resume(); }
