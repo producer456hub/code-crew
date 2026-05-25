@@ -126,19 +126,23 @@
   .done-screen .big{font-family:var(--px);font-size:40px;color:var(--gold);text-shadow:0 0 24px var(--gold);margin:8px 0;}
   .donestats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0;}
   .reviewlist{text-align:left;max-width:620px;margin:0 auto;display:grid;gap:10px;}
-  .report{background:var(--panel2);box-shadow:var(--bevel);padding:16px;margin:0 auto 20px;max-width:640px;text-align:left;}
-  .rep-title{font-family:var(--px);font-size:12px;color:var(--muted);margin-bottom:14px;letter-spacing:1px;text-align:center;}
-  .rep-line{display:flex;gap:12px;align-items:center;margin-bottom:12px;}
-  .repbot{flex:0 0 auto;}
-  .repface{width:58px;height:auto;display:block;image-rendering:pixelated;filter:drop-shadow(0 0 3px var(--neon));}
-  .repmouth{fill:none;stroke:#20142e;stroke-width:2.4;stroke-linecap:round;}
-  .rep-bubble{background:var(--panel);box-shadow:var(--bevel);padding:11px 13px;font-size:20px;line-height:1.35;flex:1;}
-  .rep-bubble b{font-family:var(--px);font-size:11px;}
-  .rep-bubble.m b{color:#ff3ca6;} .rep-bubble.c b{color:#2ad4ff;}
-  .verdict{font-family:var(--px);font-size:16px;text-align:center;margin-top:4px;padding:12px;box-shadow:var(--bevel);}
+  .report{background:var(--panel2);box-shadow:var(--bevel),0 0 24px rgba(255,212,94,.22);padding:18px;margin:0 auto 22px;max-width:680px;text-align:left;animation:reportin .55s cubic-bezier(.2,1.2,.4,1);}
+  @keyframes reportin{0%{opacity:0;transform:scale(.85) translateY(24px)}100%{opacity:1;transform:none}}
+  .rep-title{font-family:var(--px);font-size:12px;color:var(--muted);margin-bottom:14px;letter-spacing:2px;text-align:center;}
+  .verdict{font-family:var(--px);font-size:24px;line-height:1.4;text-align:center;padding:16px;margin-bottom:12px;box-shadow:var(--bevel);animation:verdpulse 1.5s ease-in-out infinite;}
+  @keyframes verdpulse{0%,100%{filter:drop-shadow(0 0 3px currentColor)}50%{filter:drop-shadow(0 0 18px currentColor)}}
   .verdict.perfect,.verdict.saved{color:var(--good);}
   .verdict.stable{color:var(--gold);}
   .verdict.critical{color:var(--bad);}
+  .diagnosis{font-family:var(--rt);font-size:22px;text-align:center;background:#0c0518;box-shadow:var(--bevel);padding:13px 14px;margin-bottom:16px;line-height:1.4;color:var(--muted);}
+  .diagnosis b{display:inline-block;margin-top:6px;font-family:var(--px);font-size:15px;line-height:1.7;color:var(--gold);text-shadow:0 0 8px var(--gold);}
+  .rep-line{display:flex;gap:12px;align-items:center;margin-bottom:12px;opacity:0;animation:repline .5s ease forwards;}
+  @keyframes repline{0%{opacity:0;transform:translateX(-14px)}100%{opacity:1;transform:none}}
+  .repbot{flex:0 0 auto;}
+  .repface{width:58px;height:auto;display:block;image-rendering:pixelated;filter:drop-shadow(0 0 3px var(--neon));}
+  .rep-bubble{background:var(--panel);box-shadow:var(--bevel);padding:11px 13px;font-size:20px;line-height:1.35;flex:1;}
+  .rep-bubble b{font-family:var(--px);font-size:11px;}
+  .rep-bubble.m b{color:#ff3ca6;} .rep-bubble.c b{color:#2ad4ff;}
 
   .floatpop{position:fixed;pointer-events:none;font-family:var(--px);font-size:18px;z-index:50;text-shadow:0 0 10px currentColor;animation:floatup 1s forwards;}
   @keyframes floatup{0%{transform:translateY(0) scale(.6);opacity:0}20%{transform:translateY(-8px) scale(1.1);opacity:1}100%{transform:translateY(-70px) scale(1);opacity:0}}
@@ -162,9 +166,11 @@
   .cross{fill:#ff3b3b;}
   .pixg{fill:#cfd5e2;}
   .mp{fill:#20142e;}
+  .scr{fill:#141021;}
+  .clip{fill:#caa24a;}
   .mo{display:none;}
   .sweat{fill:#7fd4ff;display:none;transform-box:fill-box;transform-origin:center;}
-  .armR{transform-box:fill-box;transform-origin:33% 0;transition:transform .25s ease;}
+  .armR{transform-box:fill-box;transform-origin:80% 0;transition:transform .25s ease;}
   .visor{transform-box:fill-box;transform-origin:center;animation:vblink 4s infinite;}
   .doc.right .visor{animation-delay:1.3s;}
   .emblem{animation:empulse 1.6s infinite;}
@@ -357,68 +363,65 @@ restartBtn.onclick=renderQuiz;
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 /* ===================== CYBERPUNK MEDICS + PATIENT ===================== */
-/* pixel-art sprite: each char = one 10px block */
+/* pixel-art sprite (friendly medic bot): each char = one 10px block */
 const GRID=[
-  "..............",
-  "....KKKKKK....",
-  "...KKKKKKKK...",
-  "..KKKKKKKKKK..",
-  "..KKKKKKKKKK..",
-  "..WWWWWWWWWW..",
-  "..WWWWWWWWWW..",
-  "..WWWWWWWWWW..",
-  "...WWWWWWWW...",
-  "....WWWWWW....",
-  ".....GGGG.....",
-  ".....GGGG.....",
-  "...WWWWWWWW...",
-  "..WWWWWWWWWW..",
-  ".WWWWWWWWWWWW.",
-  ".WWWWWRRWWWWW.",
-  ".WWWWWRRWWWWW.",
-  ".WWWRRRRRRWWW.",
-  ".WWWWWRRWWWWW.",
-  ".WWWWWRRWWWWW.",
-  ".WWWWWWWWWWWW.",
-  "..WWWWWWWWWW..",
-  "...WWWWWWWW...",
-  ".....KKKK.....",
-  "....KKKKKK....",
-  "...KKKKKKKK...",
-  "...KKKKKKKK...",
-  "....KKKKKK....",
-  ".....KKKK.....",
-  ".............."
+  "................",
+  "................",
+  "................",
+  "....NNNNNNNN....",
+  "...NNNNNNNNNN...",
+  "..CCCCCCCCCCCC..",
+  "..CCCCCCCCCCCC..",
+  "..CCCCCCCCCCCC..",
+  "..CCCCCCCCCCCC..",
+  "...CCCCCCCCCC...",
+  ".....CCCCCC.....",
+  "...CCCCCCCCCC...",
+  "..CCCCCCCCCCCC..",
+  "..CCCCNNNNCCCC..",
+  "..CCCCNNNNCCCC..",
+  "..CCCCNNNNCCCC..",
+  "..CCCCCCCCCCCC..",
+  "...CCCCCCCCCC...",
+  "...CCCC..CCCC...",
+  "...CNNC..CNNC...",
+  "...CCCC..CCCC...",
+  "...CCCC..CCCC...",
+  "..CCCCC..CCCCC..",
+  "................"
 ];
-const GMAP={K:'metal',W:'coat',G:'pixg',R:'cross'};
+const GMAP={C:'coat',N:'neonfill'};
 function pxgrid(){let s='';for(let r=0;r<GRID.length;r++){const row=GRID[r];for(let c=0;c<row.length;c++){const cls=GMAP[row[c]];if(cls)s+=`<rect class="${cls}" x="${c*10}" y="${r*10}" width="10" height="10"/>`;}}return s;}
-const DOCSVG=`<svg viewBox="0 0 140 300" class="docsvg">
+const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
   ${pxgrid()}
-  <rect class="gloss" x="36" y="32" width="16" height="8"/>
-  <rect class="led" x="64" y="12" width="8" height="8"/>
+  <rect class="mp" x="40" y="8" width="8" height="24"/><rect class="neonfill" x="36" y="0" width="12" height="10"/>
+  <rect class="mp" x="112" y="8" width="8" height="24"/><rect class="neonfill" x="112" y="0" width="12" height="10"/>
+  <rect class="neonfill" x="10" y="58" width="18" height="32"/><rect class="mp" x="14" y="66" width="8" height="14"/>
+  <rect class="neonfill" x="132" y="58" width="18" height="32"/><rect class="mp" x="138" y="66" width="8" height="14"/>
+  <rect class="scr" x="40" y="60" width="80" height="30"/>
+  <rect class="visor" x="50" y="64" width="22" height="22"/>
+  <rect class="visor" x="88" y="64" width="22" height="22"/>
+  <rect class="coat" x="72" y="30" width="8" height="18"/><rect class="coat" x="66" y="36" width="20" height="6"/>
+  <rect class="coat" x="74" y="128" width="8" height="26"/><rect class="coat" x="66" y="138" width="24" height="6"/>
+  <g class="sweat"><rect x="124" y="44" width="8" height="8"/><rect x="126" y="52" width="6" height="6"/></g>
   <g class="armL">
-    <rect class="pixg" x="10" y="130" width="10" height="10"/>
-    <rect class="pixg" x="0" y="140" width="10" height="10"/>
-    <rect class="pixg" x="0" y="150" width="10" height="10"/>
-    <rect class="pixg" x="0" y="160" width="10" height="10"/>
+    <rect class="coat" x="10" y="120" width="20" height="18"/>
+    <rect class="neonfill" x="10" y="138" width="20" height="8"/>
+    <rect class="coat" x="10" y="146" width="20" height="24"/>
+    <rect class="neonfill" x="12" y="170" width="16" height="10"/>
   </g>
-  <rect class="metal" x="98" y="54" width="12" height="10"/>
-  <rect class="visor" x="108" y="46" width="22" height="22"/>
-  <rect class="gloss" x="111" y="49" width="6" height="6"/>
-  <g class="mo mo-happy"><rect class="mp" x="40" y="70" width="8" height="8"/><rect class="mp" x="92" y="70" width="8" height="8"/><rect class="mp" x="50" y="78" width="42" height="8"/></g>
-  <g class="mo mo-ok"><rect class="mp" x="50" y="76" width="40" height="6"/></g>
-  <g class="mo mo-worried"><rect class="mp" x="50" y="70" width="42" height="8"/><rect class="mp" x="40" y="78" width="8" height="8"/><rect class="mp" x="92" y="78" width="8" height="8"/></g>
-  <g class="mo mo-crit"><rect class="mp" x="58" y="70" width="24" height="16"/></g>
-  <g class="sweat"><rect x="118" y="40" width="8" height="8"/><rect x="120" y="48" width="6" height="6"/></g>
   <g class="armR">
-    <rect class="pixg" x="120" y="130" width="10" height="10"/>
-    <rect class="pixg" x="130" y="140" width="10" height="10"/>
-    <rect class="pixg" x="130" y="150" width="10" height="10"/>
-    <rect class="pixg" x="130" y="160" width="10" height="10"/>
-    <rect class="pixg" x="120" y="166" width="10" height="8"/>
-    <rect class="coat" x="110" y="172" width="30" height="26"/>
-    <rect class="cross" x="122" y="176" width="6" height="18"/>
-    <rect class="cross" x="116" y="181" width="18" height="6"/>
+    <rect class="coat" x="130" y="120" width="20" height="18"/>
+    <rect class="neonfill" x="130" y="138" width="20" height="8"/>
+    <rect class="coat" x="130" y="146" width="20" height="20"/>
+    <rect class="neonfill" x="132" y="166" width="16" height="8"/>
+    <rect class="clip" x="96" y="150" width="52" height="62"/>
+    <rect class="mp" x="112" y="146" width="20" height="8"/>
+    <rect class="coat" x="102" y="158" width="40" height="48"/>
+    <rect class="mp" x="108" y="166" width="28" height="4"/>
+    <rect class="mp" x="108" y="176" width="28" height="4"/>
+    <rect class="mp" x="108" y="186" width="20" height="4"/>
+    <rect class="neonfill" x="108" y="194" width="8" height="8"/>
   </g>
 </svg>`;
 $("#docL").innerHTML=DOCSVG; $("#docR").innerHTML=DOCSVG;
@@ -777,17 +780,18 @@ function debrief(){
     lineM=`Probable cause of the crash: ${cu.danger}.`;
     lineC=`Hit the books on ${cu.domain} (start with "${cu.term}"). Next shift, we save them.`;
   }
+  const diagnosis = cu ? cap(cu.danger) : "Patient made a full recovery — no complications.";
+  const diagLabel = tone==="perfect" ? "OUTCOME" : tone==="critical" ? "PROBABLE CAUSE OF ARREST" : "CLOSE CALL";
   if(codeBlueHappened && tone!=="perfect") lineM="We coded on the table — "+lineM.charAt(0).toLowerCase()+lineM.slice(1);
-  return {verdict,tone,lineM,lineC};
+  return {verdict,tone,lineM,lineC,diagnosis,diagLabel};
 }
-function repAvatar(neon,happy){
-  const P=7, head=["..KKKK..",".KKKKKK.",".KKKKKK.",".WWWWWW.",".WWWWWW.",".WWWWWW.","........"];
-  const map={K:'metal',W:'coat'}; let s='';
+function repAvatar(neon){
+  const P=8, head=["..NNNN..",".CCCCCC.",".CCCCCC.",".CCCCCC.","..CCCC.."];
+  const map={C:'coat',N:'neonfill'}; let s='';
   for(let r=0;r<head.length;r++)for(let c=0;c<head[r].length;c++){const cl=map[head[r][c]];if(cl)s+=`<rect class="${cl}" x="${c*P}" y="${r*P}" width="${P}" height="${P}"/>`;}
-  s+=`<rect class="visor" x="${5*P}" y="${3*P}" width="${P}" height="${P}"/>`;
-  s+= happy
-    ? `<rect class="mp" x="${2*P}" y="${5*P}" width="${P}" height="${P}"/><rect class="mp" x="${4*P}" y="${5*P}" width="${P}" height="${P}"/>`
-    : `<rect class="mp" x="${2*P}" y="${5*P}" width="${3*P}" height="${P}"/>`;
+  s+=`<rect class="scr" x="${2*P}" y="${2*P}" width="${4*P}" height="${2*P}"/>`;
+  s+=`<rect class="visor" x="${2*P+2}" y="${2*P+3}" width="${P-2}" height="${P-2}"/>`;
+  s+=`<rect class="visor" x="${4*P}" y="${2*P+3}" width="${P-2}" height="${P-2}"/>`;
   return `<span class="repbot" style="--neon:${neon}"><svg viewBox="0 0 ${8*P} ${head.length*P}" class="repface">${s}</svg></span>`;
 }
 
@@ -808,9 +812,10 @@ function quizSummary(){
     <div class="done-screen">
       <div class="report">
         <div class="rep-title">📟 DOCTOR'S DEBRIEF</div>
-        <div class="rep-line">${repAvatar('#ff3ca6', db.tone!=='critical')}<div class="rep-bubble m"><b>DR. MAGENTA</b><br>${db.lineM}</div></div>
-        <div class="rep-line">${repAvatar('#2ad4ff', db.tone!=='critical')}<div class="rep-bubble c"><b>DR. CYAN</b><br>${db.lineC}</div></div>
         <div class="verdict ${db.tone}">${db.verdict}</div>
+        <div class="diagnosis">🔬 ${db.diagLabel}<br><b>${db.diagnosis}</b></div>
+        <div class="rep-line" style="animation-delay:.25s">${repAvatar('#ff3ca6')}<div class="rep-bubble m"><b>DR. MAGENTA</b><br>${db.lineM}</div></div>
+        <div class="rep-line" style="animation-delay:.5s">${repAvatar('#2ad4ff')}<div class="rep-bubble c"><b>DR. CYAN</b><br>${db.lineC}</div></div>
       </div>
       <div class="rank-badge" style="color:${rank.col}">${rank.t}</div>
       <div class="big" id="finalScore">0</div>
