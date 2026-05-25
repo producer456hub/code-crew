@@ -384,14 +384,15 @@
 
 <script>
 /* ============================================================
-   LEADERBOARD CONFIG — paste your Supabase Project URL + anon key.
-   Until you do, scores save to this device only (localStorage).
-   Setup: create a free Supabase project, run the SQL in README,
-   then paste the two values below. The anon key is safe to expose.
+   LEADERBOARD STORAGE
+   - Global board is LIVE via a free jsonblob store (no signup)  -> LB.blob
+   - Optional upgrade: paste a Supabase URL + anon key to use a real DB
+     (takes priority over the blob). localStorage is the offline fallback.
    ============================================================ */
 const LB = {
-  url:     "https://YOUR-PROJECT.supabase.co",   // Supabase Project URL
-  anonKey: "YOUR-PUBLIC-ANON-KEY",               // Supabase anon/public key
+  blob:    "https://jsonblob.com/api/jsonBlob/019e6185-45ac-7f15-89ec-3e14d7b14295", // active global store
+  url:     "https://YOUR-PROJECT.supabase.co",   // (optional) Supabase Project URL
+  anonKey: "YOUR-PUBLIC-ANON-KEY",               // (optional) Supabase anon/public key
   table:   "scores"
 };
 
@@ -1225,26 +1226,41 @@ function quizSummary(){
 /* ===================== LEADERBOARD ===================== */
 function esc(s){return String(s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
 function lbReady(){ return LB.url && LB.url.indexOf("YOUR-PROJECT")<0 && LB.anonKey && LB.anonKey.indexOf("YOUR-")<0; }
+function lbBlobOn(){ return LB.blob && LB.blob.indexOf("jsonBlob/")>0; }
+function lbGlobal(){ return lbReady() || lbBlobOn(); }
 function lbHeaders(extra){ return Object.assign({apikey:LB.anonKey,Authorization:"Bearer "+LB.anonKey}, extra||{}); }
 function lbLocal(){ try{ return JSON.parse(localStorage.getItem("cc_scores")||"[]"); }catch(e){ return []; } }
+function lbSort(a){ return (Array.isArray(a)?a:[]).slice().sort((x,y)=>y.score-x.score); }
 async function lbFetch(){
   if(lbReady()){
     try{
       const r=await fetch(`${LB.url}/rest/v1/${LB.table}?select=name,score,correct&order=score.desc&limit=20`,{headers:lbHeaders()});
       if(r.ok) return await r.json();
     }catch(e){}
-  }
-  return lbLocal().sort((a,b)=>b.score-a.score).slice(0,20);
-}
-async function lbSubmit(name,score,correct){
-  name=(name||"ANON").slice(0,16); let remote=false;
-  if(lbReady()){
+  } else if(lbBlobOn()){
     try{
-      const r=await fetch(`${LB.url}/rest/v1/${LB.table}`,{method:"POST",headers:lbHeaders({"Content-Type":"application/json",Prefer:"return=minimal"}),body:JSON.stringify({name,score,correct})});
-      remote=r.ok;
+      const r=await fetch(LB.blob,{cache:"no-store"});
+      if(r.ok) return lbSort(await r.json()).slice(0,20);
     }catch(e){}
   }
-  try{ const a=lbLocal(); a.push({name,score,correct}); a.sort((x,y)=>y.score-x.score); localStorage.setItem("cc_scores",JSON.stringify(a.slice(0,50))); }catch(e){}
+  return lbSort(lbLocal()).slice(0,20);
+}
+async function lbSubmit(name,score,correct){
+  name=(name||"ANON").slice(0,16); const entry={name,score,correct}; let remote=false;
+  if(lbReady()){
+    try{
+      const r=await fetch(`${LB.url}/rest/v1/${LB.table}`,{method:"POST",headers:lbHeaders({"Content-Type":"application/json",Prefer:"return=minimal"}),body:JSON.stringify(entry)});
+      remote=r.ok;
+    }catch(e){}
+  } else if(lbBlobOn()){
+    try{
+      const g=await fetch(LB.blob,{cache:"no-store"}); let a=[]; if(g.ok){ a=await g.json(); if(!Array.isArray(a)) a=[]; }
+      a.push(entry); a=lbSort(a).slice(0,100);
+      const p=await fetch(LB.blob,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(a)});
+      remote=p.ok;
+    }catch(e){}
+  }
+  try{ const la=lbLocal(); la.push(entry); localStorage.setItem("cc_scores",JSON.stringify(lbSort(la).slice(0,50))); }catch(e){}
   return remote;
 }
 function renderLbList(rows,hiName,hiScore){
@@ -1260,7 +1276,7 @@ function showLeaderboard(hiName,hiScore){
   main.innerHTML=`
     <div class="game">
       <h2>🏆 HIGH SCORES</h2>
-      <p class="sub">Top shifts${lbReady()?'':' — local to this device (global board not set up yet)'}.</p>
+      <p class="sub">Top shifts${lbGlobal()?' — everyone who plays':' — local to this device'}.</p>
       <div id="lbList" class="lblist">Loading…</div>
       <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         <button class="btn" onclick="renderQuiz()">▶ PLAY</button>

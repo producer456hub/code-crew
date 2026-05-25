@@ -13,8 +13,10 @@ Pick a tile from the 6-category board (a fresh **random board each game** is dra
 - ❤️ **Patient HP** — right answers heal the patient, wrong ones hurt them (scaled by tile value). Two pixel medic-bots react, banter, drop term facts & ECG tips, and deliver a **diagnosis** at shift's end.
 - 🏅 **Ranks & 🏆 leaderboard** — finish to earn a rank, review missed terms, and add your name to the high-score board.
 
-## High-score leaderboard (optional global setup)
-Out of the box, scores save to **this device only** (localStorage). To make the board **global** (everyone sees everyone's scores), wire it to a free Supabase project:
+## High-score leaderboard
+The board is **global out of the box** — it uses a free, no-signup [jsonblob](https://jsonblob.com) store (configured in the `LB.blob` value at the top of the `<script>`), so everyone who plays shares one leaderboard. localStorage is the offline fallback.
+
+**Optional upgrade — Supabase (more robust, basic anti-spam):** jsonblob has no auth and writes are last-write-wins, which is fine for a small study game. For a real database with validation rules, wire it to a free Supabase project (it then takes priority over the blob):
 
 1. Create a free project at https://supabase.com.
 2. In the project's **SQL editor**, run:
