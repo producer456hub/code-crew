@@ -216,11 +216,12 @@
   .bubble.combo,.bubble.bonus{color:var(--gold);} .bubble.win,.bubble.lose{color:var(--purple);}
   /* ---- responsive: tablets & phones ---- */
   @media(max-width:1240px){
-    .bubble{display:none;}                 /* no room for speech bubbles; bots still react */
+    .bubble{display:none;}                 /* no room for bubbles; the ticker shows the banter */
+    #ticker{display:block;}
     .doc{width:88px;bottom:6px;}
     .doc.left{left:4px;} .doc.right{right:4px;}
     #patient{bottom:8px;}
-    main{padding-bottom:152px;}
+    main{padding-bottom:200px;}
   }
   @media(max-width:600px){
     body{font-size:18px;letter-spacing:0;}
@@ -228,7 +229,8 @@
     header .logo{font-size:11px;gap:6px;}
     header .tagline{display:none;}
     .iconbtn,.backbtn{font-size:9px;padding:8px;}
-    main{padding:12px 10px 128px;}
+    main{padding:12px 10px 188px;}
+    #ticker{font-size:14px;bottom:92px;padding:7px 10px;}
     .game h2{font-size:13px;}
     .game .sub{font-size:15px;}
     .stat{font-size:14px;padding:5px 8px;} .stat b{font-size:11px;}
@@ -286,6 +288,11 @@
   #vflash{position:fixed;inset:0;pointer-events:none;z-index:45;opacity:0;background:#ff3b3b;}
   #vflash.go{animation:vflashk 1s;}
   @keyframes vflashk{0%{opacity:0}12%{opacity:.30}100%{opacity:0}}
+  /* mobile dialogue ticker (bots' banter where speech bubbles don't fit) */
+  #ticker{display:none;position:fixed;left:8px;right:8px;bottom:96px;z-index:7;background:var(--panel2);box-shadow:var(--bevel);padding:9px 12px;font-family:var(--rt);font-size:16px;line-height:1.3;text-align:center;pointer-events:none;color:var(--text);}
+  #ticker b{font-family:var(--px);font-size:11px;}
+  #ticker.show{animation:tickin .3s;}
+  @keyframes tickin{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
   /* #patient is repositioned (not hidden) for small screens in the responsive block below */
 
   #fx{position:fixed;inset:0;pointer-events:none;z-index:40;}
@@ -304,6 +311,7 @@
 <div class="bubble bubbleL" id="bubL"></div>
 <div class="bubble bubbleR" id="bubR"></div>
 <div id="patient"></div>
+<div id="ticker"></div>
 <div id="crt"></div>
 <div id="app">
   <header>
@@ -507,10 +515,16 @@ function bubble(side,text,type){
 }
 /* ---- the two bots talk to each other about the player's performance ---- */
 let lastActivity=Date.now(), cvT=null;
+function tick(who,text){
+  const t=$("#ticker"); if(!t)return;
+  const col=who==="M"?"#ff3ca6":"#2ad4ff", name=who==="M"?"DR. MAGENTA":"DR. CYAN";
+  t.innerHTML=`<b style="color:${col}">${name}:</b> ${text}`;
+  t.classList.remove("show"); void t.offsetWidth; t.classList.add("show");
+}
 function converse(m,c,cls){
   lastActivity=Date.now();
-  bubble("L",m,cls);                                   // Dr. Magenta speaks
-  clearTimeout(cvT); cvT=setTimeout(()=>bubble("R",c,cls),850);  // Dr. Cyan replies
+  bubble("L",m,cls); tick("M",m);                      // Dr. Magenta speaks
+  clearTimeout(cvT); cvT=setTimeout(()=>{ bubble("R",c,cls); tick("C",c); },850);  // Dr. Cyan replies
 }
 function pickPair(a){return a[Math.random()*a.length|0];}
 function banter(ctx){
