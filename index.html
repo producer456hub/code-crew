@@ -186,6 +186,7 @@
   .mo{display:none;}
   .sweat{fill:#7fd4ff;display:none;transform-box:fill-box;transform-origin:center;}
   .armR{transform-box:fill-box;transform-origin:80% 0;transition:transform .25s ease;}
+  .armL{transform-box:fill-box;transform-origin:50% 0;transition:transform .25s ease;}
   .visor{transform-box:fill-box;transform-origin:center;animation:vblink 4s infinite;}
   .doc.right .visor{animation-delay:1.3s;}
   .emblem{animation:empulse 1.6s infinite;}
@@ -215,7 +216,12 @@
   .doc.react-bad{animation:docshake .4s 2;}
   @keyframes dochop{0%{transform:translateY(0)}30%{transform:translateY(-18px)}60%{transform:translateY(0)}}
   @keyframes docshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
-  .doc.react-good .armR,.doc.react-combo .armR,.doc.react-bonus .armR,.doc.react-win .armR{transform:rotate(-52deg);}
+  .doc.react-good .armR,.doc.react-combo .armR,.doc.react-bonus .armR,.doc.react-win .armR{animation:armwave .5s ease 2;}
+  @keyframes armwave{0%{transform:rotate(0)}25%{transform:rotate(-60deg)}50%{transform:rotate(-40deg)}75%{transform:rotate(-60deg)}100%{transform:rotate(-46deg)}}
+  .doc.react-bad .armR{animation:armflail .22s ease 3;}
+  @keyframes armflail{0%{transform:rotate(0)}50%{transform:rotate(-16deg)}100%{transform:rotate(0)}}
+  .doc.react-win .armL,.doc.react-bonus .armL{animation:armwaveL .5s ease 2;}
+  @keyframes armwaveL{0%{transform:rotate(0)}25%{transform:rotate(52deg)}50%{transform:rotate(34deg)}75%{transform:rotate(52deg)}100%{transform:rotate(42deg)}}
   .doc.react-good .visor{fill:#fff;}
   .doc.react-combo .visor,.doc.react-bonus .visor,.doc.react-win .visor{fill:var(--gold);}
   .doc.react-bad .visor{fill:var(--bad);}
@@ -727,7 +733,16 @@ const SFX={
   combo(n){ tone(700+n*90,0,0.08,"square",0.12); tone(1050+n*90,0.05,0.1,"square",0.1); },
   bonus(){ [392,523,659,784,1047,1319].forEach((f,i)=>tone(f,i*0.04,0.14,"square",0.12)); },
   tick(){ tone(960,0,0.03,"square",0.06); },
-  fanfare(){ [523,659,784,1047,1319].forEach((f,i)=>tone(f,i*0.11,0.3,"square",0.13)); tone(1568,0.55,0.5,"square",0.13); }
+  fanfare(){ [523,659,784,1047,1319].forEach((f,i)=>tone(f,i*0.11,0.3,"square",0.13)); tone(1568,0.55,0.5,"square",0.13); },
+  victory(){   // upbeat major win jingle
+    [[523,0,.16],[659,.16,.16],[784,.32,.16],[1047,.46,.30],[988,.82,.14],[1047,.96,.14],[1319,1.10,.55],
+     [1047,1.75,.7],[784,1.75,.7],[1319,1.75,.7]].forEach(n=>tone(n[0],n[1],n[2],"square",.12));
+    [[262,0,.45],[392,.45,.45],[523,.9,.5],[523,1.75,.8]].forEach(n=>tone(n[0],n[1],n[2],"triangle",.11));
+  },
+  defeat(){    // slow descending "aww" cue (minor)
+    [[392,0,.42],[370,.45,.42],[349,.9,.5],[294,1.45,1.1]].forEach(n=>tone(n[0],n[1],n[2],"sawtooth",.11));
+    [[196,1.45,1.4],[233,1.45,1.4]].forEach(n=>tone(n[0],n[1],n[2],"triangle",.10));
+  }
 };
 
 /* ===================== PIXEL CONFETTI ===================== */
@@ -1070,8 +1085,11 @@ function quizSummary(){
   stopTimer();
   const rank=rankFor(correct);
   const uniqueMissed=[...new Set(missed)];
-  react(correct>=22?'win':'lose'); setEmo(correct>=22?'great':'bad');
-  if(correct>=22){ SFX.fanfare(); rain(140); } else { SFX.click(); }
+  const db=debrief();
+  const goodOutcome = db.tone!=='critical';
+  react(goodOutcome?'win':'lose'); setEmo(goodOutcome?'great':'bad');
+  if(goodOutcome){ SFX.victory(); if(db.tone==='perfect'||db.tone==='saved') rain(160); }
+  else { SFX.defeat(); }
   const missedHtml = uniqueMissed.length
     ? `<div class="rounds">
          <div class="rounds-head">${repAvatar('#ff3ca6')}${repAvatar('#2ad4ff')}
@@ -1086,7 +1104,6 @@ function quizSummary(){
          </div>
        </div>`
     : `<p style="color:var(--good);margin-top:18px;font-size:22px">🎉 FLAWLESS BOARD — EVERY TERM CORRECT!</p>`;
-  const db=debrief();
   main.querySelector(".game").innerHTML=`
     <div class="done-screen">
       <div class="report">
