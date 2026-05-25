@@ -181,6 +181,8 @@
   .mp{fill:#20142e;}
   .scr{fill:#141021;}
   .clip{fill:#caa24a;}
+  .eyeshine{fill:#ffffff;}
+  .blush{fill:#ff8fb0;opacity:.9;}
   .mo{display:none;}
   .sweat{fill:#7fd4ff;display:none;transform-box:fill-box;transform-origin:center;}
   .armR{transform-box:fill-box;transform-origin:80% 0;transition:transform .25s ease;}
@@ -330,11 +332,12 @@
   <header>
     <div class="logo"><span class="pulse">♥</span> CODE QUIZ: STAT! <span class="tagline">EMT·ECG·PHLEB</span></div>
     <div class="spacer"></div>
+    <button class="iconbtn" id="timerBtn" title="Timed mode on/off">⏱ ON</button>
     <button class="iconbtn" id="muteBtn" title="Sound on/off">SND</button>
     <button class="backbtn hidden" id="restartBtn">↻ NEW</button>
   </header>
   <main id="main"></main>
-  <footer>30 TERMS · 6 CATEGORIES · STACK COMBOS · ⚡ = DOUBLE POINTS</footer>
+  <footer>57-TERM BANK · 6 CATEGORIES · RANDOM BOARD EACH GAME · ⚡ = DOUBLE POINTS</footer>
 </div>
 
 <script>
@@ -369,52 +372,106 @@ const TERMS = {
   "coccyx":"Tailbone — the lowest part of the spine.",
   "thoracic cage":"Ribs + sternum + thoracic vertebrae — protects heart & lungs.",
   "ribs":"12 pairs of bones; intercostal spaces guide chest-lead placement.",
-  "sternum":"Breastbone — CPR compression landmark and reference for V1/V2 leads."
+  "sternum":"Breastbone — CPR compression landmark and reference for V1/V2 leads.",
+  "ossification":"The general process of bone formation (osteogenesis).",
+  "endochondral ossification":"Bone formation that replaces a hyaline-cartilage model — how most bones form.",
+  "intramembranous ossification":"Bone that forms directly within a fibrous membrane (flat skull bones).",
+  "ossification center":"The site where bone formation first begins in a developing bone.",
+  "primary ossification center":"First center of bone formation, in the shaft (diaphysis).",
+  "secondary ossification center":"Later center of bone formation, in the bone's ends (epiphyses).",
+  "perichondrium":"The connective-tissue sheath surrounding cartilage.",
+  "modeling":"Reshaping of bone during growth toward its adult form.",
+  "remodeling":"Lifelong replacement of old bone with new bone.",
+  "projection":"A bony marking that projects outward — often a muscle-attachment site.",
+  "osteoid":"The soft, unmineralized bone matrix before calcium is deposited.",
+  "osteogenic cell":"The bone stem cell that differentiates into bone-building osteoblasts.",
+  "reserve zone":"Growth-plate zone of resting cartilage anchoring it to the epiphysis.",
+  "proliferative zone":"Growth-plate zone where chondrocytes divide to lengthen the bone.",
+  "zone of maturation and hypertrophy":"Growth-plate zone where chondrocytes enlarge and mature.",
+  "zone of calcified matrix":"Growth-plate zone where the matrix calcifies and chondrocytes die.",
+  "notochord":"Embryonic rod that defines the body axis and induces spine formation.",
+  "somite":"Segmented blocks of mesoderm that form vertebrae, ribs, muscle, and dermis.",
+  "sclerotome":"The part of a somite that develops into vertebrae and ribs.",
+  "mesenchyme":"Embryonic connective tissue that gives rise to bone, cartilage, and blood.",
+  "growth hormone":"Pituitary hormone that stimulates growth of bone and tissue.",
+  "ethmoid bone":"Bone between the eyes forming part of the nasal cavity and orbits.",
+  "sphenoid bone":"Butterfly-shaped bone at the base/center of the skull.",
+  "palatine bone":"Bone forming the back of the hard palate and part of the nasal cavity.",
+  "lacrimal bone":"Smallest facial bone, in the medial orbit near the tear duct.",
+  "inferior nasal conchae":"Scroll-shaped bones on the lateral wall of the nasal cavity.",
+  "vomer":"Bone forming the inferior part of the nasal septum."
 };
 
-/* ===================== BOARD: 6 categories x 5 values = all 30 terms ===================== */
+/* ===================== QUESTION BANK: pools per category; board picks 5 random each game ===================== */
 const QUIZ={
-  "Blood & Marrow":[
-    {p:100,q:"The type of marrow that actively produces blood cells.",a:"red marrow",opts:["red marrow","yellow marrow","nutrient foramen"]},
-    {p:200,q:"The process of forming new blood cells — RBCs, WBCs, and platelets.",a:"hematopoiesis",opts:["hematopoiesis","calcium homeostasis","osteoporosis"]},
-    {p:300,q:"Fatty marrow that can convert back to blood-making marrow under high demand.",a:"yellow marrow",opts:["yellow marrow","red marrow","calcitriol"]},
-    {p:400,q:"Low bone density and high fracture risk — move these patients gently.",a:"osteoporosis",opts:["osteoporosis","hypocalcemia","hematopoiesis"]},
-    {p:500,q:"The opening where blood vessels enter a bone to reach the marrow.",a:"nutrient foramen",opts:["nutrient foramen","occipital bone","sternum"]},
+  "Calcium & Hormones":[
+    {q:"High blood calcium that SHORTENS the QT interval.",a:"hypercalcemia",opts:["hypercalcemia","hypocalcemia","calcitriol"]},
+    {q:"Low blood calcium that PROLONGS the QT interval.",a:"hypocalcemia",opts:["hypocalcemia","hypercalcemia","thyroxine (T4)"]},
+    {q:"Excess of this thyroid hormone drives tachycardia on the monitor.",a:"thyroxine (T4)",opts:["thyroxine (T4)","growth hormone","calcitriol"]},
+    {q:"Active vitamin D — raises blood calcium by boosting gut absorption.",a:"calcitriol",opts:["calcitriol","thyroxine (T4)","hypercalcemia"]},
+    {q:"The body's balancing act on blood calcium (PTH, calcitriol, calcitonin).",a:"calcium homeostasis",opts:["calcium homeostasis","hematopoiesis","hypocalcemia"]},
+    {q:"Pituitary hormone that stimulates growth of bone and tissue.",a:"growth hormone",opts:["growth hormone","thyroxine (T4)","calcitriol"]},
   ],
-  "Rhythm & Lytes":[
-    {p:100,q:"High blood calcium that SHORTENS the QT interval.",a:"hypercalcemia",opts:["hypercalcemia","hypocalcemia","calcitriol"]},
-    {p:200,q:"Low blood calcium that PROLONGS the QT interval.",a:"hypocalcemia",opts:["hypocalcemia","hypercalcemia","thyroxine (T4)"]},
-    {p:300,q:"Excess of this thyroid hormone drives tachycardia on the monitor.",a:"thyroxine (T4)",opts:["thyroxine (T4)","calcitriol","calcium homeostasis"]},
-    {p:400,q:"Active vitamin D — raises blood calcium by boosting gut absorption.",a:"calcitriol",opts:["calcitriol","thyroxine (T4)","hypercalcemia"]},
-    {p:500,q:"The body's balancing act on blood calcium via PTH, calcitriol, and calcitonin.",a:"calcium homeostasis",opts:["calcium homeostasis","hematopoiesis","hypocalcemia"]},
+  "Marrow & Blood":[
+    {q:"The marrow that actively produces blood cells.",a:"red marrow",opts:["red marrow","yellow marrow","nutrient foramen"]},
+    {q:"The process of forming blood cells — RBCs, WBCs, and platelets.",a:"hematopoiesis",opts:["hematopoiesis","ossification","remodeling"]},
+    {q:"Fatty marrow that converts back to red marrow under high demand.",a:"yellow marrow",opts:["yellow marrow","red marrow","osteoid"]},
+    {q:"The opening where vessels enter a bone to reach the marrow.",a:"nutrient foramen",opts:["nutrient foramen","ossification center","projection"]},
+    {q:"Low bone density and high fracture risk — move these patients gently.",a:"osteoporosis",opts:["osteoporosis","hypocalcemia","remodeling"]},
+    {q:"The soft, unmineralized bone matrix before calcium is deposited.",a:"osteoid",opts:["osteoid","osteogenic cell","red marrow"]},
+    {q:"The bone stem cell that becomes bone-building osteoblasts.",a:"osteogenic cell",opts:["osteogenic cell","osteoid","hematopoiesis"]},
+  ],
+  "Bone Development":[
+    {q:"The general term for bone formation.",a:"ossification",opts:["ossification","hematopoiesis","modeling"]},
+    {q:"Bone formation that replaces a hyaline-cartilage model (most bones).",a:"endochondral ossification",opts:["endochondral ossification","intramembranous ossification","remodeling"]},
+    {q:"Bone that forms directly within a fibrous membrane (flat skull bones).",a:"intramembranous ossification",opts:["intramembranous ossification","endochondral ossification","modeling"]},
+    {q:"The site where bone formation first begins in a developing bone.",a:"ossification center",opts:["ossification center","nutrient foramen","perichondrium"]},
+    {q:"The first ossification center, located in the shaft (diaphysis).",a:"primary ossification center",opts:["primary ossification center","secondary ossification center","ossification center"]},
+    {q:"Ossification center appearing later, in the bone's ends (epiphyses).",a:"secondary ossification center",opts:["secondary ossification center","primary ossification center","ossification center"]},
+    {q:"The connective-tissue sheath surrounding cartilage.",a:"perichondrium",opts:["perichondrium","osteoid","ossification center"]},
+    {q:"Reshaping of bone during growth toward its adult form.",a:"modeling",opts:["modeling","remodeling","ossification"]},
+    {q:"Lifelong replacement of old bone with new bone.",a:"remodeling",opts:["remodeling","modeling","ossification"]},
+    {q:"A bone marking that projects outward — often a muscle-attachment site.",a:"projection",opts:["projection","nutrient foramen","ossification center"]},
+  ],
+  "Growth & Origins":[
+    {q:"Growth-plate zone of resting cartilage anchoring it to the epiphysis.",a:"reserve zone",opts:["reserve zone","proliferative zone","zone of calcified matrix"]},
+    {q:"Growth-plate zone where cartilage cells divide to lengthen the bone.",a:"proliferative zone",opts:["proliferative zone","reserve zone","zone of maturation and hypertrophy"]},
+    {q:"Growth-plate zone where chondrocytes enlarge (hypertrophy).",a:"zone of maturation and hypertrophy",opts:["zone of maturation and hypertrophy","proliferative zone","zone of calcified matrix"]},
+    {q:"Growth-plate zone where the matrix calcifies and chondrocytes die.",a:"zone of calcified matrix",opts:["zone of calcified matrix","reserve zone","zone of maturation and hypertrophy"]},
+    {q:"The embryonic rod that defines the body axis and induces the spine.",a:"notochord",opts:["notochord","somite","sclerotome"]},
+    {q:"Segmented blocks of mesoderm that give rise to vertebrae and ribs.",a:"somite",opts:["somite","notochord","mesenchyme"]},
+    {q:"The part of a somite that develops into vertebrae and ribs.",a:"sclerotome",opts:["sclerotome","somite","notochord"]},
+    {q:"Embryonic connective tissue that becomes bone, cartilage, and blood.",a:"mesenchyme",opts:["mesenchyme","osteoid","notochord"]},
   ],
   "The Skull":[
-    {p:100,q:"The forehead bone.",a:"frontal bone",opts:["frontal bone","parietal bone","occipital bone"]},
-    {p:200,q:"The bone at the back and base of the skull.",a:"occipital bone",opts:["occipital bone","frontal bone","temporal bone"]},
-    {p:300,q:"Paired bones forming the top and sides of the skull.",a:"parietal bone",opts:["parietal bone","temporal bone","frontal bone"]},
-    {p:400,q:"The bone at the side of the skull, around the ear.",a:"temporal bone",opts:["temporal bone","parietal bone","zygomatic bone"]},
-    {p:500,q:"Collective name for the 8 bones enclosing the brain.",a:"cranial bones",opts:["cranial bones","facial bones","axial skeleton"]},
+    {q:"The forehead bone.",a:"frontal bone",opts:["frontal bone","parietal bone","occipital bone"]},
+    {q:"The bone at the back and base of the skull.",a:"occipital bone",opts:["occipital bone","frontal bone","temporal bone"]},
+    {q:"Paired bones forming the top and sides of the skull.",a:"parietal bone",opts:["parietal bone","temporal bone","frontal bone"]},
+    {q:"The bone at the side of the skull, around the ear.",a:"temporal bone",opts:["temporal bone","parietal bone","sphenoid bone"]},
+    {q:"Bone between the eyes forming part of the nasal cavity and orbits.",a:"ethmoid bone",opts:["ethmoid bone","sphenoid bone","vomer"]},
+    {q:"The butterfly-shaped bone at the base/center of the skull.",a:"sphenoid bone",opts:["sphenoid bone","ethmoid bone","temporal bone"]},
+    {q:"Collective name for the 8 bones enclosing the brain.",a:"cranial bones",opts:["cranial bones","facial bones","axial skeleton"]},
+    {q:"Skull + vertebral column + thoracic cage together.",a:"axial skeleton",opts:["axial skeleton","cranial bones","thoracic cage"]},
   ],
-  "The Face":[
-    {p:100,q:"The lower jaw — the only movable skull bone.",a:"mandible",opts:["mandible","maxilla","zygomatic bone"]},
-    {p:200,q:"The upper jaw bone.",a:"maxilla",opts:["maxilla","mandible","nasal bone"]},
-    {p:300,q:"The cheekbone.",a:"zygomatic bone",opts:["zygomatic bone","temporal bone","nasal bone"]},
-    {p:400,q:"Paired bones forming the bridge of the nose.",a:"nasal bone",opts:["nasal bone","zygomatic bone","maxilla"]},
-    {p:500,q:"Collective name for the 14 bones forming the face.",a:"facial bones",opts:["facial bones","cranial bones","thoracic cage"]},
-  ],
-  "The Spine":[
-    {p:100,q:"The 7 neck vertebrae (C1–C7) you immobilize first in trauma.",a:"cervical",opts:["cervical","thoracic","lumbar"]},
-    {p:200,q:"The 12 vertebrae that anchor the ribs.",a:"thoracic",opts:["thoracic","cervical","lumbar"]},
-    {p:300,q:"The 5 large lower-back vertebrae (L1–L5).",a:"lumbar",opts:["lumbar","sacrum","thoracic"]},
-    {p:400,q:"The fused triangular bone joining the spine to the pelvis.",a:"sacrum",opts:["sacrum","coccyx","lumbar"]},
-    {p:500,q:"The tailbone — the lowest part of the spine.",a:"coccyx",opts:["coccyx","sacrum","lumbar"]},
-  ],
-  "Chest & Core":[
-    {p:100,q:"The breastbone — your CPR compression landmark.",a:"sternum",opts:["sternum","ribs","vertebral column"]},
-    {p:200,q:"12 pairs of bones whose intercostal spaces guide chest-lead placement.",a:"ribs",opts:["ribs","sternum","thoracic cage"]},
-    {p:300,q:"Ribs + sternum + thoracic vertebrae that shield the heart and lungs.",a:"thoracic cage",opts:["thoracic cage","vertebral column","axial skeleton"]},
-    {p:400,q:"The spine itself — 26 bones protecting the spinal cord.",a:"vertebral column",opts:["vertebral column","thoracic cage","axial skeleton"]},
-    {p:500,q:"Skull + vertebral column + thoracic cage — the body's central trauma core.",a:"axial skeleton",opts:["axial skeleton","facial bones","thoracic cage"]},
+  "Face, Spine & Chest":[
+    {q:"The lower jaw — the only movable skull bone.",a:"mandible",opts:["mandible","maxilla","zygomatic bone"]},
+    {q:"The upper jaw bone.",a:"maxilla",opts:["maxilla","mandible","palatine bone"]},
+    {q:"The cheekbone.",a:"zygomatic bone",opts:["zygomatic bone","temporal bone","nasal bone"]},
+    {q:"Paired bones forming the bridge of the nose.",a:"nasal bone",opts:["nasal bone","vomer","lacrimal bone"]},
+    {q:"Bone forming the posterior part of the hard palate.",a:"palatine bone",opts:["palatine bone","maxilla","vomer"]},
+    {q:"The small facial bone in the inner orbit, near the tear duct.",a:"lacrimal bone",opts:["lacrimal bone","nasal bone","ethmoid bone"]},
+    {q:"Scroll-shaped bones on the side wall of the nasal cavity.",a:"inferior nasal conchae",opts:["inferior nasal conchae","vomer","nasal bone"]},
+    {q:"Bone forming the bottom of the nasal septum.",a:"vomer",opts:["vomer","nasal bone","palatine bone"]},
+    {q:"Collective name for the 14 bones of the face.",a:"facial bones",opts:["facial bones","cranial bones","thoracic cage"]},
+    {q:"The spine — 26 bones protecting the spinal cord.",a:"vertebral column",opts:["vertebral column","thoracic cage","axial skeleton"]},
+    {q:"The 7 neck vertebrae (C1–C7) immobilized first in trauma.",a:"cervical",opts:["cervical","thoracic","lumbar"]},
+    {q:"The 12 vertebrae that anchor the ribs.",a:"thoracic",opts:["thoracic","cervical","lumbar"]},
+    {q:"The 5 large lower-back vertebrae (L1–L5).",a:"lumbar",opts:["lumbar","sacrum","thoracic"]},
+    {q:"The fused triangular bone joining the spine to the pelvis.",a:"sacrum",opts:["sacrum","coccyx","lumbar"]},
+    {q:"The tailbone — the lowest part of the spine.",a:"coccyx",opts:["coccyx","sacrum","lumbar"]},
+    {q:"Ribs + sternum + thoracic vertebrae shielding the heart and lungs.",a:"thoracic cage",opts:["thoracic cage","vertebral column","axial skeleton"]},
+    {q:"12 pairs of bones whose intercostal spaces guide chest-lead placement.",a:"ribs",opts:["ribs","sternum","thoracic cage"]},
+    {q:"The breastbone — your CPR compression landmark.",a:"sternum",opts:["sternum","ribs","vertebral column"]},
   ],
 };
 
@@ -461,8 +518,14 @@ const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
   <rect class="neonfill" x="10" y="58" width="18" height="32"/><rect class="mp" x="14" y="66" width="8" height="14"/>
   <rect class="neonfill" x="132" y="58" width="18" height="32"/><rect class="mp" x="138" y="66" width="8" height="14"/>
   <rect class="scr" x="40" y="60" width="80" height="30"/>
-  <rect class="visor" x="50" y="64" width="22" height="22"/>
-  <rect class="visor" x="88" y="64" width="22" height="22"/>
+  <rect class="visor" x="48" y="62" width="24" height="26"/>
+  <rect class="visor" x="88" y="62" width="24" height="26"/>
+  <rect class="eyeshine" x="51" y="65" width="8" height="8"/>
+  <rect class="eyeshine" x="91" y="65" width="8" height="8"/>
+  <rect class="eyeshine" x="64" y="80" width="5" height="5"/>
+  <rect class="eyeshine" x="104" y="80" width="5" height="5"/>
+  <rect class="blush" x="30" y="80" width="11" height="7"/>
+  <rect class="blush" x="119" y="80" width="11" height="7"/>
   <rect class="coat" x="72" y="30" width="8" height="18"/><rect class="coat" x="66" y="36" width="20" height="6"/>
   <rect class="coat" x="74" y="128" width="8" height="26"/><rect class="coat" x="66" y="138" width="24" height="6"/>
   <g class="sweat"><rect x="124" y="44" width="8" height="8"/><rect x="126" y="52" width="6" height="6"/></g>
@@ -641,6 +704,11 @@ function hurtPatient(p){ const amt=Math.round(p/30); updateHP(-amt); patientPuls
 let actx=null, soundOn=true;
 const muteBtn=$("#muteBtn");
 muteBtn.onclick=()=>{soundOn=!soundOn; muteBtn.textContent=soundOn?"SND":"MUTE";};
+let timed=true; try{ timed=localStorage.getItem('cc_timed')!=='off'; }catch(e){}
+const timerBtn=$("#timerBtn");
+function updTimerBtn(){ if(timerBtn) timerBtn.textContent=timed?"⏱ ON":"⏱ OFF"; }
+if(timerBtn) timerBtn.onclick=()=>{ timed=!timed; try{localStorage.setItem('cc_timed',timed?'on':'off');}catch(e){} updTimerBtn(); };
+updTimerBtn();
 function initAudio(){ if(!actx){ try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(actx&&actx.state==="suspended") actx.resume(); }
 function tone(freq,start,dur,type,vol){
   if(!actx||!soundOn)return;
@@ -700,7 +768,7 @@ function floatPop(x,y,text,color){
 }
 
 /* ===================== STATE ===================== */
-let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set();
+let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set(), BOARD={};
 let timerRAF=null, qStart=0, answered=false, qToken=0;
 
 function multiplierFor(s){ return s>=8?3 : s>=6?2.5 : s>=4?2 : s>=2?1.5 : 1; }
@@ -711,12 +779,13 @@ function renderQuiz(){
   score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0;
   patientHP=100; codeBlueHappened=false; updateHP(0);
   const cats=Object.keys(QUIZ);
+  BOARD={}; cats.forEach(c=>{ BOARD[c]=shuffle(QUIZ[c]).slice(0,5).map((it,i)=>({p:(i+1)*100,q:it.q,a:it.a,opts:it.opts})); });
   bonusCells=new Set(); const all=[]; cats.forEach((c,ci)=>[0,1,2,3,4].forEach(r=>all.push(ci+"-"+r)));
   shuffle(all).slice(0,2).forEach(k=>bonusCells.add(k));
   main.innerHTML=`
     <div class="game">
       <h2>📋 CODE QUIZ: STAT!</h2>
-      <p class="sub">Pick a value, beat the clock, stack combos. ⚡ tiles pay double.</p>
+      <p class="sub">Pick a value, stack combos, keep the patient alive. ⚡ tiles pay double · ⏱ toggles the timer.</p>
       <div class="stats">
         <div class="stat">SCORE <b id="qScore">0</b></div>
         <div class="stat">CORRECT <b id="qCorrect">0</b>/${TOTAL}</div>
@@ -731,7 +800,7 @@ function renderQuiz(){
         ${cats.map(c=>`<div class="cat">${c}</div>`).join("")}
         ${[0,1,2,3,4].map(r=>cats.map((c,ci)=>{
           const bonus=bonusCells.has(ci+"-"+r);
-          return `<div class="cell${bonus?' bonus':''}" data-cat="${c}" data-ci="${ci}" data-r="${r}">${QUIZ[c][r].p}</div>`;
+          return `<div class="cell${bonus?' bonus':''}" data-cat="${c}" data-ci="${ci}" data-r="${r}">${BOARD[c][r].p}</div>`;
         }).join("")).join("")}
       </div>
       <div id="qArea" style="margin-top:16px"></div>
@@ -757,14 +826,14 @@ function quizOpen(cell){
   stopTimer(); lastActivity=Date.now();
   initAudio(); SFX.click();
   cell.classList.add("flip");
-  const item=QUIZ[cell.dataset.cat][+cell.dataset.r];
+  const item=BOARD[cell.dataset.cat][+cell.dataset.r];
   const isBonus=bonusCells.has(cell.dataset.ci+"-"+cell.dataset.r);
   answered=false;
   const area=$("#qArea");
   if(isBonus){ SFX.bonus(); react('bonus'); setEmo('great'); }
   area.innerHTML=`
     ${isBonus?'<div class="bonusbanner">⚡ STAT BONUS — DOUBLE POINTS! ⚡</div>':''}
-    <div class="timerbar"><i id="tbar"></i></div>
+    ${timed?'<div class="timerbar"><i id="tbar"></i></div>':''}
     <div class="prompt"><span style="color:var(--quiz);font-family:var(--px);font-size:13px">${cell.dataset.cat} — ${item.p}${isBonus?' ×2':''}</span><br><br>${item.q}</div>
     <div class="choices" id="qChoices"></div>
     <div class="feedback" id="qFb"></div>`;
@@ -775,18 +844,21 @@ function quizOpen(cell){
     $("#qChoices").appendChild(b);
   });
   qStart=Date.now();
-  const myToken=++qToken;
-  let lastTick=15;
-  (function run(){
-    if(myToken!==qToken) return;           // a newer question superseded this one
-    const elapsed=Date.now()-qStart, left=Math.max(0,QTIME-elapsed);
-    const bar=$("#tbar"); if(!bar)return;
-    bar.style.width=(left/QTIME*100)+"%";
-    const secLeft=Math.ceil(left/1000);
-    if(secLeft<=5 && secLeft!==lastTick){ lastTick=secLeft; SFX.tick(); }
-    if(left<=0){ if(!answered) quizAnswer(null,null,item,cell,isBonus); return; }
-    timerRAF=requestAnimationFrame(run);
-  })();
+  if(timed){
+    const myToken=++qToken;
+    let lastTick=15;
+    (function run(){
+      if(myToken!==qToken) return;           // a newer question superseded this one
+      if(!timed){ const bar=$("#tbar"); if(bar) bar.style.width="100%"; return; }  // timer turned off mid-question
+      const elapsed=Date.now()-qStart, left=Math.max(0,QTIME-elapsed);
+      const bar=$("#tbar"); if(!bar)return;
+      bar.style.width=(left/QTIME*100)+"%";
+      const secLeft=Math.ceil(left/1000);
+      if(secLeft<=5 && secLeft!==lastTick){ lastTick=secLeft; SFX.tick(); }
+      if(left<=0){ if(!answered) quizAnswer(null,null,item,cell,isBonus); return; }
+      timerRAF=requestAnimationFrame(run);
+    })();
+  }
 }
 
 function quizAnswer(o,b,item,cell,isBonus){
@@ -801,7 +873,7 @@ function quizAnswer(o,b,item,cell,isBonus){
     b.classList.add("correct");
     streak++; maxStreak=Math.max(maxStreak,streak); correct++;
     const mult=multiplierFor(streak);
-    const speedBonus=Math.round(item.p*0.5*Math.max(0,(QTIME-elapsed)/QTIME));
+    const speedBonus=timed?Math.round(item.p*0.5*Math.max(0,(QTIME-elapsed)/QTIME)):0;
     let gained=Math.round((item.p+speedBonus)*mult*(isBonus?2:1));
     score+=gained;
     SFX.correct(isBonus?2:mult);
@@ -865,12 +937,12 @@ function rankFor(c){
 /* ---- end-of-shift doctor debrief ---- */
 const CAT_OF={}; Object.keys(QUIZ).forEach(c=>QUIZ[c].forEach(it=>CAT_OF[it.a]=c));
 const DOMAIN={
-  "Blood & Marrow":"a blood disorder",
-  "Rhythm & Lytes":"an electrolyte & rhythm crisis",
+  "Calcium & Hormones":"an electrolyte/hormone crisis",
+  "Marrow & Blood":"a blood disorder",
+  "Bone Development":"a bone-formation problem",
+  "Growth & Origins":"a developmental bone problem",
   "The Skull":"a head injury",
-  "The Face":"facial trauma",
-  "The Spine":"a spinal injury",
-  "Chest & Core":"chest trauma"
+  "Face, Spine & Chest":"trauma to the face, spine, or chest"
 };
 const DANGER={
   "red marrow":"blood-cell production shutting down","hematopoiesis":"the marrow failing to make new blood",
@@ -920,7 +992,34 @@ const RELEVANCE={
   "sternum":"ECG/EMT — CPR compression landmark AND the reference for V1/V2 lead placement.",
   "ribs":"ECG/EMT — intercostal spaces guide chest-lead placement; fractures endanger the lungs.",
   "thoracic cage":"EMT — protects the heart & lungs; framework for chest-trauma assessment.",
-  "axial skeleton":"EMT — skull + spine + chest: the body's central trauma core."
+  "axial skeleton":"EMT — skull + spine + chest: the body's central trauma core.",
+  "ossification":"A&P foundation — how the skeleton is built and repaired.",
+  "endochondral ossification":"Explains how long bones (most of the skeleton) form from cartilage.",
+  "intramembranous ossification":"Explains how flat bones like the skull form.",
+  "ossification center":"Foundational for reading bone growth on imaging.",
+  "primary ossification center":"Helps interpret pediatric bone development on X-rays.",
+  "secondary ossification center":"Marks growing bone ends — relevant to growth-plate injuries.",
+  "perichondrium":"Background for cartilage growth and healing.",
+  "modeling":"Explains how growing bones change shape.",
+  "remodeling":"Key to fracture healing and to osteoporosis.",
+  "projection":"Surface landmarks used to locate structures on a patient.",
+  "osteoid":"Bone-matrix context behind calcium & vitamin-D labs.",
+  "osteogenic cell":"The starting point of bone growth and repair.",
+  "reserve zone":"Growth-plate anatomy — relevant to pediatric fractures.",
+  "proliferative zone":"Why children's bones grow in length.",
+  "zone of maturation and hypertrophy":"Part of how long bones elongate.",
+  "zone of calcified matrix":"Final growth-plate zone before bone replaces cartilage.",
+  "notochord":"Embryologic origin of the vertebral column.",
+  "somite":"How the spine and ribs become segmented in development.",
+  "sclerotome":"Direct embryologic origin of the axial skeleton.",
+  "mesenchyme":"The source tissue for the whole skeleton and blood.",
+  "growth hormone":"Endocrine — excess or deficiency shows up in growth & metabolism.",
+  "ethmoid bone":"EMT — mid-face/orbit anatomy in facial trauma.",
+  "sphenoid bone":"EMT — central skull base; basal fractures are serious.",
+  "palatine bone":"EMT — palate/airway anatomy.",
+  "lacrimal bone":"EMT — orbital anatomy in facial trauma.",
+  "inferior nasal conchae":"EMT — nasal airway anatomy.",
+  "vomer":"EMT — nasal septum; deviation and fractures."
 };
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
 function culprit(){
@@ -928,7 +1027,7 @@ function culprit(){
   const tally={}; uniq.forEach(t=>{const c=CAT_OF[t]; tally[c]=(tally[c]||0)+1;});
   let topCat=null,topN=0; Object.keys(tally).forEach(c=>{if(tally[c]>topN){topN=tally[c];topCat=c;}});
   let term=null,topP=-1;
-  uniq.filter(t=>CAT_OF[t]===topCat).forEach(t=>{ const p=(QUIZ[topCat].find(i=>i.a===t)||{}).p||0; if(p>topP){topP=p;term=t;} });
+  uniq.filter(t=>CAT_OF[t]===topCat).forEach(t=>{ const p=((BOARD[topCat]||[]).find(i=>i.a===t)||{}).p||0; if(p>topP){topP=p;term=t;} });
   return {cat:topCat, domain:DOMAIN[topCat], term, danger:DANGER[term]||("complications from "+DOMAIN[topCat])};
 }
 function debrief(){
@@ -962,6 +1061,8 @@ function repAvatar(neon){
   s+=`<rect class="scr" x="${2*P}" y="${2*P}" width="${4*P}" height="${2*P}"/>`;
   s+=`<rect class="visor" x="${2*P+2}" y="${2*P+3}" width="${P-2}" height="${P-2}"/>`;
   s+=`<rect class="visor" x="${4*P}" y="${2*P+3}" width="${P-2}" height="${P-2}"/>`;
+  s+=`<rect class="eyeshine" x="${2*P+3}" y="${2*P+4}" width="2" height="2"/>`;
+  s+=`<rect class="eyeshine" x="${4*P+1}" y="${2*P+4}" width="2" height="2"/>`;
   return `<span class="repbot" style="--neon:${neon}"><svg viewBox="0 0 ${8*P} ${head.length*P}" class="repface">${s}</svg></span>`;
 }
 
