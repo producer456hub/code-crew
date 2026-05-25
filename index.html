@@ -385,14 +385,15 @@
 <script>
 /* ============================================================
    LEADERBOARD STORAGE
-   - Global board is LIVE via a free jsonblob store (no signup)  -> LB.blob
-   - Optional upgrade: paste a Supabase URL + anon key to use a real DB
-     (takes priority over the blob). localStorage is the offline fallback.
+   - Default: scores save to THIS DEVICE (localStorage).
+   - GLOBAL board: paste a Supabase Project URL + anon key below
+     (free project, browser-writable with proper CORS). See README for SQL.
+   (jsonblob was tried but sends no CORS headers, so browsers can't use it.)
    ============================================================ */
 const LB = {
-  blob:    "https://jsonblob.com/api/jsonBlob/019e6185-45ac-7f15-89ec-3e14d7b14295", // active global store
-  url:     "https://YOUR-PROJECT.supabase.co",   // (optional) Supabase Project URL
-  anonKey: "YOUR-PUBLIC-ANON-KEY",               // (optional) Supabase anon/public key
+  blob:    "",                                   // unused (kept for compatibility)
+  url:     "https://YOUR-PROJECT.supabase.co",   // <-- paste your Supabase Project URL to go GLOBAL
+  anonKey: "YOUR-PUBLIC-ANON-KEY",               // <-- paste your Supabase anon/public key (safe to expose)
   table:   "scores"
 };
 
