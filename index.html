@@ -9,9 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#04100b; --panel:#0a1f16; --panel2:#0e2a1d;
-    --line:#1f7a4d; --text:#d6ffe9; --muted:#5a9e7e;
-    --phos:#39ff14; --quiz:#00e0ff; --good:#39ff14; --bad:#ff3b3b; --gold:#ffb000; --purple:#e15cff;
+    --bg:#0c0518; --panel:#160a1f; --panel2:#22102f;
+    --line:#7a3aa0; --text:#f3dcff; --muted:#a07bbf;
+    --phos:#ff3ca6; --quiz:#ff3ca6; --good:#2ad4ff; --bad:#ff3b3b; --gold:#ffd45e; --purple:#b388ff;
     --px:'Press Start 2P','Courier New',monospace;
     --rt:'VT323','Courier New',monospace;
     --bevel: inset -3px -3px 0 0 rgba(0,0,0,.5), inset 3px 3px 0 0 rgba(255,255,255,.12);
@@ -22,7 +22,7 @@
     font-family:var(--rt); font-size:21px; letter-spacing:.5px;
     background:var(--bg);
     color:var(--text); overflow:hidden; user-select:none;
-    text-shadow:0 0 1px rgba(57,255,20,.15);
+    text-shadow:0 0 1px rgba(255,60,166,.18);
   }
   /* CRT overlay */
   #crt{position:fixed;inset:0;pointer-events:none;z-index:60;}
@@ -33,7 +33,7 @@
     animation:flicker 4s infinite steps(40);}
   @keyframes flicker{0%,100%{opacity:1}48%{opacity:.94}50%{opacity:.88}52%{opacity:.96}}
   #scanbar{position:fixed;left:0;right:0;height:60px;pointer-events:none;z-index:59;
-    background:linear-gradient(to bottom, transparent, rgba(57,255,20,.05), transparent);
+    background:linear-gradient(to bottom, transparent, rgba(255,60,166,.06), transparent);
     animation:scan 7s linear infinite;}
   @keyframes scan{0%{top:-60px}100%{top:100%}}
 
@@ -50,7 +50,7 @@
   header .spacer{flex:1;}
 
   .iconbtn,.backbtn,.btn{font-family:var(--px); cursor:pointer; border:none; color:var(--text);
-    background:var(--panel2); box-shadow:var(--bevel), 0 4px 0 #021008; transition:transform .06s, box-shadow .06s, background .1s;}
+    background:var(--panel2); box-shadow:var(--bevel), 0 4px 0 #0a0418; transition:transform .06s, box-shadow .06s, background .1s;}
   .iconbtn{font-size:14px; padding:10px 12px;}
   .backbtn{font-size:10px; padding:10px 12px; color:var(--phos);}
   .iconbtn:active,.backbtn:active,.btn:active{transform:translateY(4px); box-shadow:var(--bevel);}
@@ -70,24 +70,24 @@
   .multi{font-family:var(--px);font-size:14px;padding:8px 12px;background:var(--gold);color:#3a2400;box-shadow:var(--bevel);}
   .multi.bump{animation:multibump .5s;}
   @keyframes multibump{0%{transform:scale(1)}40%{transform:scale(1.5);filter:brightness(1.4)}100%{transform:scale(1)}}
-  .combobar,.progress,.timerbar{background:#04140d;box-shadow:var(--bevel);overflow:hidden;}
+  .combobar,.progress,.timerbar{background:#120726;box-shadow:var(--bevel);overflow:hidden;}
   .combobar{width:130px;height:16px;}
   .combobar > i{display:block;height:100%;width:0;transition:width .3s;
     background:repeating-linear-gradient(90deg,var(--gold) 0 8px, #c98a00 8px 10px);}
   .progress{height:16px;margin:0 0 16px;}
   .progress > i{display:block;height:100%;width:0;transition:width .4s steps(20);
-    background:repeating-linear-gradient(90deg,var(--quiz) 0 8px, #0090a8 8px 10px);}
+    background:repeating-linear-gradient(90deg,var(--quiz) 0 8px, #8a1f5a 8px 10px);}
   .timerbar{height:18px;margin-bottom:14px;}
   .timerbar > i{display:block;height:100%;width:100%;
-    background:repeating-linear-gradient(90deg,var(--good) 0 10px, #04140d 10px 12px);}
+    background:repeating-linear-gradient(90deg,var(--good) 0 10px, #120726 10px 12px);}
 
   .prompt{background:var(--panel2);box-shadow:var(--bevel);padding:16px 18px;margin-bottom:14px;font-size:22px;line-height:1.35;border-left:5px solid var(--quiz);}
 
   .choices{display:grid;gap:12px;}
-  .choice{font-family:var(--rt);font-size:21px;background:var(--panel2);box-shadow:var(--bevel),0 4px 0 #021008;padding:14px 16px;cursor:pointer;text-align:left;color:var(--text);transition:transform .06s,filter .1s;}
+  .choice{font-family:var(--rt);font-size:21px;background:var(--panel2);box-shadow:var(--bevel),0 4px 0 #0a0418;padding:14px 16px;cursor:pointer;text-align:left;color:var(--text);transition:transform .06s,filter .1s;}
   .choice:hover{filter:brightness(1.25);}
   .choice:active{transform:translateY(4px);box-shadow:var(--bevel);}
-  .choice.correct{background:#0c3a1e;color:var(--good);box-shadow:var(--bevel),0 0 16px var(--good);animation:popcorrect .4s;}
+  .choice.correct{background:#0a2536;color:var(--good);box-shadow:var(--bevel),0 0 16px var(--good);animation:popcorrect .4s;}
   .choice.wrong{background:#3a0c12;color:var(--bad);box-shadow:var(--bevel),0 0 16px var(--bad);animation:nudge .3s;}
   @keyframes popcorrect{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
   @keyframes nudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
@@ -98,23 +98,23 @@
   .feedback{margin-top:14px;padding:14px 16px;font-size:20px;line-height:1.4;display:none;box-shadow:var(--bevel);}
   .feedback.show{display:block;animation:fadeup .3s;}
   @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .feedback.ok{background:#0a2c17;border-left:5px solid var(--good);}
+  .feedback.ok{background:#0a2230;border-left:5px solid var(--good);}
   .feedback.no{background:#2c0a10;border-left:5px solid var(--bad);}
   .feedback .term{font-family:var(--px);font-size:13px;color:var(--gold);text-shadow:0 0 6px var(--gold);}
 
   /* board */
   .board{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
   .cat{font-family:var(--rt);font-weight:bold;background:var(--panel);color:var(--phos);box-shadow:var(--bevel);padding:8px 4px;text-align:center;font-size:17px;line-height:1.1;min-height:48px;display:flex;align-items:center;justify-content:center;text-shadow:0 0 6px var(--phos);}
-  .cell{position:relative;font-family:var(--px);background:#0c3a22;box-shadow:var(--bevel),0 4px 0 #021008;padding:18px 4px;text-align:center;font-size:16px;color:var(--gold);cursor:pointer;transition:transform .1s,filter .1s;opacity:0;transform:scale(.5);text-shadow:0 0 6px var(--gold);}
+  .cell{position:relative;font-family:var(--px);background:#2b1240;box-shadow:var(--bevel),0 4px 0 #0a0418;padding:18px 4px;text-align:center;font-size:16px;color:var(--gold);cursor:pointer;transition:transform .1s,filter .1s;opacity:0;transform:scale(.5);text-shadow:0 0 6px var(--gold);}
   .cell.in{animation:cellin .4s forwards;}
   @keyframes cellin{to{opacity:1;transform:scale(1);}}
   .cell:hover{filter:brightness(1.3);}
   .cell:active{transform:translateY(4px);box-shadow:var(--bevel);}
-  .cell.bonus{background:#3a0c4a;color:#fff;box-shadow:var(--bevel),0 4px 0 #021008,0 0 14px var(--purple);}
+  .cell.bonus{background:#5a1577;color:#fff;box-shadow:var(--bevel),0 4px 0 #0a0418,0 0 16px var(--purple);}
   .cell.bonus::after{content:"⚡";position:absolute;top:2px;right:5px;font-size:12px;}
   .cell.flip{animation:flip .35s;}
   @keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg) scale(1.1)}100%{transform:rotateY(0)}}
-  .cell.used{background:#0a1a12;color:var(--muted);cursor:default;filter:none;opacity:.35;box-shadow:var(--bevel);text-shadow:none;}
+  .cell.used{background:#1a0e26;color:var(--muted);cursor:default;filter:none;opacity:.35;box-shadow:var(--bevel);text-shadow:none;}
   .cell.used:hover{transform:none;filter:none;}
 
   .bonusbanner{font-family:var(--px);text-align:center;font-size:16px;color:var(--purple);margin-bottom:12px;animation:bonusflash .8s;text-shadow:0 0 18px var(--purple);}
@@ -279,7 +279,7 @@ function burst(x,y,n,colors,power){
   if(!fxRAF) fxLoop();
 }
 function rain(n){
-  const colors=["#ffb000","#39ff14","#00e0ff","#ff3b3b","#e15cff","#fff"];
+  const colors=["#ffd45e","#ff3ca6","#2ad4ff","#ff3b3b","#b388ff","#fff"];
   for(let i=0;i<n;i++){
     parts.push({x:Math.random()*fx.width,y:-20,vx:(Math.random()-.5)*2,vy:Math.random()*3+2,g:0.08,life:1.6,
       c:colors[i%colors.length],size:(Math.random()*4|0)*2+6,rot:0,vr:0});
@@ -407,8 +407,8 @@ function quizAnswer(o,b,item,cell,isBonus){
     if(streak>=2 && streak%2===0) SFX.combo(streak);
     const rect=b.getBoundingClientRect();
     const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-    burst(cx,cy,isBonus?40:24,isBonus?["#e15cff","#ffb000","#fff"]:["#39ff14","#ffb000","#00e0ff"],isBonus?9:6);
-    floatPop(cx-10,cy-10,"+"+gained,isBonus?"#e15cff":"#39ff14");
+    burst(cx,cy,isBonus?40:24,isBonus?["#b388ff","#ffd45e","#fff"]:["#ff3ca6","#ffd45e","#2ad4ff"],isBonus?9:6);
+    floatPop(cx-10,cy-10,"+"+gained,isBonus?"#b388ff":"#2ad4ff");
     animateNum($("#qScore"),score);
     $("#qCorrect").textContent=correct;
     const bonusBump=$("#multi"); bonusBump.classList.remove("bump"); void bonusBump.offsetWidth; bonusBump.classList.add("bump");
