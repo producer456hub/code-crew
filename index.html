@@ -142,7 +142,14 @@
   .neonfill,.visor,.emblem{fill:var(--neon);}
   .led{fill:var(--gold);animation:vled 1.2s infinite;}
   .seam,.vent,.steth{opacity:.7;}
-  .armR{transform-box:fill-box;transform-origin:50% 0;transition:transform .25s ease;}
+  .joint{fill:#e4e8f2;stroke:#aeb6c8;stroke-width:1.5;}
+  .arm{fill:none;stroke:#cfd5e2;stroke-width:5;stroke-linecap:round;}
+  .spring{fill:none;stroke:#aeb6c8;stroke-width:2.5;}
+  .gloss{fill:rgba(255,255,255,.4);}
+  .cross{fill:#ff3b3b;}
+  .mo{fill:none;stroke:#20142e;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;display:none;}
+  .sweat{fill:#7fd4ff;display:none;transform-box:fill-box;transform-origin:center;}
+  .armR{transform-box:fill-box;transform-origin:22% 8%;transition:transform .25s ease;}
   .visor{transform-box:fill-box;transform-origin:center;animation:vblink 4s infinite;}
   .doc.right .visor{animation-delay:1.3s;}
   .emblem{animation:empulse 1.6s infinite;}
@@ -150,6 +157,21 @@
   @keyframes vblink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.12)}}
   @keyframes vled{0%,100%{opacity:1}50%{opacity:.2}}
   @keyframes empulse{0%,100%{opacity:.75}50%{opacity:1}}
+  /* mood reflects the patient's health */
+  .doc.mood-happy{animation:dochappy 2.4s ease-in-out infinite;}
+  .doc.mood-ok{animation:docbob 3.4s ease-in-out infinite;}
+  .doc.mood-worried{animation:docworry 1.3s ease-in-out infinite;}
+  .doc.mood-critical{animation:docpanic .5s ease-in-out infinite;}
+  @keyframes dochappy{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  @keyframes docworry{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-3px) rotate(1.5deg)}}
+  @keyframes docpanic{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+  .doc.mood-worried .visor{fill:var(--gold);}
+  .doc.mood-critical .visor{fill:var(--bad);animation:eyepanic .6s infinite;}
+  @keyframes eyepanic{0%,100%{opacity:1}50%{opacity:.4}}
+  .doc.mood-happy .mo-happy,.doc.mood-ok .mo-ok,.doc.mood-worried .mo-worried,.doc.mood-critical .mo-crit{display:block;}
+  .doc.mood-worried .sweat,.doc.mood-critical .sweat{display:block;animation:drip 1.7s infinite;}
+  @keyframes drip{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(11px);opacity:0}}
+
   .doc.react-good{animation:dochop .5s 2;}
   .doc.react-combo{animation:dochop .42s 3;}
   .doc.react-bonus{animation:dochop .36s 4;}
@@ -321,24 +343,55 @@ function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.rando
 
 /* ===================== CYBERPUNK MEDICS + PATIENT ===================== */
 const DOCSVG=`
-<svg viewBox="0 0 140 340" class="docsvg">
-  <g class="armL"><rect class="coat ol" x="30" y="158" width="17" height="78" rx="8"/><circle class="glove" cx="38" cy="240" r="8"/></g>
-  <path class="coat ol" d="M38 334 L46 168 Q70 156 94 168 L102 334 Z"/>
-  <line class="ol seam" x1="70" y1="176" x2="70" y2="332"/>
-  <circle class="neonfill" cx="70" cy="206" r="2.4"/><circle class="neonfill" cx="70" cy="226" r="2.4"/><circle class="neonfill" cx="70" cy="246" r="2.4"/>
-  <rect class="metal ol" x="42" y="150" width="56" height="22" rx="10"/>
-  <path class="ol nofill steth" d="M58 150 q-10 34 4 50 q14 14 26 2"/>
-  <circle class="neonfill" cx="90" cy="200" r="4.5"/>
-  <g class="emblem"><rect x="53" y="198" width="7" height="20" rx="1.5"/><rect x="46.5" y="204.5" width="20" height="7" rx="1.5"/></g>
-  <g class="armR"><rect class="coat ol" x="93" y="158" width="17" height="78" rx="8"/><rect class="neonfill syr" x="98" y="206" width="4" height="30" rx="2"/><circle class="glove" cx="101" cy="240" r="8"/></g>
-  <rect class="mask" x="63" y="132" width="14" height="20" rx="4"/>
-  <rect class="metal ol" x="47" y="76" width="46" height="64" rx="13"/>
-  <rect class="neonfill" x="47" y="76" width="46" height="7" rx="3.5"/>
-  <rect class="visor" x="52" y="97" width="36" height="13" rx="6"/>
-  <path class="mask ol" d="M56 112 H84 L79 132 H61 Z"/>
-  <line class="ol vent" x1="64" y1="118" x2="64" y2="128"/><line class="ol vent" x1="70" y1="118" x2="70" y2="129"/><line class="ol vent" x1="76" y1="118" x2="76" y2="128"/>
-  <rect class="metal" x="88" y="98" width="8" height="18" rx="3"/><circle class="led" cx="92" cy="106" r="2.6"/>
-  <line class="ol" x1="58" y1="76" x2="53" y2="60"/><circle class="led" cx="53" cy="58" r="3"/>
+<svg viewBox="0 0 140 300" class="docsvg">
+  <!-- back arm (static, gripper) -->
+  <g class="armL">
+    <line class="arm" x1="33" y1="180" x2="24" y2="208"/>
+    <line class="arm" x1="24" y1="208" x2="22" y2="236"/>
+    <line class="arm" x1="22" y1="236" x2="15" y2="248"/>
+    <line class="arm" x1="22" y1="236" x2="29" y2="248"/>
+    <circle class="joint" cx="24" cy="208" r="5"/>
+  </g>
+  <!-- base / wheel -->
+  <rect class="metal" x="64" y="250" width="12" height="14" rx="3"/>
+  <ellipse class="metal ol" cx="70" cy="274" rx="20" ry="18"/>
+  <circle class="neonfill" cx="70" cy="274" r="4"/>
+  <!-- body -->
+  <ellipse class="coat ol" cx="70" cy="200" rx="40" ry="56"/>
+  <g class="cross"><rect x="64" y="184" width="12" height="32" rx="2"/><rect x="54" y="194" width="32" height="12" rx="2"/></g>
+  <!-- spring neck -->
+  <ellipse class="spring" cx="70" cy="140" rx="13" ry="3"/>
+  <ellipse class="spring" cx="70" cy="146" rx="13" ry="3"/>
+  <ellipse class="spring" cx="70" cy="152" rx="13" ry="3"/>
+  <!-- front arm (raises) holding first-aid kit -->
+  <g class="armR">
+    <line class="arm" x1="107" y1="180" x2="118" y2="206"/>
+    <line class="arm" x1="118" y1="206" x2="116" y2="234"/>
+    <circle class="joint" cx="118" cy="206" r="5"/>
+    <circle class="joint" cx="116" cy="236" r="5"/>
+    <path class="arm" d="M109 238 Q116 232 123 238"/>
+    <rect class="coat ol" x="100" y="240" width="32" height="26" rx="3"/>
+    <g class="cross"><rect x="113" y="245" width="6" height="16" rx="1"/><rect x="108" y="250" width="16" height="6" rx="1"/></g>
+  </g>
+  <circle class="joint" cx="33" cy="180" r="6"/>
+  <circle class="joint" cx="107" cy="180" r="6"/>
+  <!-- head: white shell + glossy black dome -->
+  <ellipse class="coat ol" cx="70" cy="92" rx="46" ry="42"/>
+  <path class="metal" d="M24 92 A46 42 0 0 1 116 92 Z"/>
+  <ellipse class="gloss" cx="52" cy="66" rx="16" ry="8" transform="rotate(-20 52 66)"/>
+  <circle class="led" cx="70" cy="50" r="3"/>
+  <!-- side-mounted eye -->
+  <rect class="metal" x="96" y="82" width="12" height="9" rx="3"/>
+  <circle class="coat ol" cx="110" cy="86" r="13"/>
+  <circle class="visor" cx="110" cy="86" r="7"/>
+  <circle class="gloss" cx="107" cy="83" r="2.4"/>
+  <!-- mood mouth (one shows per mood) -->
+  <path class="mo mo-happy" d="M58 113 Q70 124 82 113"/>
+  <line class="mo mo-ok" x1="60" y1="117" x2="80" y2="117"/>
+  <path class="mo mo-worried" d="M60 121 Q70 113 80 121"/>
+  <path class="mo mo-crit" d="M60 116 q5 7 10 0 q5 7 10 0"/>
+  <!-- worried sweat drop -->
+  <path class="sweat" d="M118 95 q-4 6 0 9 q4 -3 0 -9z"/>
 </svg>`;
 $("#docL").innerHTML=DOCSVG; $("#docR").innerHTML=DOCSVG;
 
@@ -391,9 +444,17 @@ function refreshStatus(){ const st=$("#pStatus"); if(!st)return; let t,c;
   else if(patientHP>30){t="GUARDED";c="var(--gold)";} else {t="CRITICAL";c="var(--bad)";}
   st.textContent=t; st.style.color=c;
 }
+function docMood(){
+  const m = patientHP>75?'happy' : patientHP>45?'ok' : patientHP>20?'worried' : 'critical';
+  [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return;
+    d.classList.remove('mood-happy','mood-ok','mood-worried','mood-critical');
+    d.classList.add('mood-'+m);
+  });
+}
 function updateHP(delta){
   patientHP=Math.max(0,Math.min(100,patientHP+delta));
   const f=$("#phpFill"); if(f){ f.style.width=patientHP+"%"; f.style.background=patientHP>60?"var(--good)":patientHP>30?"var(--gold)":"var(--bad)"; }
+  docMood();
   if(patientHP<=0 && delta<0) codeBlue(); else refreshStatus();
 }
 function codeBlue(){ const p=$("#patient"), st=$("#pStatus");
@@ -478,7 +539,7 @@ function floatPop(x,y,text,color){
 
 /* ===================== STATE ===================== */
 let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set();
-let timerRAF=null, qStart=0, answered=false;
+let timerRAF=null, qStart=0, answered=false, qToken=0;
 
 function multiplierFor(s){ return s>=8?3 : s>=6?2.5 : s>=4?2 : s>=2?1.5 : 1; }
 
@@ -531,6 +592,7 @@ function stopTimer(){ if(timerRAF){cancelAnimationFrame(timerRAF); timerRAF=null
 
 function quizOpen(cell){
   if(cell.classList.contains("used"))return;
+  stopTimer();
   initAudio(); SFX.click();
   cell.classList.add("flip");
   const item=QUIZ[cell.dataset.cat][+cell.dataset.r];
@@ -551,8 +613,10 @@ function quizOpen(cell){
     $("#qChoices").appendChild(b);
   });
   qStart=Date.now();
+  const myToken=++qToken;
   let lastTick=15;
   (function run(){
+    if(myToken!==qToken) return;           // a newer question superseded this one
     const elapsed=Date.now()-qStart, left=Math.max(0,QTIME-elapsed);
     const bar=$("#tbar"); if(!bar)return;
     bar.style.width=(left/QTIME*100)+"%";
