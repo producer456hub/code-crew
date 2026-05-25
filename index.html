@@ -126,6 +126,19 @@
   .done-screen .big{font-family:var(--px);font-size:40px;color:var(--gold);text-shadow:0 0 24px var(--gold);margin:8px 0;}
   .donestats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0;}
   .reviewlist{text-align:left;max-width:620px;margin:0 auto;display:grid;gap:10px;}
+  .report{background:var(--panel2);box-shadow:var(--bevel);padding:16px;margin:0 auto 20px;max-width:640px;text-align:left;}
+  .rep-title{font-family:var(--px);font-size:12px;color:var(--muted);margin-bottom:14px;letter-spacing:1px;text-align:center;}
+  .rep-line{display:flex;gap:12px;align-items:center;margin-bottom:12px;}
+  .repbot{flex:0 0 auto;}
+  .repface{width:58px;height:auto;display:block;image-rendering:pixelated;filter:drop-shadow(0 0 3px var(--neon));}
+  .repmouth{fill:none;stroke:#20142e;stroke-width:2.4;stroke-linecap:round;}
+  .rep-bubble{background:var(--panel);box-shadow:var(--bevel);padding:11px 13px;font-size:20px;line-height:1.35;flex:1;}
+  .rep-bubble b{font-family:var(--px);font-size:11px;}
+  .rep-bubble.m b{color:#ff3ca6;} .rep-bubble.c b{color:#2ad4ff;}
+  .verdict{font-family:var(--px);font-size:16px;text-align:center;margin-top:4px;padding:12px;box-shadow:var(--bevel);}
+  .verdict.perfect,.verdict.saved{color:var(--good);}
+  .verdict.stable{color:var(--gold);}
+  .verdict.critical{color:var(--bad);}
 
   .floatpop{position:fixed;pointer-events:none;font-family:var(--px);font-size:18px;z-index:50;text-shadow:0 0 10px currentColor;animation:floatup 1s forwards;}
   @keyframes floatup{0%{transform:translateY(0) scale(.6);opacity:0}20%{transform:translateY(-8px) scale(1.1);opacity:1}100%{transform:translateY(-70px) scale(1);opacity:0}}
@@ -147,9 +160,11 @@
   .spring{fill:none;stroke:#aeb6c8;stroke-width:2.5;}
   .gloss{fill:rgba(255,255,255,.4);}
   .cross{fill:#ff3b3b;}
-  .mo{fill:none;stroke:#20142e;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;display:none;}
+  .pixg{fill:#cfd5e2;}
+  .mp{fill:#20142e;}
+  .mo{display:none;}
   .sweat{fill:#7fd4ff;display:none;transform-box:fill-box;transform-origin:center;}
-  .armR{transform-box:fill-box;transform-origin:22% 8%;transition:transform .25s ease;}
+  .armR{transform-box:fill-box;transform-origin:33% 0;transition:transform .25s ease;}
   .visor{transform-box:fill-box;transform-origin:center;animation:vblink 4s infinite;}
   .doc.right .visor{animation-delay:1.3s;}
   .emblem{animation:empulse 1.6s infinite;}
@@ -342,56 +357,69 @@ restartBtn.onclick=renderQuiz;
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 /* ===================== CYBERPUNK MEDICS + PATIENT ===================== */
-const DOCSVG=`
-<svg viewBox="0 0 140 300" class="docsvg">
-  <!-- back arm (static, gripper) -->
+/* pixel-art sprite: each char = one 10px block */
+const GRID=[
+  "..............",
+  "....KKKKKK....",
+  "...KKKKKKKK...",
+  "..KKKKKKKKKK..",
+  "..KKKKKKKKKK..",
+  "..WWWWWWWWWW..",
+  "..WWWWWWWWWW..",
+  "..WWWWWWWWWW..",
+  "...WWWWWWWW...",
+  "....WWWWWW....",
+  ".....GGGG.....",
+  ".....GGGG.....",
+  "...WWWWWWWW...",
+  "..WWWWWWWWWW..",
+  ".WWWWWWWWWWWW.",
+  ".WWWWWRRWWWWW.",
+  ".WWWWWRRWWWWW.",
+  ".WWWRRRRRRWWW.",
+  ".WWWWWRRWWWWW.",
+  ".WWWWWRRWWWWW.",
+  ".WWWWWWWWWWWW.",
+  "..WWWWWWWWWW..",
+  "...WWWWWWWW...",
+  ".....KKKK.....",
+  "....KKKKKK....",
+  "...KKKKKKKK...",
+  "...KKKKKKKK...",
+  "....KKKKKK....",
+  ".....KKKK.....",
+  ".............."
+];
+const GMAP={K:'metal',W:'coat',G:'pixg',R:'cross'};
+function pxgrid(){let s='';for(let r=0;r<GRID.length;r++){const row=GRID[r];for(let c=0;c<row.length;c++){const cls=GMAP[row[c]];if(cls)s+=`<rect class="${cls}" x="${c*10}" y="${r*10}" width="10" height="10"/>`;}}return s;}
+const DOCSVG=`<svg viewBox="0 0 140 300" class="docsvg">
+  ${pxgrid()}
+  <rect class="gloss" x="36" y="32" width="16" height="8"/>
+  <rect class="led" x="64" y="12" width="8" height="8"/>
   <g class="armL">
-    <line class="arm" x1="33" y1="180" x2="24" y2="208"/>
-    <line class="arm" x1="24" y1="208" x2="22" y2="236"/>
-    <line class="arm" x1="22" y1="236" x2="15" y2="248"/>
-    <line class="arm" x1="22" y1="236" x2="29" y2="248"/>
-    <circle class="joint" cx="24" cy="208" r="5"/>
+    <rect class="pixg" x="10" y="130" width="10" height="10"/>
+    <rect class="pixg" x="0" y="140" width="10" height="10"/>
+    <rect class="pixg" x="0" y="150" width="10" height="10"/>
+    <rect class="pixg" x="0" y="160" width="10" height="10"/>
   </g>
-  <!-- base / wheel -->
-  <rect class="metal" x="64" y="250" width="12" height="14" rx="3"/>
-  <ellipse class="metal ol" cx="70" cy="274" rx="20" ry="18"/>
-  <circle class="neonfill" cx="70" cy="274" r="4"/>
-  <!-- body -->
-  <ellipse class="coat ol" cx="70" cy="200" rx="40" ry="56"/>
-  <g class="cross"><rect x="64" y="184" width="12" height="32" rx="2"/><rect x="54" y="194" width="32" height="12" rx="2"/></g>
-  <!-- spring neck -->
-  <ellipse class="spring" cx="70" cy="140" rx="13" ry="3"/>
-  <ellipse class="spring" cx="70" cy="146" rx="13" ry="3"/>
-  <ellipse class="spring" cx="70" cy="152" rx="13" ry="3"/>
-  <!-- front arm (raises) holding first-aid kit -->
+  <rect class="metal" x="98" y="54" width="12" height="10"/>
+  <rect class="visor" x="108" y="46" width="22" height="22"/>
+  <rect class="gloss" x="111" y="49" width="6" height="6"/>
+  <g class="mo mo-happy"><rect class="mp" x="40" y="70" width="8" height="8"/><rect class="mp" x="92" y="70" width="8" height="8"/><rect class="mp" x="50" y="78" width="42" height="8"/></g>
+  <g class="mo mo-ok"><rect class="mp" x="50" y="76" width="40" height="6"/></g>
+  <g class="mo mo-worried"><rect class="mp" x="50" y="70" width="42" height="8"/><rect class="mp" x="40" y="78" width="8" height="8"/><rect class="mp" x="92" y="78" width="8" height="8"/></g>
+  <g class="mo mo-crit"><rect class="mp" x="58" y="70" width="24" height="16"/></g>
+  <g class="sweat"><rect x="118" y="40" width="8" height="8"/><rect x="120" y="48" width="6" height="6"/></g>
   <g class="armR">
-    <line class="arm" x1="107" y1="180" x2="118" y2="206"/>
-    <line class="arm" x1="118" y1="206" x2="116" y2="234"/>
-    <circle class="joint" cx="118" cy="206" r="5"/>
-    <circle class="joint" cx="116" cy="236" r="5"/>
-    <path class="arm" d="M109 238 Q116 232 123 238"/>
-    <rect class="coat ol" x="100" y="240" width="32" height="26" rx="3"/>
-    <g class="cross"><rect x="113" y="245" width="6" height="16" rx="1"/><rect x="108" y="250" width="16" height="6" rx="1"/></g>
+    <rect class="pixg" x="120" y="130" width="10" height="10"/>
+    <rect class="pixg" x="130" y="140" width="10" height="10"/>
+    <rect class="pixg" x="130" y="150" width="10" height="10"/>
+    <rect class="pixg" x="130" y="160" width="10" height="10"/>
+    <rect class="pixg" x="120" y="166" width="10" height="8"/>
+    <rect class="coat" x="110" y="172" width="30" height="26"/>
+    <rect class="cross" x="122" y="176" width="6" height="18"/>
+    <rect class="cross" x="116" y="181" width="18" height="6"/>
   </g>
-  <circle class="joint" cx="33" cy="180" r="6"/>
-  <circle class="joint" cx="107" cy="180" r="6"/>
-  <!-- head: white shell + glossy black dome -->
-  <ellipse class="coat ol" cx="70" cy="92" rx="46" ry="42"/>
-  <path class="metal" d="M24 92 A46 42 0 0 1 116 92 Z"/>
-  <ellipse class="gloss" cx="52" cy="66" rx="16" ry="8" transform="rotate(-20 52 66)"/>
-  <circle class="led" cx="70" cy="50" r="3"/>
-  <!-- side-mounted eye -->
-  <rect class="metal" x="96" y="82" width="12" height="9" rx="3"/>
-  <circle class="coat ol" cx="110" cy="86" r="13"/>
-  <circle class="visor" cx="110" cy="86" r="7"/>
-  <circle class="gloss" cx="107" cy="83" r="2.4"/>
-  <!-- mood mouth (one shows per mood) -->
-  <path class="mo mo-happy" d="M58 113 Q70 124 82 113"/>
-  <line class="mo mo-ok" x1="60" y1="117" x2="80" y2="117"/>
-  <path class="mo mo-worried" d="M60 121 Q70 113 80 121"/>
-  <path class="mo mo-crit" d="M60 116 q5 7 10 0 q5 7 10 0"/>
-  <!-- worried sweat drop -->
-  <path class="sweat" d="M118 95 q-4 6 0 9 q4 -3 0 -9z"/>
 </svg>`;
 $("#docL").innerHTML=DOCSVG; $("#docR").innerHTML=DOCSVG;
 
@@ -438,7 +466,7 @@ function bubble(side,text,type){
   clearTimeout(b._t); b._t=setTimeout(()=>b.classList.remove("show"),1300);
 }
 function vflash(color){ const v=$("#vflash"); if(!v)return; v.style.background=color; v.classList.remove("go"); void v.offsetWidth; v.classList.add("go"); }
-let patientHP=100;
+let patientHP=100, codeBlueHappened=false;
 function refreshStatus(){ const st=$("#pStatus"); if(!st)return; let t,c;
   if(patientHP<=0){t="FLATLINE";c="var(--bad)";} else if(patientHP>60){t="STABLE";c="var(--good)";}
   else if(patientHP>30){t="GUARDED";c="var(--gold)";} else {t="CRITICAL";c="var(--bad)";}
@@ -458,6 +486,7 @@ function updateHP(delta){
   if(patientHP<=0 && delta<0) codeBlue(); else refreshStatus();
 }
 function codeBlue(){ const p=$("#patient"), st=$("#pStatus");
+  codeBlueHappened=true;
   if(st){st.textContent="CODE BLUE!";st.style.color="var(--bad)";}
   if(p)p.classList.add("codeblue");
   vflash("rgba(255,59,59,1)");
@@ -547,7 +576,7 @@ function renderQuiz(){
   stopTimer();
   restartBtn.classList.remove("hidden");
   score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0;
-  patientHP=100; updateHP(0);
+  patientHP=100; codeBlueHappened=false; updateHP(0);
   const cats=Object.keys(QUIZ);
   bonusCells=new Set(); const all=[]; cats.forEach((c,ci)=>[0,1,2,3,4].forEach(r=>all.push(ci+"-"+r)));
   shuffle(all).slice(0,2).forEach(k=>bonusCells.add(k));
@@ -692,6 +721,76 @@ function rankFor(c){
   return {t:"🚑 ROOKIE — KEEP STUDYING",col:"var(--muted)"};
 }
 
+/* ---- end-of-shift doctor debrief ---- */
+const CAT_OF={}; Object.keys(QUIZ).forEach(c=>QUIZ[c].forEach(it=>CAT_OF[it.a]=c));
+const DOMAIN={
+  "Blood & Marrow":"a blood disorder",
+  "Rhythm & Lytes":"an electrolyte & rhythm crisis",
+  "The Skull":"a head injury",
+  "The Face":"facial trauma",
+  "The Spine":"a spinal injury",
+  "Chest & Core":"chest trauma"
+};
+const DANGER={
+  "red marrow":"blood-cell production shutting down","hematopoiesis":"the marrow failing to make new blood",
+  "yellow marrow":"marrow reserves never kicking in","osteoporosis":"a brittle bone shattering during transfer",
+  "nutrient foramen":"the bone's blood supply being cut off",
+  "hypercalcemia":"a calcium spike stalling the heart","hypocalcemia":"a prolonged QT sliding into a lethal arrhythmia",
+  "calcium homeostasis":"calcium swinging dangerously out of balance","calcitriol":"a vitamin-D–driven calcium collapse",
+  "thyroxine (T4)":"a thyroid storm racing the heart",
+  "frontal bone":"an unmanaged skull fracture","occipital bone":"a bleed at the base of the skull",
+  "parietal bone":"a depressed skull fracture","temporal bone":"a temporal bleed beside the ear",
+  "cranial bones":"an unrecognized skull fracture","facial bones":"a collapsing facial airway",
+  "maxilla":"an unstable mid-face fracture","mandible":"a broken jaw blocking the airway",
+  "zygomatic bone":"untreated facial trauma","nasal bone":"a nasal fracture obstructing the airway",
+  "cervical":"an unstabilized C-spine risking paralysis","thoracic":"a mid-spine fracture",
+  "lumbar":"a lower-spine injury","sacrum":"a pelvic-junction fracture","coccyx":"a tailbone injury",
+  "vertebral column":"an unprotected spinal cord",
+  "sternum":"ineffective chest compressions","ribs":"a flail chest and punctured lung",
+  "thoracic cage":"a crushed chest","axial skeleton":"catastrophic core trauma"
+};
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function culprit(){
+  const uniq=[...new Set(missed)]; if(!uniq.length) return null;
+  const tally={}; uniq.forEach(t=>{const c=CAT_OF[t]; tally[c]=(tally[c]||0)+1;});
+  let topCat=null,topN=0; Object.keys(tally).forEach(c=>{if(tally[c]>topN){topN=tally[c];topCat=c;}});
+  let term=null,topP=-1;
+  uniq.filter(t=>CAT_OF[t]===topCat).forEach(t=>{ const p=(QUIZ[topCat].find(i=>i.a===t)||{}).p||0; if(p>topP){topP=p;term=t;} });
+  return {cat:topCat, domain:DOMAIN[topCat], term, danger:DANGER[term]||("complications from "+DOMAIN[topCat])};
+}
+function debrief(){
+  const cu=culprit(); let verdict,tone,lineM,lineC;
+  if(correct===TOTAL){
+    tone="perfect"; verdict="DISCHARGED — FULL RECOVERY";
+    lineM="Patient walked out in perfect health. Flawless shift, Doctor.";
+    lineC="Thirty for thirty — the vitals never dipped once. Bravo!";
+  } else if(patientHP>=70){
+    tone="saved"; verdict="PATIENT SAVED";
+    lineM=`Close call with ${cu.danger}, but you pulled them through.`;
+    lineC=`Review ${cu.domain} (esp. "${cu.term}") — that's where they nearly slipped.`;
+  } else if(patientHP>=40){
+    tone="stable"; verdict="PATIENT STABILIZED";
+    lineM=`${cap(cu.danger)} set us back hard — guarded, but breathing.`;
+    lineC=`Tighten up ${cu.domain} and the next patient walks out the door.`;
+  } else {
+    tone="critical"; verdict="PATIENT CRITICAL";
+    lineM=`Probable cause of the crash: ${cu.danger}.`;
+    lineC=`Hit the books on ${cu.domain} (start with "${cu.term}"). Next shift, we save them.`;
+  }
+  if(codeBlueHappened && tone!=="perfect") lineM="We coded on the table — "+lineM.charAt(0).toLowerCase()+lineM.slice(1);
+  return {verdict,tone,lineM,lineC};
+}
+function repAvatar(neon,happy){
+  const P=7, head=["..KKKK..",".KKKKKK.",".KKKKKK.",".WWWWWW.",".WWWWWW.",".WWWWWW.","........"];
+  const map={K:'metal',W:'coat'}; let s='';
+  for(let r=0;r<head.length;r++)for(let c=0;c<head[r].length;c++){const cl=map[head[r][c]];if(cl)s+=`<rect class="${cl}" x="${c*P}" y="${r*P}" width="${P}" height="${P}"/>`;}
+  s+=`<rect class="visor" x="${5*P}" y="${3*P}" width="${P}" height="${P}"/>`;
+  s+= happy
+    ? `<rect class="mp" x="${2*P}" y="${5*P}" width="${P}" height="${P}"/><rect class="mp" x="${4*P}" y="${5*P}" width="${P}" height="${P}"/>`
+    : `<rect class="mp" x="${2*P}" y="${5*P}" width="${3*P}" height="${P}"/>`;
+  return `<span class="repbot" style="--neon:${neon}"><svg viewBox="0 0 ${8*P} ${head.length*P}" class="repface">${s}</svg></span>`;
+}
+
 function quizSummary(){
   stopTimer();
   const rank=rankFor(correct);
@@ -704,12 +803,20 @@ function quizSummary(){
          ${uniqueMissed.map(t=>`<div class="prompt" style="margin:0"><span class="term">${t}</span> — ${TERMS[t]}</div>`).join("")}
        </div>`
     : `<p style="color:var(--good);margin-top:18px;font-size:22px">🎉 FLAWLESS BOARD — EVERY TERM CORRECT!</p>`;
+  const db=debrief();
   main.querySelector(".game").innerHTML=`
     <div class="done-screen">
+      <div class="report">
+        <div class="rep-title">📟 DOCTOR'S DEBRIEF</div>
+        <div class="rep-line">${repAvatar('#ff3ca6', db.tone!=='critical')}<div class="rep-bubble m"><b>DR. MAGENTA</b><br>${db.lineM}</div></div>
+        <div class="rep-line">${repAvatar('#2ad4ff', db.tone!=='critical')}<div class="rep-bubble c"><b>DR. CYAN</b><br>${db.lineC}</div></div>
+        <div class="verdict ${db.tone}">${db.verdict}</div>
+      </div>
       <div class="rank-badge" style="color:${rank.col}">${rank.t}</div>
       <div class="big" id="finalScore">0</div>
       <div class="donestats">
         <div class="stat">CORRECT <b style="color:var(--good)">${correct}</b>/${TOTAL}</div>
+        <div class="stat">PATIENT <b>${patientHP}% HP</b></div>
         <div class="stat">BEST COMBO <b>${maxStreak}🔥</b></div>
         <div class="stat">MAX MULTI <b>x${multiplierFor(maxStreak)}</b></div>
       </div>
