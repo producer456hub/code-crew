@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Code Quiz: Stat! — 30 Terms for EMT · ECG · Phlebotomy</title>
+<style>
+  :root{
+    --bg:#0c1118; --panel:#141c28; --panel2:#1c2738;
+    --line:#2a3a52; --text:#e8eef6; --muted:#8aa0bd;
+    --quiz:#5aa9ff; --good:#34e0a1; --bad:#ff5470; --gold:#ffd45e; --purple:#b388ff;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; height:100%;}
+  body{
+    font-family:"Segoe UI",system-ui,Arial,sans-serif;
+    background:radial-gradient(1200px 800px at 50% -10%, #16202f 0%, var(--bg) 60%);
+    color:var(--text); overflow:hidden; user-select:none;
+  }
+  #app{height:100%; display:flex; flex-direction:column; transition:transform .05s;}
+  #app.shake{animation:shake .4s;}
+  @keyframes shake{
+    0%,100%{transform:translate(0,0)}
+    20%{transform:translate(-8px,4px)} 40%{transform:translate(8px,-4px)}
+    60%{transform:translate(-6px,-3px)} 80%{transform:translate(6px,3px)}
+  }
+  header{
+    display:flex; align-items:center; gap:14px; padding:10px 18px;
+    background:linear-gradient(90deg,#101824,#0c1118); border-bottom:1px solid var(--line); position:relative; z-index:5;
+  }
+  header .logo{font-weight:800; font-size:20px; letter-spacing:.5px; display:flex; align-items:center; gap:8px;}
+  header .pulse{width:12px;height:12px;border-radius:50%;background:var(--good);box-shadow:0 0 10px var(--good);animation:beat 1s infinite;}
+  @keyframes beat{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.5}}
+  header .spacer{flex:1;}
+  .iconbtn,.backbtn{background:var(--panel2); border:1px solid var(--line); color:var(--text); padding:8px 14px; border-radius:10px; font-weight:700; cursor:pointer; font-size:15px;}
+  .iconbtn:hover,.backbtn:hover{background:var(--panel);}
+  main{flex:1; overflow:auto; padding:18px; position:relative; z-index:2;}
+
+  .game{max-width:1000px;margin:0 auto;}
+  .game h2{margin:0 0 4px;font-size:24px;color:var(--quiz);}
+  .game .sub{color:var(--muted);margin:0 0 14px;font-size:14px;}
+
+  /* stats + combo */
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;align-items:center;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:14px;font-weight:700;}
+  .stat b{color:var(--gold);}
+  .combo{margin-left:auto;display:flex;align-items:center;gap:10px;}
+  .multi{font-weight:900;font-size:20px;padding:4px 14px;border-radius:999px;background:linear-gradient(90deg,var(--gold),#ff9d3d);color:#3a2400;box-shadow:0 0 0 rgba(255,212,94,.6);}
+  .multi.bump{animation:multibump .5s;}
+  @keyframes multibump{0%{transform:scale(1)}40%{transform:scale(1.5);box-shadow:0 0 26px rgba(255,212,94,.9)}100%{transform:scale(1)}}
+  .combobar{width:120px;height:8px;border-radius:999px;background:var(--panel);overflow:hidden;border:1px solid var(--line);}
+  .combobar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff9d3d,var(--gold));transition:width .3s;}
+
+  /* progress */
+  .progress{height:8px;background:var(--panel);border-radius:999px;overflow:hidden;margin:0 0 14px;border:1px solid var(--line);}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--quiz),var(--good));width:0;transition:width .4s cubic-bezier(.2,.8,.2,1);}
+
+  /* timer */
+  .timerbar{height:10px;border-radius:999px;background:#22304a;overflow:hidden;margin-bottom:12px;}
+  .timerbar > i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--gold),var(--bad));border-radius:999px;}
+
+  .prompt{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px;font-size:17px;line-height:1.4;}
+
+  .choices{display:grid;gap:10px;}
+  .choice{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;font-size:16px;text-align:left;color:var(--text);transition:transform .08s,background .1s,border-color .1s;}
+  .choice:hover{background:var(--panel);transform:translateX(4px);}
+  .choice:active{transform:scale(.98);}
+  .choice.correct{background:rgba(52,224,161,.18);border-color:var(--good);animation:popcorrect .4s;}
+  .choice.wrong{background:rgba(255,84,112,.18);border-color:var(--bad);animation:nudge .3s;}
+  @keyframes popcorrect{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+  @keyframes nudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .btn{background:var(--quiz);color:#06131f;border:none;border-radius:12px;padding:12px 20px;font-weight:800;font-size:16px;cursor:pointer;transition:transform .08s,filter .1s;}
+  .btn:hover{filter:brightness(1.08);transform:translateY(-2px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line);}
+
+  .feedback{margin-top:12px;padding:12px 16px;border-radius:12px;font-size:15px;line-height:1.45;display:none;}
+  .feedback.show{display:block;animation:fadeup .3s;}
+  @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .feedback.ok{background:rgba(52,224,161,.12);border:1px solid var(--good);}
+  .feedback.no{background:rgba(255,84,112,.12);border:1px solid var(--bad);}
+  .feedback .term{font-weight:800;color:var(--gold);}
+
+  /* board */
+  .board{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+  .cat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center;font-weight:800;font-size:12px;line-height:1.2;min-height:46px;display:flex;align-items:center;justify-content:center;}
+  .cell{position:relative;background:linear-gradient(160deg,#15314f,#0f2238);border:1px solid #234567;border-radius:10px;padding:14px 4px;text-align:center;font-weight:900;font-size:19px;color:var(--gold);cursor:pointer;transition:transform .1s,filter .1s,box-shadow .1s;opacity:0;transform:scale(.5);}
+  .cell.in{animation:cellin .4s forwards;}
+  @keyframes cellin{to{opacity:1;transform:scale(1);}}
+  .cell:hover{filter:brightness(1.2);transform:translateY(-3px) scale(1.04);box-shadow:0 8px 20px rgba(0,0,0,.4);}
+  .cell:active{transform:scale(.95);}
+  .cell.bonus{background:linear-gradient(160deg,#4a2d6b,#2a1740);border-color:var(--purple);color:#fff;box-shadow:0 0 14px rgba(179,136,255,.4);}
+  .cell.bonus::after{content:"⚡";position:absolute;top:2px;right:5px;font-size:11px;}
+  .cell.flip{animation:flip .35s;}
+  @keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg) scale(1.1)}100%{transform:rotateY(0)}}
+  .cell.used{background:var(--panel);color:var(--muted);cursor:default;filter:none;opacity:.4;transform:none;box-shadow:none;}
+  .cell.used:hover{transform:none;}
+
+  /* bonus banner */
+  .bonusbanner{text-align:center;font-weight:900;font-size:22px;color:var(--purple);margin-bottom:10px;animation:bonusflash .8s;text-shadow:0 0 18px rgba(179,136,255,.8);}
+  @keyframes bonusflash{0%{transform:scale(.4);opacity:0}40%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
+
+  /* results */
+  .done-screen{text-align:center;padding:14px;}
+  .rank-badge{font-size:30px;font-weight:900;margin:8px 0;animation:badgein .7s cubic-bezier(.2,1.3,.4,1);}
+  @keyframes badgein{0%{transform:scale(0) rotate(-20deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+  .done-screen .big{font-size:54px;font-weight:900;color:var(--gold);text-shadow:0 0 24px rgba(255,212,94,.4);}
+  .donestats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:14px 0;}
+  .donestats .stat{font-size:15px;}
+  .reviewlist{text-align:left;max-width:600px;margin:0 auto;display:grid;gap:8px;}
+
+  /* floating score popups */
+  .floatpop{position:fixed;pointer-events:none;font-weight:900;font-size:24px;z-index:50;text-shadow:0 2px 8px rgba(0,0,0,.6);animation:floatup 1s forwards;}
+  @keyframes floatup{0%{transform:translateY(0) scale(.6);opacity:0}20%{transform:translateY(-8px) scale(1.1);opacity:1}100%{transform:translateY(-70px) scale(1);opacity:0}}
+
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:40;}
+  footer{padding:8px 18px;text-align:center;color:var(--muted);font-size:12px;border-top:1px solid var(--line);position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div id="app">
+  <header>
+    <div class="logo"><span class="pulse"></span> CODE QUIZ: STAT! <span style="color:var(--muted);font-weight:500;font-size:13px">EMT · ECG · Phlebotomy</span></div>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="muteBtn" title="Sound on/off">🔊</button>
+    <button class="backbtn hidden" id="restartBtn">↻ New board</button>
+  </header>
+  <main id="main"></main>
+  <footer>30 terms · 6 categories · build combos for big multipliers · ⚡ = double-point bonus tile</footer>
+</div>
+
+<script>
+/* ===================== TERM DEFINITIONS ===================== */
+const TERMS = {
+  "hematopoiesis":"Formation of blood cells (RBCs, WBCs, platelets) — happens in red marrow.",
+  "red marrow":"Active blood-cell-producing marrow; the source of a CBC's cells.",
+  "yellow marrow":"Fat-storage marrow that can convert back to red marrow under high demand.",
+  "nutrient foramen":"Opening where blood vessels enter a bone to supply the marrow.",
+  "hypercalcemia":"High blood calcium — SHORTENS the QT interval on the ECG.",
+  "hypocalcemia":"Low blood calcium — PROLONGS the QT interval; arrhythmia risk.",
+  "calcium homeostasis":"The body's balancing of blood calcium (PTH, calcitriol, calcitonin).",
+  "calcitriol":"Active vitamin D; raises blood calcium by boosting gut absorption.",
+  "thyroxine (T4)":"Thyroid hormone that drives metabolic & heart rate — too much = tachycardia.",
+  "osteoporosis":"Low bone density & high fracture risk — handle/move these patients gently.",
+  "axial skeleton":"Skull, vertebral column, and thoracic cage — the body's central trauma core.",
+  "cranial bones":"The 8 bones enclosing the brain.",
+  "frontal bone":"Forehead bone of the skull.",
+  "occipital bone":"Bone at the back/base of the skull.",
+  "parietal bone":"Paired bones forming the top and sides of the skull.",
+  "temporal bone":"Bone at the side of the skull (around the ear).",
+  "facial bones":"The 14 bones forming the face.",
+  "maxilla":"Upper jaw bone.",
+  "mandible":"Lower jaw — the only movable skull bone.",
+  "zygomatic bone":"Cheekbone.",
+  "nasal bone":"Paired bones forming the bridge of the nose.",
+  "vertebral column":"The spine — 26 bones protecting the spinal cord.",
+  "cervical":"7 neck vertebrae (C1–C7) — the C-spine you immobilize.",
+  "thoracic":"12 vertebrae (T1–T12) that anchor the ribs.",
+  "lumbar":"5 large lower-back vertebrae (L1–L5).",
+  "sacrum":"Fused triangular bone joining the spine to the pelvis.",
+  "coccyx":"Tailbone — the lowest part of the spine.",
+  "thoracic cage":"Ribs + sternum + thoracic vertebrae — protects heart & lungs.",
+  "ribs":"12 pairs of bones; intercostal spaces guide chest-lead placement.",
+  "sternum":"Breastbone — CPR compression landmark and reference for V1/V2 leads."
+};
+
+/* ===================== BOARD: 6 categories x 5 values = all 30 terms ===================== */
+const QUIZ={
+  "Blood & Marrow":[
+    {p:100,q:"The type of marrow that actively produces blood cells.",a:"red marrow",opts:["red marrow","yellow marrow","nutrient foramen"]},
+    {p:200,q:"The process of forming new blood cells — RBCs, WBCs, and platelets.",a:"hematopoiesis",opts:["hematopoiesis","calcium homeostasis","osteoporosis"]},
+    {p:300,q:"Fatty marrow that can convert back to blood-making marrow under high demand.",a:"yellow marrow",opts:["yellow marrow","red marrow","calcitriol"]},
+    {p:400,q:"Low bone density and high fracture risk — move these patients gently.",a:"osteoporosis",opts:["osteoporosis","hypocalcemia","hematopoiesis"]},
+    {p:500,q:"The opening where blood vessels enter a bone to reach the marrow.",a:"nutrient foramen",opts:["nutrient foramen","occipital bone","sternum"]},
+  ],
+  "Rhythm & Lytes":[
+    {p:100,q:"High blood calcium that SHORTENS the QT interval.",a:"hypercalcemia",opts:["hypercalcemia","hypocalcemia","calcitriol"]},
+    {p:200,q:"Low blood calcium that PROLONGS the QT interval.",a:"hypocalcemia",opts:["hypocalcemia","hypercalcemia","thyroxine (T4)"]},
+    {p:300,q:"Excess of this thyroid hormone drives tachycardia on the monitor.",a:"thyroxine (T4)",opts:["thyroxine (T4)","calcitriol","calcium homeostasis"]},
+    {p:400,q:"Active vitamin D — raises blood calcium by boosting gut absorption.",a:"calcitriol",opts:["calcitriol","thyroxine (T4)","hypercalcemia"]},
+    {p:500,q:"The body's balancing act on blood calcium via PTH, calcitriol, and calcitonin.",a:"calcium homeostasis",opts:["calcium homeostasis","hematopoiesis","hypocalcemia"]},
+  ],
+  "The Skull":[
+    {p:100,q:"The forehead bone.",a:"frontal bone",opts:["frontal bone","parietal bone","occipital bone"]},
+    {p:200,q:"The bone at the back and base of the skull.",a:"occipital bone",opts:["occipital bone","frontal bone","temporal bone"]},
+    {p:300,q:"Paired bones forming the top and sides of the skull.",a:"parietal bone",opts:["parietal bone","temporal bone","frontal bone"]},
+    {p:400,q:"The bone at the side of the skull, around the ear.",a:"temporal bone",opts:["temporal bone","parietal bone","zygomatic bone"]},
+    {p:500,q:"Collective name for the 8 bones enclosing the brain.",a:"cranial bones",opts:["cranial bones","facial bones","axial skeleton"]},
+  ],
+  "The Face":[
+    {p:100,q:"The lower jaw — the only movable skull bone.",a:"mandible",opts:["mandible","maxilla","zygomatic bone"]},
+    {p:200,q:"The upper jaw bone.",a:"maxilla",opts:["maxilla","mandible","nasal bone"]},
+    {p:300,q:"The cheekbone.",a:"zygomatic bone",opts:["zygomatic bone","temporal bone","nasal bone"]},
+    {p:400,q:"Paired bones forming the bridge of the nose.",a:"nasal bone",opts:["nasal bone","zygomatic bone","maxilla"]},
+    {p:500,q:"Collective name for the 14 bones forming the face.",a:"facial bones",opts:["facial bones","cranial bones","thoracic cage"]},
+  ],
+  "The Spine":[
+    {p:100,q:"The 7 neck vertebrae (C1–C7) you immobilize first in trauma.",a:"cervical",opts:["cervical","thoracic","lumbar"]},
+    {p:200,q:"The 12 vertebrae that anchor the ribs.",a:"thoracic",opts:["thoracic","cervical","lumbar"]},
+    {p:300,q:"The 5 large lower-back vertebrae (L1–L5).",a:"lumbar",opts:["lumbar","sacrum","thoracic"]},
+    {p:400,q:"The fused triangular bone joining the spine to the pelvis.",a:"sacrum",opts:["sacrum","coccyx","lumbar"]},
+    {p:500,q:"The tailbone — the lowest part of the spine.",a:"coccyx",opts:["coccyx","sacrum","lumbar"]},
+  ],
+  "Chest & Core":[
+    {p:100,q:"The breastbone — your CPR compression landmark.",a:"sternum",opts:["sternum","ribs","vertebral column"]},
+    {p:200,q:"12 pairs of bones whose intercostal spaces guide chest-lead placement.",a:"ribs",opts:["ribs","sternum","thoracic cage"]},
+    {p:300,q:"Ribs + sternum + thoracic vertebrae that shield the heart and lungs.",a:"thoracic cage",opts:["thoracic cage","vertebral column","axial skeleton"]},
+    {p:400,q:"The spine itself — 26 bones protecting the spinal cord.",a:"vertebral column",opts:["vertebral column","thoracic cage","axial skeleton"]},
+    {p:500,q:"Skull + vertebral column + thoracic cage — the body's central trauma core.",a:"axial skeleton",opts:["axial skeleton","facial bones","thoracic cage"]},
+  ],
+};
+
+const TOTAL=30, QTIME=15000;
+const $=s=>document.querySelector(s);
+const main=$("#main"), restartBtn=$("#restartBtn"), app=$("#app");
+restartBtn.onclick=renderQuiz;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ===================== SOUND ENGINE (synth, no files) ===================== */
+let actx=null, soundOn=true;
+const muteBtn=$("#muteBtn");
+muteBtn.onclick=()=>{soundOn=!soundOn; muteBtn.textContent=soundOn?"🔊":"🔇";};
+function initAudio(){ if(!actx){ try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(actx&&actx.state==="suspended") actx.resume(); }
+function tone(freq,start,dur,type,vol){
+  if(!actx||!soundOn)return;
+  const o=actx.createOscillator(), g=actx.createGain();
+  o.type=type||"sine"; o.frequency.value=freq;
+  const t=actx.currentTime+start;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(vol||0.18,t+0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g).connect(actx.destination); o.start(t); o.stop(t+dur+0.02);
+}
+const SFX={
+  click(){tone(420,0,0.06,"square",0.08);},
+  correct(mult){ [523,659,784,1047].forEach((f,i)=>tone(f,i*0.06,0.18,"triangle",0.16)); if(mult>=2) tone(1319,0.26,0.22,"triangle",0.14); },
+  wrong(){ tone(180,0,0.18,"sawtooth",0.16); tone(120,0.08,0.22,"sawtooth",0.16); },
+  combo(n){ tone(700+n*80,0,0.12,"triangle",0.14); tone(1000+n*80,0.06,0.14,"triangle",0.12); },
+  bonus(){ [392,523,659,784,1047].forEach((f,i)=>tone(f,i*0.05,0.2,"triangle",0.15)); },
+  tick(){ tone(880,0,0.04,"square",0.05); },
+  fanfare(){ [523,659,784,1047,1319].forEach((f,i)=>tone(f,i*0.12,0.4,"triangle",0.16)); tone(1568,0.6,0.6,"triangle",0.16); }
+};
+
+/* ===================== CONFETTI / PARTICLES ===================== */
+const fx=$("#fx"), fxc=fx.getContext("2d");
+let parts=[], fxRAF=null;
+function fxResize(){ fx.width=innerWidth; fx.height=innerHeight; }
+addEventListener("resize",fxResize); fxResize();
+function burst(x,y,n,colors,power){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2, sp=(Math.random()*(power||6))+2;
+    parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-3,g:0.18,life:1,
+      c:colors[i%colors.length],size:Math.random()*6+3,rot:Math.random()*6,vr:(Math.random()-.5)*.4});
+  }
+  if(!fxRAF) fxLoop();
+}
+function rain(n){ // top-down celebration
+  const colors=["#ffd45e","#34e0a1","#5aa9ff","#ff5470","#b388ff","#fff"];
+  for(let i=0;i<n;i++){
+    parts.push({x:Math.random()*fx.width,y:-20,vx:(Math.random()-.5)*2,vy:Math.random()*3+2,g:0.08,life:1.6,
+      c:colors[i%colors.length],size:Math.random()*7+4,rot:Math.random()*6,vr:(Math.random()-.5)*.3});
+  }
+  if(!fxRAF) fxLoop();
+}
+function fxLoop(){
+  fxc.clearRect(0,0,fx.width,fx.height);
+  parts=parts.filter(p=>p.life>0);
+  parts.forEach(p=>{
+    p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life-=0.012;
+    fxc.save(); fxc.globalAlpha=Math.max(0,p.life); fxc.translate(p.x,p.y); fxc.rotate(p.rot);
+    fxc.fillStyle=p.c; fxc.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.5); fxc.restore();
+  });
+  if(parts.length) fxRAF=requestAnimationFrame(fxLoop); else {fxRAF=null; fxc.clearRect(0,0,fx.width,fx.height);}
+}
+function floatPop(x,y,text,color){
+  const d=document.createElement("div"); d.className="floatpop"; d.textContent=text; d.style.color=color;
+  d.style.left=x+"px"; d.style.top=y+"px"; document.body.appendChild(d);
+  setTimeout(()=>d.remove(),1000);
+}
+
+/* ===================== STATE ===================== */
+let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set();
+let timerRAF=null, qStart=0, answered=false;
+
+function multiplierFor(s){ return s>=8?3 : s>=6?2.5 : s>=4?2 : s>=2?1.5 : 1; }
+
+function renderQuiz(){
+  stopTimer();
+  restartBtn.classList.remove("hidden");
+  score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0;
+  const cats=Object.keys(QUIZ);
+  // choose 2 random bonus tiles
+  bonusCells=new Set(); const all=[]; cats.forEach((c,ci)=>[0,1,2,3,4].forEach(r=>all.push(ci+"-"+r)));
+  shuffle(all).slice(0,2).forEach(k=>bonusCells.add(k));
+  main.innerHTML=`
+    <div class="game">
+      <h2>📋 Code Quiz: Stat!</h2>
+      <p class="sub">Pick a value, beat the clock, stack combos. ⚡ tiles pay double.</p>
+      <div class="stats">
+        <div class="stat">Score: <b id="qScore">0</b></div>
+        <div class="stat">Correct: <b id="qCorrect">0</b>/${TOTAL}</div>
+        <div class="combo">
+          <span style="color:var(--muted);font-size:13px">Combo</span>
+          <div class="combobar"><i id="comboFill"></i></div>
+          <span class="multi" id="multi">x1</span>
+        </div>
+      </div>
+      <div class="progress"><i id="prog"></i></div>
+      <div class="board" id="board">
+        ${cats.map(c=>`<div class="cat">${c}</div>`).join("")}
+        ${[0,1,2,3,4].map(r=>cats.map((c,ci)=>{
+          const bonus=bonusCells.has(ci+"-"+r);
+          return `<div class="cell${bonus?' bonus':''}" data-cat="${c}" data-ci="${ci}" data-r="${r}">${QUIZ[c][r].p}</div>`;
+        }).join("")).join("")}
+      </div>
+      <div id="qArea" style="margin-top:16px"></div>
+    </div>`;
+  // staggered entrance
+  const cells=[...main.querySelectorAll(".cell")];
+  cells.forEach((c,i)=>{ c.style.animationDelay=(i*18)+"ms"; c.classList.add("in"); c.onclick=()=>quizOpen(c); });
+  updateCombo();
+}
+
+function updateCombo(){
+  const m=multiplierFor(streak);
+  const tiers=[2,4,6,8]; let lo=0,hi=2;
+  for(let i=0;i<tiers.length;i++){ if(streak>=tiers[i]){lo=tiers[i]; hi=tiers[i+1]||tiers[i]+2;} }
+  const fill = streak>=8?100 : Math.min(100,((streak-lo)/(hi-lo))*100);
+  const f=$("#comboFill"); if(f) f.style.width=fill+"%";
+  const ml=$("#multi"); if(ml) ml.textContent="x"+m;
+}
+
+function stopTimer(){ if(timerRAF){cancelAnimationFrame(timerRAF); timerRAF=null;} }
+
+function quizOpen(cell){
+  if(cell.classList.contains("used"))return;
+  initAudio(); SFX.click();
+  cell.classList.add("flip");
+  const item=QUIZ[cell.dataset.cat][+cell.dataset.r];
+  const isBonus=bonusCells.has(cell.dataset.ci+"-"+cell.dataset.r);
+  answered=false;
+  const area=$("#qArea");
+  if(isBonus) SFX.bonus();
+  area.innerHTML=`
+    ${isBonus?'<div class="bonusbanner">⚡ STAT BONUS — DOUBLE POINTS! ⚡</div>':''}
+    <div class="timerbar"><i id="tbar"></i></div>
+    <div class="prompt"><span style="color:var(--quiz);font-weight:800">${cell.dataset.cat} — ${item.p}${isBonus?' ×2':''}</span><br><br>${item.q}</div>
+    <div class="choices" id="qChoices"></div>
+    <div class="feedback" id="qFb"></div>`;
+  area.scrollIntoView({behavior:"smooth",block:"nearest"});
+  shuffle(item.opts).forEach(o=>{
+    const b=document.createElement("button"); b.className="choice"; b.textContent=o;
+    b.onclick=()=>quizAnswer(o,b,item,cell,isBonus);
+    $("#qChoices").appendChild(b);
+  });
+  // timer
+  qStart=Date.now();
+  let lastTick=15;
+  (function run(){
+    const elapsed=Date.now()-qStart, left=Math.max(0,QTIME-elapsed);
+    const pct=left/QTIME*100;
+    const bar=$("#tbar"); if(!bar)return;
+    bar.style.width=pct+"%";
+    const secLeft=Math.ceil(left/1000);
+    if(secLeft<=5 && secLeft!==lastTick){ lastTick=secLeft; SFX.tick(); }
+    if(left<=0){ if(!answered) quizAnswer(null,null,item,cell,isBonus); return; }
+    timerRAF=requestAnimationFrame(run);
+  })();
+}
+
+function quizAnswer(o,b,item,cell,isBonus){
+  if(answered)return; answered=true; stopTimer();
+  $("#qChoices").querySelectorAll(".choice").forEach(x=>x.onclick=null);
+  const fb=$("#qFb");
+  cell.classList.add("used");
+  const elapsed=Date.now()-qStart, timedOut=(o===null);
+  const isRight=(o===item.a);
+
+  if(isRight){
+    b.classList.add("correct");
+    streak++; maxStreak=Math.max(maxStreak,streak); correct++;
+    const mult=multiplierFor(streak);
+    const speedBonus=Math.round(item.p*0.5*Math.max(0,(QTIME-elapsed)/QTIME)); // up to +50%
+    let gained=Math.round((item.p+speedBonus)*mult*(isBonus?2:1));
+    score+=gained;
+    // effects
+    SFX.correct(isBonus?2:mult);
+    if(streak>=2 && streak%2===0) SFX.combo(streak);
+    const rect=b.getBoundingClientRect();
+    const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+    burst(cx,cy,isBonus?40:24,isBonus?["#b388ff","#ffd45e","#fff"]:["#34e0a1","#ffd45e","#5aa9ff"],isBonus?9:6);
+    floatPop(cx-10,cy-10,"+"+gained,isBonus?"#b388ff":"#34e0a1");
+    animateNum($("#qScore"),score);
+    $("#qCorrect").textContent=correct;
+    const bonusBump=$("#multi"); bonusBump.classList.remove("bump"); void bonusBump.offsetWidth; bonusBump.classList.add("bump");
+    fb.className="feedback ok show";
+    fb.innerHTML=`✅ <span class="term">${item.a}</span> — ${TERMS[item.a]||''}<br>
+      <span style="color:var(--muted);font-size:13px">+${item.p} base${speedBonus?` · +${speedBonus} speed`:''}${mult>1?` · ×${mult} combo`:''}${isBonus?' · ⚡×2 bonus':''} = <b style="color:var(--gold)">+${gained}</b></span>`;
+  }else{
+    if(b) b.classList.add("wrong");
+    $("#qChoices").querySelectorAll(".choice").forEach(x=>{if(x.textContent===item.a)x.classList.add("correct");});
+    missed.push(item.a);
+    streak=0;
+    SFX.wrong();
+    app.classList.remove("shake"); void app.offsetWidth; app.classList.add("shake");
+    fb.className="feedback no show";
+    fb.innerHTML=`${timedOut?'⏱️ <b>Out of time!</b> ':'❌ '}Answer: <span class="term">${item.a}</span> — ${TERMS[item.a]||''}<br><span style="color:var(--muted);font-size:13px">Combo reset.</span>`;
+  }
+  updateCombo();
+  cleared++;
+  $("#prog").style.width=(cleared/TOTAL*100)+"%";
+  if(cleared>=TOTAL){
+    fb.innerHTML+=`<div style="margin-top:14px"><button class="btn" onclick="quizSummary()">See results →</button></div>`;
+  }
+}
+
+function animateNum(el,to){
+  const from=parseInt(el.textContent)||0, dur=500, t0=performance.now();
+  (function step(t){
+    const k=Math.min(1,(t-t0)/dur);
+    el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));
+    if(k<1) requestAnimationFrame(step);
+  })(t0);
+}
+
+function rankFor(c){
+  if(c>=30) return {t:"🏆 CODE MASTER",col:"var(--gold)"};
+  if(c>=27) return {t:"⭐ Chief Resident",col:"var(--good)"};
+  if(c>=22) return {t:"🩺 Attending",col:"var(--quiz)"};
+  if(c>=16) return {t:"💉 Resident",col:"var(--purple)"};
+  return {t:"🚑 Rookie — keep studying!",col:"var(--muted)"};
+}
+
+function quizSummary(){
+  stopTimer();
+  const rank=rankFor(correct);
+  const uniqueMissed=[...new Set(missed)];
+  if(correct>=22){ SFX.fanfare(); rain(140); }
+  else { SFX.click(); }
+  const missedHtml = uniqueMissed.length
+    ? `<p style="color:var(--muted);margin-top:18px">Review these terms:</p>
+       <div class="reviewlist">
+         ${uniqueMissed.map(t=>`<div class="prompt" style="margin:0"><span class="term">${t}</span> — ${TERMS[t]}</div>`).join("")}
+       </div>`
+    : `<p style="color:var(--good);margin-top:18px;font-size:18px">🎉 Flawless board — every term correct!</p>`;
+  main.querySelector(".game").innerHTML=`
+    <div class="done-screen">
+      <div class="rank-badge" style="color:${rank.col}">${rank.t}</div>
+      <div class="big" id="finalScore">0</div>
+      <div class="donestats">
+        <div class="stat">Correct: <b style="color:var(--good)">${correct}</b>/${TOTAL}</div>
+        <div class="stat">Best combo: <b>${maxStreak}🔥</b></div>
+        <div class="stat">Max multi: <b>x${multiplierFor(maxStreak)}</b></div>
+      </div>
+      ${missedHtml}
+      <div style="margin-top:22px;display:flex;gap:10px;justify-content:center">
+        <button class="btn" onclick="renderQuiz()">Play again</button>
+      </div>
+    </div>`;
+  animateNum($("#finalScore"),score);
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
