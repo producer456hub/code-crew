@@ -127,6 +127,15 @@
   .done-screen .big{font-family:var(--px);font-size:40px;color:var(--gold);text-shadow:0 0 24px var(--gold);margin:8px 0;}
   .donestats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0;}
   .reviewlist{text-align:left;max-width:620px;margin:0 auto;display:grid;gap:10px;}
+  .rounds{margin-top:22px;}
+  .rounds-head{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
+  .rounds-cap{font-family:var(--px);font-size:12px;color:var(--muted);text-align:left;line-height:1.6;max-width:380px;}
+  .rounds-cap span{font-family:var(--rt);font-size:18px;color:var(--text);}
+  .review{background:var(--panel2);box-shadow:var(--bevel);padding:12px 14px;margin-bottom:10px;text-align:left;}
+  .rev-term{font-family:var(--px);font-size:14px;color:var(--gold);text-shadow:0 0 4px var(--gold);}
+  .rev-def{font-size:18px;color:var(--text);margin:7px 0 6px;}
+  .rev-why{font-size:17px;color:var(--good);line-height:1.35;}
+  .rev-why b{font-family:var(--px);font-size:9px;color:var(--quiz);margin-right:8px;letter-spacing:.5px;}
   .report{background:var(--panel2);box-shadow:var(--bevel),0 0 24px rgba(255,212,94,.22);padding:18px;margin:0 auto 22px;max-width:680px;text-align:left;animation:reportin .55s cubic-bezier(.2,1.2,.4,1);}
   @keyframes reportin{0%{opacity:0;transform:scale(.85) translateY(24px)}100%{opacity:1;transform:none}}
   .rep-title{font-family:var(--px);font-size:12px;color:var(--muted);margin-bottom:14px;letter-spacing:2px;text-align:center;}
@@ -154,6 +163,9 @@
   .doc.right{right:12px;--neon:#2ad4ff;animation-delay:.7s;}
   .doc.right .docsvg{transform:scaleX(-1);}
   .docsvg{width:100%;height:auto;display:block;filter:drop-shadow(0 0 3px var(--neon));}
+  .emo{position:absolute;top:-12px;left:50%;font-size:32px;opacity:0;pointer-events:none;line-height:1;filter:drop-shadow(0 0 4px rgba(0,0,0,.5));}
+  .emo.show{animation:emopop 1.2s ease;}
+  @keyframes emopop{0%{opacity:0;transform:translate(-50%,8px) scale(.3)}18%{opacity:1;transform:translate(-50%,-4px) scale(1.3)}70%{opacity:1;transform:translate(-50%,-16px) scale(1)}100%{opacity:0;transform:translate(-50%,-34px) scale(1)}}
   .coat{fill:#eaf0ff;} .metal{fill:#241d38;} .mask{fill:#3a2f57;} .glove{fill:#2a2440;}
   .ol{stroke:var(--neon);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;}
   .nofill{fill:none;}
@@ -208,7 +220,7 @@
   .doc.react-good .docsvg{filter:drop-shadow(0 0 9px #fff);}
   .doc.react-bad .docsvg{filter:drop-shadow(0 0 7px var(--bad));}
   .doc.react-combo .docsvg,.doc.react-bonus .docsvg,.doc.react-win .docsvg{filter:drop-shadow(0 0 9px var(--gold));}
-  .bubble{position:fixed;z-index:7;bottom:306px;font-family:var(--px);font-size:11px;line-height:1.5;padding:8px 10px;max-width:132px;text-align:center;background:var(--panel2);color:var(--text);box-shadow:var(--bevel),0 4px 0 #0a0418;opacity:0;pointer-events:none;}
+  .bubble{position:fixed;z-index:7;bottom:300px;font-family:var(--rt);font-size:17px;line-height:1.25;padding:9px 11px;max-width:200px;text-align:center;background:var(--panel2);color:var(--text);box-shadow:var(--bevel),0 4px 0 #0a0418;opacity:0;pointer-events:none;}
   .bubbleL{left:18px;} .bubbleR{right:18px;}
   .bubble.show{animation:bubpop 1.3s;}
   @keyframes bubpop{0%{opacity:0;transform:translateY(8px) scale(.6)}15%{opacity:1;transform:translateY(0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-6px) scale(.95)}}
@@ -218,6 +230,7 @@
   @media(max-width:1240px){
     .bubble{display:none;}                 /* no room for bubbles; the ticker shows the banter */
     #ticker{display:block;}
+    .emo{font-size:24px;top:-8px;}
     .doc{width:88px;bottom:6px;}
     .doc.left{left:4px;} .doc.right{right:4px;}
     #patient{bottom:8px;}
@@ -473,7 +486,7 @@ const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
     <rect class="neonfill" x="108" y="194" width="8" height="8"/>
   </g>
 </svg>`;
-$("#docL").innerHTML=DOCSVG; $("#docR").innerHTML=DOCSVG;
+$("#docL").innerHTML=DOCSVG+'<span class="emo"></span>'; $("#docR").innerHTML=DOCSVG+'<span class="emo"></span>';
 
 const PFACE=`
 <svg viewBox="0 0 60 60" class="pface">
@@ -505,6 +518,14 @@ function react(type){
     d.classList.remove("react-good","react-bad","react-combo","react-bonus","react-win");
     void d.offsetWidth; d.classList.add(cls);
     clearTimeout(d._rt); d._rt=setTimeout(()=>d.classList.remove(cls),(type==="win"||type==="lose")?2200:1200);
+  });
+}
+const EMO={good:["😊","👍","✨","😎","💪"],great:["🤩","🔥","🎉","⭐","💯"],bad:["😰","💦","😨","😵‍💫","⚡"],critical:["😱","🆘","💔","😭"]};
+function setEmo(kind){
+  const arr=EMO[kind]||EMO.good;
+  [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; const e=d.querySelector(".emo"); if(!e)return;
+    e.textContent=arr[Math.random()*arr.length|0];
+    e.classList.remove("show"); void e.offsetWidth; e.classList.add("show");
   });
 }
 function bubble(side,text,type){
@@ -559,6 +580,12 @@ function banter(ctx){
     {m:"Correct — nice.",c:"Onward, doctor."}]));
 }
 function idleBanter(){
+  if(Math.random()<0.65){                                // mostly: swap a fact about a term
+    const keys=Object.keys(TERMS), t=keys[Math.random()*keys.length|0];
+    const lead=pickPair(["Quiz me — "+t+"?","Quick, what's "+t+"?","Don't forget "+t+".","Refresher: "+t+"."]);
+    converse(lead, (RELEVANCE[t]||TERMS[t]), 'combo');
+    return;
+  }
   let p;
   if(patientHP<=45) p=pickPair([{m:"Rough one tonight…",c:"Stay with it, doctor."},{m:"We're slipping behind.",c:"Focus on the next call."}]);
   else if(cleared>=4 && correct>=cleared*0.8) p=pickPair([{m:"This one's good.",c:"Best shift in weeks."},{m:"Smooth so far.",c:"Don't jinx it."}]);
@@ -597,17 +624,18 @@ function codeBlue(){ const p=$("#patient"), st=$("#pStatus");
   vflash("rgba(255,59,59,1)");
   setTimeout(()=>{ if(p)p.classList.remove("codeblue"); patientHP=45; updateHP(0); },1100);
 }
-function patientPulse(kind){
+function patientPulse(kind,amt){
   const p=$("#patient"); if(!p)return;
   p.classList.remove("heal","hurt"); void p.offsetWidth; p.classList.add(kind);
   clearTimeout(p._pt); p._pt=setTimeout(()=>{ p.classList.remove(kind); refreshStatus(); },1100);
   const r=p.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+8;
   const st=$("#pStatus");
-  if(kind==="heal"){ burst(cx,cy,16,["#2ad4ff","#b9ffe9","#fff"],5); floatPop(cx-26,cy-12,"+ HEAL","#2ad4ff"); if(st){st.textContent="+ HEALED";st.style.color="var(--good)";} }
-  else { burst(cx,cy,18,["#ff3b3b","#ffd45e","#fff"],6); floatPop(cx-18,cy-12,"OUCH!","#ff3b3b"); vflash("rgba(255,59,59,1)"); if(st){st.textContent="OUCH!";st.style.color="var(--bad)";} }
+  if(kind==="heal"){ burst(cx,cy,16,["#2ad4ff","#b9ffe9","#fff"],5); floatPop(cx-30,cy-12,"+"+amt+" HP","#2ad4ff"); if(st){st.textContent="+ HEALED";st.style.color="var(--good)";} }
+  else { burst(cx,cy,18,["#ff3b3b","#ffd45e","#fff"],6); floatPop(cx-30,cy-12,"-"+amt+" HP","#ff3b3b"); vflash("rgba(255,59,59,1)"); if(st){st.textContent="OUCH!";st.style.color="var(--bad)";} }
 }
-function healPatient(){ updateHP(+5); patientPulse("heal"); }
-function hurtPatient(){ updateHP(-12); patientPulse("hurt"); }
+/* patient effect scales with the tile's point value: high-value tiles heal more, and hurt far more when wrong */
+function healPatient(p){ const amt=Math.round(p/100)+2; updateHP(amt); patientPulse("heal",amt); }
+function hurtPatient(p){ const amt=Math.round(p/30); updateHP(-amt); patientPulse("hurt",amt); }
 
 /* ===================== SOUND ENGINE (chiptune synth, no files) ===================== */
 let actx=null, soundOn=true;
@@ -733,7 +761,7 @@ function quizOpen(cell){
   const isBonus=bonusCells.has(cell.dataset.ci+"-"+cell.dataset.r);
   answered=false;
   const area=$("#qArea");
-  if(isBonus){ SFX.bonus(); react('bonus'); }
+  if(isBonus){ SFX.bonus(); react('bonus'); setEmo('great'); }
   area.innerHTML=`
     ${isBonus?'<div class="bonusbanner">⚡ STAT BONUS — DOUBLE POINTS! ⚡</div>':''}
     <div class="timerbar"><i id="tbar"></i></div>
@@ -785,7 +813,8 @@ function quizAnswer(o,b,item,cell,isBonus){
     animateNum($("#qScore"),score);
     $("#qCorrect").textContent=correct;
     react(streak>=4 && streak%2===0 ? 'combo' : 'good');
-    healPatient();
+    healPatient(item.p);
+    setEmo(isBonus||streak>=4 ? 'great' : 'good');
     { const bt=banter({right:true,bonus:isBonus,streak,hp:patientHP,correct}); converse(bt.m,bt.c,bt.cls); }
     const bonusBump=$("#multi"); bonusBump.classList.remove("bump"); void bonusBump.offsetWidth; bonusBump.classList.add("bump");
     fb.className="feedback ok show";
@@ -796,12 +825,17 @@ function quizAnswer(o,b,item,cell,isBonus){
     $("#qChoices").querySelectorAll(".choice").forEach(x=>{if(x.textContent===item.a)x.classList.add("correct");});
     missed.push(item.a);
     streak=0;
+    const lost=Math.min(score,item.p);                 // don't drop below zero
+    score-=lost;
+    animateNum($("#qScore"),score);
     SFX.wrong();
     app.classList.remove("shake"); void app.offsetWidth; app.classList.add("shake");
-    react('bad'); hurtPatient();
+    if(b){ const r=b.getBoundingClientRect(); floatPop(r.left+r.width/2-12,r.top+r.height/2-10,"-"+item.p,"#ff3b3b"); }
+    react('bad'); hurtPatient(item.p);
+    setEmo(patientHP<=20 ? 'critical' : 'bad');
     { const bt=banter({right:false,timedOut,hp:patientHP,streak,correct}); converse(bt.m,bt.c,bt.cls); }
     fb.className="feedback no show";
-    fb.innerHTML=`${timedOut?'⏱️ <b>OUT OF TIME!</b> ':'❌ '}Answer: <span class="term">${item.a}</span> — ${TERMS[item.a]||''}<br><span style="color:var(--muted);font-size:17px">Combo reset.</span>`;
+    fb.innerHTML=`${timedOut?'⏱️ <b>OUT OF TIME!</b> ':'❌ '}Answer: <span class="term">${item.a}</span> — ${TERMS[item.a]||''}<br><span style="color:var(--muted);font-size:17px">−${lost} points · combo reset.</span>`;
   }
   updateCombo();
   cleared++;
@@ -856,6 +890,38 @@ const DANGER={
   "sternum":"ineffective chest compressions","ribs":"a flail chest and punctured lung",
   "thoracic cage":"a crushed chest","axial skeleton":"catastrophic core trauma"
 };
+const RELEVANCE={
+  "hematopoiesis":"Phlebotomy — it's what a CBC reflects: blood cells born in red marrow.",
+  "red marrow":"Phlebotomy — the active blood-cell factory behind every draw result.",
+  "yellow marrow":"Phlebotomy — fatty reserve that turns red when the body needs more cells.",
+  "nutrient foramen":"Phlebotomy/EMT — where vessels enter bone; tied to marrow supply & IO access.",
+  "osteoporosis":"EMT — brittle bones; lift and move these patients gently to avoid fractures.",
+  "hypercalcemia":"ECG — high calcium SHORTENS the QT interval; catch it on the monitor.",
+  "hypocalcemia":"ECG — low calcium PROLONGS the QT; a real arrhythmia risk.",
+  "calcium homeostasis":"ECG/labs — calcium balance directly drives heart rhythm.",
+  "calcitriol":"ECG/labs — active vitamin D raises calcium, tying into rhythm stability.",
+  "thyroxine (T4)":"ECG — thyroid hormone sets heart rate; too much means tachycardia.",
+  "frontal bone":"EMT — forehead landmark when assessing head trauma.",
+  "occipital bone":"EMT — back-of-skull landmark; bleeds here are serious.",
+  "parietal bone":"EMT — top/side skull landmark for impact injuries.",
+  "temporal bone":"EMT — side of skull by the ear; fractures risk major bleeds.",
+  "cranial bones":"EMT — the 8 bones shielding the brain: core of head-injury checks.",
+  "facial bones":"EMT — facial fractures can threaten the airway.",
+  "maxilla":"EMT — upper-jaw fractures can compromise the airway.",
+  "mandible":"EMT — jaw injuries affect airway and breathing.",
+  "zygomatic bone":"EMT — cheekbone, a common facial-trauma landmark.",
+  "nasal bone":"EMT — nasal fractures can obstruct breathing.",
+  "cervical":"EMT — the C-spine you immobilize FIRST to prevent paralysis.",
+  "thoracic":"EMT — mid-spine that anchors the ribs.",
+  "lumbar":"EMT — lower-back spine, a frequent injury site.",
+  "sacrum":"EMT — the spine-to-pelvis junction.",
+  "coccyx":"EMT — tailbone; think fall-onto-buttocks injuries.",
+  "vertebral column":"EMT — protects the spinal cord; the reason for spinal precautions.",
+  "sternum":"ECG/EMT — CPR compression landmark AND the reference for V1/V2 lead placement.",
+  "ribs":"ECG/EMT — intercostal spaces guide chest-lead placement; fractures endanger the lungs.",
+  "thoracic cage":"EMT — protects the heart & lungs; framework for chest-trauma assessment.",
+  "axial skeleton":"EMT — skull + spine + chest: the body's central trauma core."
+};
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
 function culprit(){
   const uniq=[...new Set(missed)]; if(!uniq.length) return null;
@@ -903,12 +969,20 @@ function quizSummary(){
   stopTimer();
   const rank=rankFor(correct);
   const uniqueMissed=[...new Set(missed)];
-  react(correct>=22?'win':'lose');
+  react(correct>=22?'win':'lose'); setEmo(correct>=22?'great':'bad');
   if(correct>=22){ SFX.fanfare(); rain(140); } else { SFX.click(); }
   const missedHtml = uniqueMissed.length
-    ? `<p style="color:var(--muted);margin-top:18px">REVIEW THESE TERMS:</p>
-       <div class="reviewlist">
-         ${uniqueMissed.map(t=>`<div class="prompt" style="margin:0"><span class="term">${t}</span> — ${TERMS[t]}</div>`).join("")}
+    ? `<div class="rounds">
+         <div class="rounds-head">${repAvatar('#ff3ca6')}${repAvatar('#2ad4ff')}
+           <div class="rounds-cap">🩺 TEACHING ROUNDS<br><span>Doc, let's review what slipped — and why it matters on the job:</span></div>
+         </div>
+         <div class="reviewlist">
+           ${uniqueMissed.map(t=>`<div class="review">
+              <div class="rev-term">${t}</div>
+              <div class="rev-def">${TERMS[t]}</div>
+              <div class="rev-why"><b>WHY IT MATTERS</b>${RELEVANCE[t]||''}</div>
+           </div>`).join("")}
+         </div>
        </div>`
     : `<p style="color:var(--good);margin-top:18px;font-size:22px">🎉 FLAWLESS BOARD — EVERY TERM CORRECT!</p>`;
   const db=debrief();
