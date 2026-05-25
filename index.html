@@ -873,7 +873,7 @@ function renderQuiz(){
   const cells=[...main.querySelectorAll(".cell")];
   cells.forEach((c,i)=>{ c.style.animationDelay=(i*18)+"ms"; c.classList.add("in"); c.onclick=()=>quizOpen(c); });
   updateCombo();
-  if(actx && actx.state==="running") SFX.welcome();   // plays on Play again / New board (first start uses ccUnlock)
+  if(actx && actx.state==="running") SFX.welcome();   // plays on Play again / New board (first start fires from the GO! button)
 }
 
 function updateCombo(){
