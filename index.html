@@ -265,7 +265,7 @@
   /* ---- responsive: tablets & phones ---- */
   @media(max-width:1240px){
     .bubble{display:none;}                 /* no room for bubbles; the ticker shows the banter */
-    #ticker{display:block;}
+    #ticker{display:block;top:54px;bottom:auto;}
     .emo{font-size:24px;top:-8px;}
     .doc{width:88px;bottom:6px;}
     .doc.left{left:4px;} .doc.right{right:4px;}
@@ -279,7 +279,7 @@
     header .tagline{display:none;}
     .iconbtn,.backbtn{font-size:9px;padding:8px;}
     main{padding:12px 10px 188px;}
-    #ticker{font-size:15px;bottom:92px;padding:8px 11px;}
+    #ticker{font-size:15px;top:50px;bottom:auto;padding:8px 11px;}
     .game h2{font-size:13px;}
     .game .sub{font-size:15px;}
     .splash-title{font-size:19px;}
@@ -344,12 +344,11 @@
   #vflash.go{animation:vflashk 1s;}
   @keyframes vflashk{0%{opacity:0}12%{opacity:.30}100%{opacity:0}}
   /* mobile dialogue ticker (bots' banter where speech bubbles don't fit) */
-  #ticker{display:none;position:fixed;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:580px;bottom:96px;z-index:7;background:var(--panel2);box-shadow:var(--bevel),0 0 16px rgba(255,212,94,.22);padding:9px 13px;font-family:var(--rt);font-size:17px;line-height:1.35;text-align:left;pointer-events:none;color:var(--text);}
-  #ticker:empty{display:none !important;}
+  #ticker{display:none;position:fixed;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:580px;bottom:96px;z-index:8;background:var(--panel2);box-shadow:var(--bevel),0 0 18px rgba(255,212,94,.3);padding:10px 13px;font-family:var(--rt);font-size:17px;line-height:1.35;text-align:left;pointer-events:none;color:var(--text);opacity:0;transition:opacity .3s;}
+  #ticker.on{opacity:1;animation:tickin .35s;}
   #ticker .tk-line{margin:2px 0;}
   #ticker b{font-family:var(--px);font-size:11px;margin-right:7px;}
-  #ticker.show{animation:tickin .3s;}
-  @keyframes tickin{0%{opacity:.2;transform:translate(-50%,8px)}100%{opacity:1;transform:translateX(-50%)}}
+  @keyframes tickin{0%{opacity:0;transform:translate(-50%,-12px)}100%{opacity:1;transform:translateX(-50%)}}
   /* #patient is repositioned (not hidden) for small screens in the responsive block below */
 
   #fx{position:fixed;inset:0;pointer-events:none;z-index:40;}
@@ -661,7 +660,8 @@ function tick(who,text){
   const line=`<div class="tk-line"><b style="color:${col}">${name}</b> ${text}</div>`;
   if(who==="M") t.innerHTML=line;        // new exchange starts with Magenta
   else t.innerHTML+=line;                // Cyan's reply appends below — both stay visible
-  t.classList.remove("show"); void t.offsetWidth; t.classList.add("show");
+  t.classList.remove("on"); void t.offsetWidth; t.classList.add("on");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),6500);  // auto-hide after the exchange
 }
 function converse(m,c,cls){
   lastActivity=Date.now();
