@@ -109,6 +109,9 @@
   .defslabel{font-family:var(--px);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:2px;}
   .optdef{font-size:16px;line-height:1.35;color:var(--muted);}
   .optdef b{color:var(--text);}
+  .learnrow{margin:2px 0 8px;font-size:16px;}
+  .learnmore{color:var(--quiz);text-decoration:none;font-family:var(--rt);border-bottom:1px dotted var(--quiz);white-space:nowrap;}
+  .learnmore:hover{filter:brightness(1.25);}
 
   /* board */
   .board{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
@@ -982,10 +985,14 @@ function quizOpen(cell){
   }
 }
 
+function wikiLink(t,label){   // "learn more" link (Wikipedia search resolves every term)
+  const q=encodeURIComponent(String(t).replace(/\s*\(.*?\)\s*/g," ").trim());
+  return `<a class="learnmore" href="https://en.wikipedia.org/wiki/Special:Search?search=${q}" target="_blank" rel="noopener">${label||"🔎 learn more"} ↗</a>`;
+}
 function optDefs(item){   // definitions of the OTHER options (distractors), as a secondary note
   const others=item.opts.filter(o=>o!==item.a);
   if(!others.length) return "";
-  return `<div class="defs"><div class="defslabel">THE OTHER OPTIONS</div>${others.map(o=>`<div class="optdef">• <b>${o}</b> — ${TERMS[o]||''}</div>`).join("")}</div>`;
+  return `<div class="defs"><div class="defslabel">THE OTHER OPTIONS</div>${others.map(o=>`<div class="optdef">• <b>${o}</b> — ${TERMS[o]||''} ${wikiLink(o,"🔎")}</div>`).join("")}</div>`;
 }
 function quizAnswer(o,b,item,cell,isBonus){
   if(answered)return; answered=true; stopTimer();
@@ -1018,6 +1025,7 @@ function quizAnswer(o,b,item,cell,isBonus){
     fb.className="feedback ok show";
     fb.innerHTML=`✅ <span class="term">${item.a}</span>
       <div class="defmain">${TERMS[item.a]||''}</div>
+      <div class="learnrow">${wikiLink(item.a,"🔎 Read more about "+item.a)}</div>
       <span style="color:var(--muted);font-size:17px">+${item.p} base${speedBonus?` · +${speedBonus} speed`:''}${mult>1?` · ×${mult} combo`:''}${isBonus?' · ⚡×2 bonus':''} = <b style="color:var(--gold)">+${gained}</b></span>
       ${optDefs(item)}`;
   }else{
@@ -1037,6 +1045,7 @@ function quizAnswer(o,b,item,cell,isBonus){
     fb.className="feedback no show";
     fb.innerHTML=`${timedOut?'⏱️ <b>OUT OF TIME!</b> ':'❌ '}Correct answer: <span class="term">${item.a}</span>
       <div class="defmain">${TERMS[item.a]||''}</div>
+      <div class="learnrow">${wikiLink(item.a,"🔎 Read more about "+item.a)}</div>
       <span style="color:var(--muted);font-size:17px">−${lost} points · combo reset.</span>${optDefs(item)}`;
   }
   updateCombo();
