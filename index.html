@@ -154,6 +154,12 @@
   .lbscore{font-family:var(--px);font-size:13px;color:var(--quiz);}
   .lbcorrect{font-size:15px;color:var(--muted);}
   .lbrow.me{box-shadow:var(--bevel),0 0 14px var(--good);outline:2px solid var(--good);}
+  .lbentry{background:var(--panel2);box-shadow:var(--bevel),0 0 16px rgba(255,212,94,.28);padding:14px;margin:0 auto 18px;max-width:540px;}
+  .lbentry-t{font-size:18px;line-height:1.4;margin-bottom:12px;text-align:center;}
+  .lbentry-t b{color:var(--gold);}
+  .lbentry .lbsubmit{margin-top:0;}
+  .lbdone{font-family:var(--px);font-size:13px;color:var(--good);text-align:center;margin:0 auto 14px;}
+  .lbdone b{color:var(--gold);}
   .lbsubmit{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center;margin-top:20px;}
   input,textarea{-webkit-user-select:text;user-select:text;}
   #lbName{font-family:var(--rt);font-size:20px;padding:12px 14px;background:#0c0518;color:var(--text);border:none;box-shadow:var(--bevel);width:190px;text-transform:uppercase;letter-spacing:1px;-webkit-user-select:text;user-select:text;pointer-events:auto;touch-action:manipulation;}
@@ -870,7 +876,7 @@ function floatPop(x,y,text,color){
 }
 
 /* ===================== STATE ===================== */
-let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set(), BOARD={};
+let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set(), BOARD={}, pendingSubmit=null;
 let timerRAF=null, qStart=0, answered=false, qToken=0;
 
 function multiplierFor(s){ return s>=8?3 : s>=6?2.5 : s>=4?2 : s>=2?1.5 : 1; }
@@ -878,7 +884,7 @@ function multiplierFor(s){ return s>=8?3 : s>=6?2.5 : s>=4?2 : s>=2?1.5 : 1; }
 function renderQuiz(){
   stopTimer();
   restartBtn.classList.remove("hidden");
-  score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0;
+  score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0; pendingSubmit=null;
   patientHP=100; codeBlueHappened=false; updateHP(0);
   const cats=Object.keys(QUIZ);
   BOARD={}; cats.forEach(c=>{ BOARD[c]=shuffle(QUIZ[c]).slice(0,5).map((it,i)=>({p:(i+1)*100,q:it.q,a:it.a,opts:it.opts})); });
@@ -1178,6 +1184,7 @@ function repAvatar(neon){
 
 function quizSummary(){
   stopTimer();
+  pendingSubmit={score,correct};                 // offer to submit on the leaderboard screen
   const rank=rankFor(correct);
   const uniqueMissed=[...new Set(missed)];
   const db=debrief();
@@ -1217,24 +1224,12 @@ function quizSummary(){
         <div class="stat">MAX MULTI <b>x${multiplierFor(maxStreak)}</b></div>
       </div>
       ${missedHtml}
-      <div class="lbsubmit">
-        <input id="lbName" maxlength="16" placeholder="YOUR NAME" autocomplete="off" spellcheck="false"/>
-        <button class="btn" id="lbSubmitBtn">SUBMIT SCORE</button>
-      </div>
-      <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="btn ghost" onclick="showLeaderboard()">🏆 LEADERBOARD</button>
+      <div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" onclick="showLeaderboard()">🏆 ADD TO LEADERBOARD</button>
         <button class="btn ghost" onclick="renderQuiz()">PLAY AGAIN</button>
       </div>
     </div>`;
   animateNum($("#finalScore"),score);
-  const nameIn=$("#lbName"), subBtn=$("#lbSubmitBtn");
-  if(nameIn){ try{ nameIn.value=localStorage.getItem("cc_name")||""; }catch(e){} }
-  if(subBtn) subBtn.onclick=()=>{
-    const nm=((nameIn&&nameIn.value)||"ANON").trim().slice(0,16)||"ANON";
-    try{ localStorage.setItem("cc_name",nm); }catch(e){}
-    subBtn.disabled=true; subBtn.textContent="SAVING…";
-    lbSubmit(nm,score,correct).then(()=>showLeaderboard(nm,score));
-  };
 }
 
 /* ===================== LEADERBOARD ===================== */
@@ -1287,22 +1282,38 @@ function renderLbList(rows,hiName,hiScore){
 }
 function showLeaderboard(hiName,hiScore){
   stopTimer(); restartBtn.classList.remove("hidden");
+  const ps=pendingSubmit;
   main.innerHTML=`
     <div class="game">
       <h2>🏆 HIGH SCORES</h2>
       <p class="sub">Top shifts${lbGlobal()?' — everyone who plays':' — local to this device'}.</p>
+      ${ps?`<div class="lbentry">
+        <div class="lbentry-t">🏁 Your shift: <b>${ps.score} pts</b> · ${ps.correct}/${TOTAL} correct — enter your name to post it:</div>
+        <div class="lbsubmit"><input id="lbName" maxlength="16" placeholder="YOUR NAME" autocomplete="off" spellcheck="false"/><button class="btn" id="lbSubmitBtn">SUBMIT</button></div>
+      </div>`:''}
+      ${(hiName&&!ps)?`<p class="lbdone">✓ Posted as <b>${esc(hiName)}</b>!</p>`:''}
       <div id="lbList" class="lblist">Loading…</div>
       <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="btn" onclick="renderQuiz()">▶ PLAY</button>
+        <button class="btn" onclick="renderQuiz()">▶ PLAY${ps?' (skip)':''}</button>
         <button class="btn ghost" onclick="renderSplash()">‹ MENU</button>
       </div>
     </div>`;
+  if(ps){
+    const nameIn=$("#lbName"), subBtn=$("#lbSubmitBtn");
+    if(nameIn){ try{ nameIn.value=localStorage.getItem("cc_name")||""; }catch(e){} nameIn.focus(); }
+    if(subBtn) subBtn.onclick=()=>{
+      const nm=((nameIn&&nameIn.value)||"ANON").trim().slice(0,16)||"ANON";
+      try{ localStorage.setItem("cc_name",nm); }catch(e){}
+      subBtn.disabled=true; subBtn.textContent="SAVING…";
+      const sc=ps.score; lbSubmit(nm,sc,ps.correct).then(()=>{ pendingSubmit=null; showLeaderboard(nm,sc); });
+    };
+  }
   lbFetch().then(rows=>renderLbList(rows,hiName,hiScore));
 }
 
 /* ===================== SPLASH / INTRO ===================== */
 function renderSplash(){
-  stopTimer();
+  stopTimer(); pendingSubmit=null;
   restartBtn.classList.add("hidden");
   main.innerHTML=`
     <div class="splash">
