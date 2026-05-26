@@ -351,6 +351,10 @@
   @keyframes tickin{0%{opacity:0;transform:translate(-50%,-12px)}100%{opacity:1;transform:translateX(-50%)}}
   /* #patient is repositioned (not hidden) for small screens in the responsive block below */
 
+  /* pixel cyberpunk hospital skyline (behind everything, dim) */
+  #city{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;overflow:hidden;}
+  .citysvg{position:absolute;left:0;right:0;bottom:0;width:100%;height:64vh;display:block;}
+  #city .hcross{fill:#ff4d5e;filter:drop-shadow(0 0 7px #ff3b3b);}
   /* synthwave neon grid floor (static — behind everything; the bots stand on it) */
   #grid{position:fixed;left:0;right:0;bottom:0;height:46vh;z-index:0;pointer-events:none;overflow:hidden;perspective:280px;opacity:.45;}
   #grid::before{content:"";position:absolute;left:-50%;right:-50%;top:0;bottom:-2px;
@@ -426,6 +430,7 @@
 </style>
 </head>
 <body>
+<div id="city"></div>
 <div id="grid"></div>
 <canvas id="fx"></canvas>
 <div id="scanbar"></div>
@@ -677,6 +682,29 @@ const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
   </g>
 </svg>`;
 $("#docL").innerHTML=DOCSVG+'<span class="emo"></span>'; $("#docR").innerHTML=DOCSVG+'<span class="emo"></span>';
+/* pixel cyberpunk hospital skyline backdrop (built once) */
+function buildCity(){
+  const W=480,H=260; let s=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMax slice" class="citysvg">`;
+  let x=-12;
+  while(x<W){
+    const bw=24+(Math.random()*36|0), bh=70+(Math.random()*150|0), by=H-bh;
+    s+=`<rect x="${x}" y="${by}" width="${bw-3}" height="${bh}" fill="#0d0a18"/>`;
+    const col=Math.random()<.5?'#ff3ca6':'#2ad4ff';
+    s+=`<rect x="${x}" y="${by}" width="${bw-3}" height="2" fill="${col}" opacity=".55"/>`;
+    for(let wy=by+8; wy<H-4; wy+=9){
+      for(let wx=x+4; wx<x+bw-6; wx+=8){
+        if(Math.random()<.42){
+          const wc=Math.random()<.45?'#ff3ca6':(Math.random()<.5?'#2ad4ff':'#ffd45e');
+          s+=`<rect x="${wx}" y="${wy}" width="3" height="4" fill="${wc}" opacity="${(.3+Math.random()*.5).toFixed(2)}"/>`;
+        }
+      }
+    }
+    x+=bw;
+  }
+  s+=`<g class="hcross"><rect x="${W/2-5}" y="34" width="10" height="40"/><rect x="${W/2-20}" y="49" width="40" height="10"/></g>`;
+  return s+`</svg>`;
+}
+(function(){ const c=document.getElementById("city"); if(c) c.innerHTML=buildCity(); })();
 
 const PFACE=`
 <svg viewBox="0 0 60 60" class="pface">
