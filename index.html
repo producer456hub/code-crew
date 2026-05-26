@@ -266,6 +266,53 @@
   .bubble.good{color:var(--good);} .bubble.bad{color:var(--bad);}
   .bubble.combo,.bubble.bonus{color:var(--gold);} .bubble.win,.bubble.lose{color:var(--purple);}
   /* ---- responsive: tablets & phones ---- */
+  /* (responsive @media blocks live at the END of this stylesheet so they override base rules) */
+
+  /* ===== patient ===== */
+  #patient{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;display:flex;align-items:center;gap:12px;background:var(--panel);box-shadow:var(--bevel),0 4px 0 #0a0418;padding:8px 14px;border-top:3px solid var(--line);}
+  #patient.codeblue{animation:cbflash .5s infinite;}
+  @keyframes cbflash{0%,100%{filter:none}50%{filter:drop-shadow(0 0 14px var(--bad));}}
+  .pscreen{width:58px;height:58px;background:#0c0518;box-shadow:var(--bevel);display:flex;align-items:center;justify-content:center;}
+  .pface{width:54px;height:54px;display:block;}
+  .phead{fill:#f2c79c;stroke:#20142e;stroke-width:2;}
+  .phair{fill:#3a2f57;}
+  .e-n{fill:#20142e;}
+  .m-n,.m-h,.e-h,.m-x,.e-x line,.bx{fill:none;stroke:#20142e;stroke-width:2.4;stroke-linecap:round;}
+  .cheek{fill:#ff8fb0;}
+  .bandage rect{fill:#ffe6b0;stroke:#caa24a;stroke-width:1;}
+  .bx{stroke:#caa24a;stroke-width:1.6;}
+  .e-h,.m-h,.cheek,.e-x,.m-x,.bandage{display:none;}
+  #patient.heal .e-n,#patient.heal .m-n{display:none;}
+  #patient.heal .e-h,#patient.heal .m-h,#patient.heal .cheek{display:block;}
+  #patient.hurt .e-n,#patient.hurt .m-n{display:none;}
+  #patient.hurt .e-x,#patient.hurt .m-x,#patient.hurt .bandage{display:block;}
+  #patient.heal .pface{animation:pbounce .5s 2;}
+  #patient.hurt .pface{animation:pwobble .4s 2;transform-box:fill-box;transform-origin:center;}
+  @keyframes pbounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+  @keyframes pwobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+  .pinfo{font-family:var(--px);}
+  .plabel{font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;}
+  .phpbar{width:150px;height:14px;background:#120726;box-shadow:var(--bevel);overflow:hidden;}
+  .phpbar > i{display:block;height:100%;width:100%;background:var(--good);transition:width .45s,background .45s;}
+  .pstatus{font-size:10px;margin-top:6px;color:var(--good);}
+  #vflash{position:fixed;inset:0;pointer-events:none;z-index:45;opacity:0;background:#ff3b3b;}
+  #vflash.go{animation:vflashk 1s;}
+  @keyframes vflashk{0%{opacity:0}12%{opacity:.30}100%{opacity:0}}
+  /* mobile dialogue ticker (bots' banter where speech bubbles don't fit) */
+  #ticker{display:none;position:fixed;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:580px;bottom:96px;z-index:8;background:var(--panel2);box-shadow:var(--bevel),0 0 18px rgba(255,212,94,.3);padding:10px 13px;font-family:var(--rt);font-size:17px;line-height:1.35;text-align:left;pointer-events:none;color:var(--text);opacity:0;transition:opacity .3s;}
+  #ticker.on{opacity:1;animation:tickin .35s;}
+  #ticker .tk-line{margin:2px 0;}
+  #ticker b{font-family:var(--px);font-size:11px;margin-right:7px;}
+  @keyframes tickin{0%{opacity:0;transform:translate(-50%,-12px)}100%{opacity:1;transform:translateX(-50%)}}
+  /* #patient is repositioned (not hidden) for small screens in the responsive block below */
+
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:40;}
+  footer{font-family:var(--rt);padding:10px 18px;text-align:center;color:var(--muted);font-size:17px;border-top:4px solid var(--line);position:relative;z-index:2;}
+  ::-webkit-scrollbar{width:12px;height:12px;}
+  ::-webkit-scrollbar-thumb{background:var(--line);}
+  ::-webkit-scrollbar-track{background:var(--panel);}
+
+  /* ===== RESPONSIVE (kept last so these override the base rules above) ===== */
   @media(max-width:1240px){
     .bubble{display:none;}                 /* no room for bubbles; the ticker shows the banter */
     #ticker{display:block;top:54px;bottom:auto;}
@@ -315,50 +362,6 @@
     .done-screen .big{font-size:30px;}
     .rank-badge{font-size:15px;}
   }
-
-  /* ===== patient ===== */
-  #patient{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;display:flex;align-items:center;gap:12px;background:var(--panel);box-shadow:var(--bevel),0 4px 0 #0a0418;padding:8px 14px;border-top:3px solid var(--line);}
-  #patient.codeblue{animation:cbflash .5s infinite;}
-  @keyframes cbflash{0%,100%{filter:none}50%{filter:drop-shadow(0 0 14px var(--bad));}}
-  .pscreen{width:58px;height:58px;background:#0c0518;box-shadow:var(--bevel);display:flex;align-items:center;justify-content:center;}
-  .pface{width:54px;height:54px;display:block;}
-  .phead{fill:#f2c79c;stroke:#20142e;stroke-width:2;}
-  .phair{fill:#3a2f57;}
-  .e-n{fill:#20142e;}
-  .m-n,.m-h,.e-h,.m-x,.e-x line,.bx{fill:none;stroke:#20142e;stroke-width:2.4;stroke-linecap:round;}
-  .cheek{fill:#ff8fb0;}
-  .bandage rect{fill:#ffe6b0;stroke:#caa24a;stroke-width:1;}
-  .bx{stroke:#caa24a;stroke-width:1.6;}
-  .e-h,.m-h,.cheek,.e-x,.m-x,.bandage{display:none;}
-  #patient.heal .e-n,#patient.heal .m-n{display:none;}
-  #patient.heal .e-h,#patient.heal .m-h,#patient.heal .cheek{display:block;}
-  #patient.hurt .e-n,#patient.hurt .m-n{display:none;}
-  #patient.hurt .e-x,#patient.hurt .m-x,#patient.hurt .bandage{display:block;}
-  #patient.heal .pface{animation:pbounce .5s 2;}
-  #patient.hurt .pface{animation:pwobble .4s 2;transform-box:fill-box;transform-origin:center;}
-  @keyframes pbounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
-  @keyframes pwobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
-  .pinfo{font-family:var(--px);}
-  .plabel{font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;}
-  .phpbar{width:150px;height:14px;background:#120726;box-shadow:var(--bevel);overflow:hidden;}
-  .phpbar > i{display:block;height:100%;width:100%;background:var(--good);transition:width .45s,background .45s;}
-  .pstatus{font-size:10px;margin-top:6px;color:var(--good);}
-  #vflash{position:fixed;inset:0;pointer-events:none;z-index:45;opacity:0;background:#ff3b3b;}
-  #vflash.go{animation:vflashk 1s;}
-  @keyframes vflashk{0%{opacity:0}12%{opacity:.30}100%{opacity:0}}
-  /* mobile dialogue ticker (bots' banter where speech bubbles don't fit) */
-  #ticker{display:none;position:fixed;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:580px;bottom:96px;z-index:8;background:var(--panel2);box-shadow:var(--bevel),0 0 18px rgba(255,212,94,.3);padding:10px 13px;font-family:var(--rt);font-size:17px;line-height:1.35;text-align:left;pointer-events:none;color:var(--text);opacity:0;transition:opacity .3s;}
-  #ticker.on{opacity:1;animation:tickin .35s;}
-  #ticker .tk-line{margin:2px 0;}
-  #ticker b{font-family:var(--px);font-size:11px;margin-right:7px;}
-  @keyframes tickin{0%{opacity:0;transform:translate(-50%,-12px)}100%{opacity:1;transform:translateX(-50%)}}
-  /* #patient is repositioned (not hidden) for small screens in the responsive block below */
-
-  #fx{position:fixed;inset:0;pointer-events:none;z-index:40;}
-  footer{font-family:var(--rt);padding:10px 18px;text-align:center;color:var(--muted);font-size:17px;border-top:4px solid var(--line);position:relative;z-index:2;}
-  ::-webkit-scrollbar{width:12px;height:12px;}
-  ::-webkit-scrollbar-thumb{background:var(--line);}
-  ::-webkit-scrollbar-track{background:var(--panel);}
 </style>
 </head>
 <body>
