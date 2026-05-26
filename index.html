@@ -83,6 +83,9 @@
 
   .prompt{background:var(--panel2);box-shadow:var(--bevel);padding:16px 18px;margin-bottom:14px;font-size:24px;line-height:1.5;border-left:5px solid var(--quiz);}
 
+  .qtop{text-align:right;margin-bottom:8px;}
+  .qclose{font-family:var(--rt);font-size:16px;background:var(--panel);color:var(--muted);border:none;box-shadow:var(--bevel);padding:8px 12px;cursor:pointer;touch-action:manipulation;}
+  .qclose:hover{color:var(--text);filter:brightness(1.2);}
   .choices{display:grid;gap:12px;}
   .choice{font-family:var(--rt);font-size:24px;line-height:1.3;background:var(--panel2);box-shadow:var(--bevel),0 4px 0 #0a0418;padding:15px 16px;cursor:pointer;text-align:left;color:var(--text);transition:transform .06s,filter .1s;}
   .choice:hover{filter:brightness(1.25);}
@@ -931,6 +934,7 @@ function quizOpen(cell){
   area.innerHTML=`
     ${isBonus?'<div class="bonusbanner">⚡ STAT BONUS — DOUBLE POINTS! ⚡</div>':''}
     ${timed?'<div class="timerbar"><i id="tbar"></i></div>':''}
+    <div class="qtop"><button class="qclose" id="qClose">✕ SKIP — keep this tile</button></div>
     <div class="prompt"><span style="color:var(--quiz);font-family:var(--px);font-size:13px">${cell.dataset.cat} — ${item.p}${isBonus?' ×2':''}</span><br><br>${item.q}</div>
     <div class="choices" id="qChoices"></div>
     <div class="feedback" id="qFb"></div>`;
@@ -940,6 +944,11 @@ function quizOpen(cell){
     b.onclick=()=>quizAnswer(o,b,item,cell,isBonus);
     $("#qChoices").appendChild(b);
   });
+  const qc=$("#qClose"); if(qc) qc.onclick=()=>{   // back out without using the tile
+    stopTimer(); qToken++; answered=true;
+    cell.classList.remove("flip");
+    const a=$("#qArea"); if(a) a.innerHTML="";
+  };
   qStart=Date.now();
   if(timed){
     const myToken=++qToken;
