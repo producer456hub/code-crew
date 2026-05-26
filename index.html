@@ -350,6 +350,23 @@
   @keyframes tickin{0%{opacity:0;transform:translate(-50%,-12px)}100%{opacity:1;transform:translateX(-50%)}}
   /* #patient is repositioned (not hidden) for small screens in the responsive block below */
 
+  /* synthwave neon grid floor (behind everything; the bots stand on it) */
+  #grid{position:fixed;left:0;right:0;bottom:0;height:46vh;z-index:0;pointer-events:none;overflow:hidden;perspective:280px;opacity:.5;}
+  #grid::before{content:"";position:absolute;left:-50%;right:-50%;top:0;bottom:-2px;
+    background-image:linear-gradient(rgba(255,60,166,.4) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(130,90,210,.32) 1.5px,transparent 1.5px);
+    background-size:46px 46px;transform:rotateX(75deg);transform-origin:bottom center;animation:gridscroll 2.4s linear infinite;}
+  @keyframes gridscroll{from{background-position:0 0}to{background-position:0 46px}}
+  /* chromatic-aberration glow on titles */
+  .splash-title{animation:glitch 5s infinite;}
+  @keyframes glitch{
+    0%,90%,100%{text-shadow:0 0 12px var(--quiz),3px 0 rgba(255,60,166,.5),-3px 0 rgba(42,212,255,.5);transform:translate(0);}
+    92%{text-shadow:0 0 12px var(--quiz),-5px 0 rgba(255,60,166,.8),5px 0 rgba(42,212,255,.8);transform:translate(-2px,0);}
+    94%{transform:translate(2px,0);}
+    96%{text-shadow:0 0 12px var(--quiz),4px 0 rgba(255,60,166,.7),-4px 0 rgba(42,212,255,.7);transform:translate(-1px,0);}
+  }
+  .game h2{text-shadow:0 0 6px var(--quiz),2px 0 rgba(255,60,166,.4),-2px 0 rgba(42,212,255,.4);}
+  header .logo{text-shadow:0 0 8px var(--phos),2px 0 rgba(255,60,166,.4),-2px 0 rgba(42,212,255,.35);}
+
   #fx{position:fixed;inset:0;pointer-events:none;z-index:40;}
   footer{font-family:var(--rt);padding:10px 18px;text-align:center;color:var(--muted);font-size:17px;border-top:4px solid var(--line);position:relative;z-index:2;}
   ::-webkit-scrollbar{width:12px;height:12px;}
@@ -409,6 +426,7 @@
 </style>
 </head>
 <body>
+<div id="grid"></div>
 <canvas id="fx"></canvas>
 <div id="scanbar"></div>
 <div id="vflash"></div>
@@ -936,6 +954,25 @@ let timerRAF=null, qStart=0, answered=false, qToken=0;
 
 function multiplierFor(s){ return s>=8?3 : s>=6?2.5 : s>=4?2 : s>=2?1.5 : 1; }
 
+/* ===== adaptive spaced repetition: weight the board toward weak/new terms ===== */
+let STATS = (function(){ try{ return JSON.parse(localStorage.getItem("cc_stats")||"{}"); }catch(e){ return {}; } })();
+function saveStats(){ try{ localStorage.setItem("cc_stats",JSON.stringify(STATS)); }catch(e){} }
+function termWeight(t){ const s=STATS[t]; if(!s||!s.seen) return 6; return s.streak>=3?1 : s.streak>=1?2 : 4; }  // new=6, weak=4, learning=2, mastered=1
+function recordStat(t,right){
+  const s=STATS[t]||(STATS[t]={seen:0,correct:0,wrong:0,streak:0,last:0});
+  s.seen++; if(right){ s.correct++; s.streak++; } else { s.wrong++; s.streak=0; } s.last=Date.now();
+  saveStats();
+}
+function weightedPick(items,n){   // pick n distinct items, biased by termWeight (no replacement)
+  const pool=items.slice(), out=[];
+  while(out.length<n && pool.length){
+    const ws=pool.map(it=>termWeight(it.a)); let total=ws.reduce((a,b)=>a+b,0), r=Math.random()*total, i=0;
+    while(i<ws.length-1 && r>ws[i]){ r-=ws[i]; i++; }
+    out.push(pool[i]); pool.splice(i,1);
+  }
+  return out;
+}
+
 function renderQuiz(){
   stopTimer();
   restartBtn.classList.remove("hidden");
@@ -943,7 +980,7 @@ function renderQuiz(){
   clearDocFx();
   patientHP=100; codeBlueHappened=false; updateHP(0);
   const cats=Object.keys(QUIZ);
-  BOARD={}; cats.forEach(c=>{ BOARD[c]=shuffle(QUIZ[c]).slice(0,5).map((it,i)=>({p:(i+1)*100,q:it.q,a:it.a,opts:it.opts})); });
+  BOARD={}; cats.forEach(c=>{ BOARD[c]=weightedPick(QUIZ[c],5).map((it,i)=>({p:(i+1)*100,q:it.q,a:it.a,opts:it.opts})); });
   bonusCells=new Set(); const all=[]; cats.forEach((c,ci)=>[0,1,2,3,4].forEach(r=>all.push(ci+"-"+r)));
   shuffle(all).slice(0,2).forEach(k=>bonusCells.add(k));
   main.innerHTML=`
@@ -1055,6 +1092,7 @@ function quizAnswer(o,b,item,cell,isBonus){
   if(isRight){
     b.classList.add("correct");
     streak++; maxStreak=Math.max(maxStreak,streak); correct++;
+    recordStat(item.a,true);
     const mult=multiplierFor(streak);
     const speedBonus=timed?Math.round(item.p*0.5*Math.max(0,(QTIME-elapsed)/QTIME)):0;
     let gained=Math.round((item.p+speedBonus)*mult*(isBonus?2:1));
@@ -1083,6 +1121,7 @@ function quizAnswer(o,b,item,cell,isBonus){
     if(b) b.classList.add("wrong");
     $("#qChoices").querySelectorAll(".choice").forEach(x=>{if(x.textContent===item.a)x.classList.add("correct");});
     missed.push(item.a);
+    recordStat(item.a,false);
     streak=0;
     const lost=Math.min(score,item.p);                 // don't drop below zero
     score-=lost;
@@ -1404,6 +1443,7 @@ function renderSplash(){
         <p>❤️ Correct answers <b>heal</b> the patient; wrong ones <b>hurt</b> them (more for higher tiles) — <b>if they flatline, it's game over.</b></p>
         <p>🤖 Dr. Magenta &amp; Dr. Cyan quiz you and call the diagnosis at shift's end.</p>
         <p>💬 <b>Watch their banter during play</b> — between calls they drop term facts and ECG tips, so pausing pays off.</p>
+        <p>🧠 The board <b>adapts</b> — terms you miss (or haven't seen) show up more often until you nail them.</p>
         <p style="color:var(--muted)">⏱ Prefer no pressure? Toggle <b>TIMED MODE</b> off any time.</p>
       </div>
       <p class="splash-ask">Ready for your shift, doctor?</p>
