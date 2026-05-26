@@ -350,6 +350,11 @@
   @keyframes tickin{0%{opacity:0;transform:translate(-50%,-12px)}100%{opacity:1;transform:translateX(-50%)}}
   /* #patient is repositioned (not hidden) for small screens in the responsive block below */
 
+  /* synthwave neon grid floor (static — behind everything; the bots stand on it) */
+  #grid{position:fixed;left:0;right:0;bottom:0;height:46vh;z-index:0;pointer-events:none;overflow:hidden;perspective:280px;opacity:.45;}
+  #grid::before{content:"";position:absolute;left:-50%;right:-50%;top:0;bottom:-2px;
+    background-image:linear-gradient(rgba(255,60,166,.4) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(130,90,210,.32) 1.5px,transparent 1.5px);
+    background-size:46px 46px;transform:rotateX(75deg);transform-origin:bottom center;}
   /* chromatic-aberration glow on titles */
   .splash-title{animation:glitch 5s infinite;}
   @keyframes glitch{
@@ -420,6 +425,7 @@
 </style>
 </head>
 <body>
+<div id="grid"></div>
 <canvas id="fx"></canvas>
 <div id="scanbar"></div>
 <div id="vflash"></div>
