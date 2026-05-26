@@ -116,6 +116,18 @@
   /* board */
   .board{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;transition:opacity .25s,filter .25s;}
   .board.dim{opacity:.32;filter:saturate(.6);}
+  /* phone two-step board: category select -> values */
+  .board.mob{display:grid;grid-template-columns:1fr;gap:8px;}
+  .mcat{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--rt);font-size:21px;font-weight:bold;background:#2b1240;box-shadow:var(--bevel),0 4px 0 #0a0418;padding:15px 16px;color:var(--phos);cursor:pointer;}
+  .mcat:active{transform:translateY(4px);box-shadow:var(--bevel);}
+  .mcat .mleft{font-family:var(--px);font-size:11px;color:var(--gold);white-space:nowrap;}
+  .mcat.done{opacity:.4;} .mcat.done .mleft{color:var(--muted);}
+  .mvtop{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
+  .mback{font-family:var(--px);font-size:12px;background:var(--panel2);color:var(--text);border:none;box-shadow:var(--bevel),0 4px 0 #0a0418;padding:11px 13px;cursor:pointer;}
+  .mback:active{transform:translateY(4px);box-shadow:var(--bevel);}
+  .mvtitle{font-family:var(--rt);font-size:21px;font-weight:bold;color:var(--phos);}
+  .mvals{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
+  .mvals .cell{font-size:18px;padding:24px 2px;}
   .cat{font-family:var(--rt);font-weight:bold;background:var(--panel);color:var(--phos);box-shadow:var(--bevel);padding:8px 4px;text-align:center;font-size:18px;line-height:1.1;min-height:48px;display:flex;align-items:center;justify-content:center;text-shadow:0 0 2px var(--phos);}
   .cell{position:relative;font-family:var(--px);background:#2b1240;box-shadow:var(--bevel),0 4px 0 #0a0418;padding:18px 4px;text-align:center;font-size:16px;color:var(--gold);cursor:pointer;transition:transform .1s,filter .1s;opacity:0;transform:scale(.5);text-shadow:none;}
   .cell.in{animation:cellin .4s forwards;}
@@ -993,7 +1005,10 @@ function floatPop(x,y,text,color){
 
 /* ===================== STATE ===================== */
 let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set(), BOARD={}, pendingSubmit=null, dead=false;
-let timerRAF=null, qStart=0, answered=false, qToken=0;
+let timerRAF=null, qStart=0, answered=false, qToken=0, mobileCat=null;
+function isMobileBoard(){ return window.matchMedia("(max-width:600px)").matches; }
+let _wasMobileBoard=isMobileBoard();
+addEventListener("resize",()=>{ const m=isMobileBoard(); if(m!==_wasMobileBoard){ _wasMobileBoard=m; mobileCat=null; const bd=document.getElementById("board"); if(bd && bd.innerHTML) renderBoard(); } });
 
 function multiplierFor(s){ return s>=8?3 : s>=6?2.5 : s>=4?2 : s>=2?1.5 : 1; }
 
@@ -1019,7 +1034,7 @@ function weightedPick(items,n){   // pick n distinct items, biased by termWeight
 function renderQuiz(){
   stopTimer();
   restartBtn.classList.remove("hidden");
-  score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0; pendingSubmit=null; dead=false;
+  score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0; pendingSubmit=null; dead=false; mobileCat=null;
   clearDocFx();
   patientHP=100; codeBlueHappened=false; updateHP(0);
   const cats=Object.keys(QUIZ);
@@ -1040,21 +1055,45 @@ function renderQuiz(){
         </div>
       </div>
       <div class="progress"><i id="prog"></i></div>
-      <div class="board" id="board">
-        ${cats.map(c=>`<div class="cat">${c}</div>`).join("")}
-        ${[0,1,2,3,4].map(r=>cats.map((c,ci)=>{
-          const bonus=bonusCells.has(ci+"-"+r);
-          return `<div class="cell${bonus?' bonus':''}" data-cat="${c}" data-ci="${ci}" data-r="${r}">${BOARD[c][r].p}</div>`;
-        }).join("")).join("")}
-      </div>
+      <div class="board" id="board"></div>
       <div id="qArea" style="margin-top:16px"></div>
     </div>`;
-  const cells=[...main.querySelectorAll(".cell")];
-  cells.forEach((c,i)=>{ c.style.animationDelay=(i*18)+"ms"; c.classList.add("in"); c.onclick=()=>quizOpen(c); });
+  renderBoard();
   updateCombo();
   if(actx && actx.state==="running") SFX.welcome();   // plays on Play again / New board (first start fires from the GO! button)
   setTimeout(()=>converse("Welcome to your shift, doctor!","Vitals are steady — let's keep 'em that way.",'good'),700);  // greet immediately so the banter is visible right away
   rollIn();
+}
+
+function renderBoard(){
+  const bd=$("#board"); if(!bd) return;
+  const cats=Object.keys(BOARD);
+  if(!isMobileBoard()){                                  // desktop/tablet: full 6x5 grid
+    bd.className="board";
+    bd.innerHTML = cats.map(c=>`<div class="cat">${c}</div>`).join("")
+      + [0,1,2,3,4].map(r=>cats.map((c,ci)=>{
+          const it=BOARD[c][r], bonus=bonusCells.has(ci+"-"+r);
+          return `<div class="cell${bonus?' bonus':''}${it.used?' used':''}" data-cat="${c}" data-ci="${ci}" data-r="${r}">${it.p}</div>`;
+        }).join("")).join("");
+    [...bd.querySelectorAll(".cell")].forEach((c,i)=>{ c.style.animationDelay=(i*18)+"ms"; c.classList.add("in"); c.onclick=()=>quizOpen(c); });
+  } else if(mobileCat===null){                            // phone: category select
+    bd.className="board mob";
+    bd.innerHTML = cats.map((c,ci)=>{
+      const left=BOARD[c].filter(it=>!it.used).length;
+      return `<div class="mcat${left?'':' done'}" data-cat="${c}"><span>${c}</span><span class="mleft">${left?left+" left":"✓ done"}</span></div>`;
+    }).join("");
+    [...bd.querySelectorAll(".mcat")].forEach(el=>{ el.onclick=()=>{ if(!el.classList.contains("done")){ mobileCat=el.dataset.cat; renderBoard(); } }; });
+  } else {                                                // phone: value select for a category
+    const c=mobileCat, ci=cats.indexOf(c);
+    bd.className="board mob";
+    bd.innerHTML = `<div class="mvtop"><button class="mback" id="mBack">‹ CATEGORIES</button><div class="mvtitle">${c}</div></div>`
+      + `<div class="mvals">` + BOARD[c].map((it,r)=>{
+          const bonus=bonusCells.has(ci+"-"+r);
+          return `<div class="cell${bonus?' bonus':''}${it.used?' used':''}" data-cat="${c}" data-ci="${ci}" data-r="${r}">${it.p}</div>`;
+        }).join("") + `</div>`;
+    $("#mBack").onclick=()=>{ mobileCat=null; renderBoard(); };
+    [...bd.querySelectorAll(".mvals .cell")].forEach((el,i)=>{ el.style.animationDelay=(i*40)+"ms"; el.classList.add("in"); el.onclick=()=>quizOpen(el); });
+  }
 }
 
 function updateCombo(){
@@ -1132,6 +1171,7 @@ function quizAnswer(o,b,item,cell,isBonus){
   $("#qChoices").querySelectorAll(".choice").forEach(x=>x.onclick=null);
   const fb=$("#qFb");
   cell.classList.add("used");
+  { const it=BOARD[cell.dataset.cat] && BOARD[cell.dataset.cat][+cell.dataset.r]; if(it) it.used=true; }
   const elapsed=Date.now()-qStart, timedOut=(o===null);
   const isRight=(o===item.a);
 
