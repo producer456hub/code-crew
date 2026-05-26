@@ -214,6 +214,9 @@
   .rep-bubble.m b{color:#ff3ca6;} .rep-bubble.c b{color:#2ad4ff;}
 
   .floatpop{position:fixed;pointer-events:none;font-family:var(--px);font-size:18px;z-index:50;text-shadow:0 0 10px currentColor;animation:floatup 1s forwards;}
+  .wordzoom{position:fixed;left:50%;top:42%;z-index:52;pointer-events:none;font-family:var(--rt);font-weight:bold;font-size:46px;line-height:1.1;text-align:center;max-width:92vw;color:var(--good);text-shadow:0 0 22px var(--good);opacity:0;}
+  .wordzoom.go{animation:wordzoomk 1.05s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes wordzoomk{0%{opacity:0;transform:translate(-50%,-50%) scale(.45);}18%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}100%{opacity:0;transform:translate(-50%,-50%) scale(2.7);}}
   @keyframes floatup{0%{transform:translateY(0) scale(.6);opacity:0}20%{transform:translateY(-8px) scale(1.1);opacity:1}100%{transform:translateY(-70px) scale(1);opacity:0}}
 
   /* ===== cyberpunk medics ===== */
@@ -328,7 +331,8 @@
   /* (responsive @media blocks live at the END of this stylesheet so they override base rules) */
 
   /* ===== patient ===== */
-  #patient{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;display:flex;align-items:center;gap:12px;background:var(--panel);box-shadow:var(--bevel),0 4px 0 #0a0418;padding:8px 14px;border-top:3px solid var(--line);}
+  #patient{display:flex;align-items:center;justify-content:center;gap:14px;background:var(--panel);box-shadow:var(--bevel),0 0 16px rgba(42,212,255,.18);padding:9px 16px;border-left:5px solid var(--good);margin:0 auto 16px;width:max-content;max-width:100%;}
+  #patient:empty{display:none;}
   #patient.codeblue{animation:cbflash .5s infinite;}
   @keyframes cbflash{0%,100%{filter:none}50%{filter:drop-shadow(0 0 14px var(--bad));}}
   .pscreen{width:58px;height:58px;background:#0c0518;box-shadow:var(--bevel);display:flex;align-items:center;justify-content:center;}
@@ -385,6 +389,7 @@
   .game h2{text-shadow:0 0 6px var(--quiz),2px 0 rgba(255,60,166,.4),-2px 0 rgba(42,212,255,.4);}
   header .logo{text-shadow:0 0 8px var(--phos),2px 0 rgba(255,60,166,.4),-2px 0 rgba(42,212,255,.35);}
 
+  body.focus #city, body.focus #grid, body.focus #scanbar, body.focus #crt{display:none !important;}  /* focus mode: clean background */
   #fx{position:fixed;inset:0;pointer-events:none;z-index:40;}
   footer{font-family:var(--rt);padding:10px 18px;text-align:center;color:var(--muted);font-size:17px;border-top:4px solid var(--line);position:relative;z-index:2;}
   ::-webkit-scrollbar{width:12px;height:12px;}
@@ -399,7 +404,7 @@
     .doc{width:88px;bottom:6px;}
     .doc.left{left:4px;} .doc.right{right:4px;}
     #patient{bottom:8px;}
-    main{padding-bottom:200px;}
+    main{padding-bottom:130px;}
   }
   @media(max-width:600px){
     body{font-size:18px;letter-spacing:0;}
@@ -407,7 +412,7 @@
     header .logo{font-size:11px;gap:6px;}
     header .tagline{display:none;}
     .iconbtn,.backbtn{font-size:9px;padding:8px;}
-    main{padding:12px 10px 188px;}
+    main{padding:12px 10px 112px;}
     #ticker{font-size:15px;top:50px;bottom:auto;padding:8px 11px;}
     .game h2{font-size:13px;}
     .game .sub{font-size:15px;}
@@ -453,13 +458,13 @@
 <div class="doc right" id="docR"></div>
 <div class="bubble bubbleL" id="bubL"></div>
 <div class="bubble bubbleR" id="bubR"></div>
-<div id="patient"></div>
 <div id="ticker"></div>
 <div id="crt"></div>
 <div id="app">
   <header>
     <div class="logo"><span class="pulse">♥</span> CODE QUIZ: STAT! <span class="tagline">EMT·ECG·PHLEB</span></div>
     <div class="spacer"></div>
+    <button class="iconbtn" id="focusBtn" title="Hide the background (focus mode)">👁 FOCUS</button>
     <button class="iconbtn" id="timerBtn" title="Timed mode on/off">⏱ TIMED MODE ON</button>
     <button class="iconbtn" id="muteBtn" title="Sound on/off">SND</button>
     <button class="backbtn hidden" id="restartBtn">↻ NEW</button>
@@ -745,7 +750,7 @@ const PFACE=`
   <path class="m-x" d="M24 43 Q27 39 30 43 Q33 47 36 43"/>
   <g class="bandage"><rect x="18" y="19" width="24" height="7" rx="1" transform="rotate(-8 30 22)"/><line class="bx" x1="24" y1="18" x2="30" y2="26" transform="rotate(-8 30 22)"/><line class="bx" x1="36" y1="18" x2="30" y2="26" transform="rotate(-8 30 22)"/></g>
 </svg>`;
-$("#patient").innerHTML=`<div class="pscreen">${PFACE}</div><div class="pinfo"><div class="plabel">PATIENT</div><div class="phpbar"><i id="phpFill"></i></div><div class="pstatus" id="pStatus">STABLE</div></div>`;
+function mountPatient(){ const p=$("#patient"); if(p) p.innerHTML=`<div class="pscreen">${PFACE}</div><div class="pinfo"><div class="plabel">PATIENT</div><div class="phpbar"><i id="phpFill"></i></div><div class="pstatus" id="pStatus">STABLE</div></div>`; }
 
 const LINES={
   good:["NICE!","STAT!","CLEAN!","TEXTBOOK!","VITALS UP!","SHARP!"],
@@ -923,6 +928,11 @@ function hurtPatient(p){ const amt=Math.round(p/30); updateHP(-amt); patientPuls
 let actx=null, soundOn=true;
 const muteBtn=$("#muteBtn");
 muteBtn.onclick=()=>{soundOn=!soundOn; muteBtn.textContent=soundOn?"SND":"MUTE";};
+let focusMode=false; try{ focusMode=localStorage.getItem('cc_focus')==='on'; }catch(e){}
+const focusBtn=$("#focusBtn");
+function updFocus(){ document.body.classList.toggle("focus",focusMode); if(focusBtn) focusBtn.textContent=focusMode?"👁 FOCUS ✓":"👁 FOCUS"; }
+if(focusBtn) focusBtn.onclick=()=>{ focusMode=!focusMode; try{localStorage.setItem('cc_focus',focusMode?'on':'off');}catch(e){} updFocus(); };
+updFocus();
 let timed=true; try{ timed=localStorage.getItem('cc_timed')!=='off'; }catch(e){}
 const timerBtn=$("#timerBtn");
 function updTimerBtn(){ if(timerBtn) timerBtn.textContent=timed?"⏱ TIMED MODE ON":"⏱ TIMED MODE OFF"; }
@@ -1002,6 +1012,11 @@ function floatPop(x,y,text,color){
   d.style.left=x+"px"; d.style.top=y+"px"; document.body.appendChild(d);
   setTimeout(()=>d.remove(),1000);
 }
+function wordZoom(text){   // correct term rushes toward the viewer and fades (one-shot)
+  const d=document.createElement("div"); d.className="wordzoom"; d.textContent=text; document.body.appendChild(d);
+  void d.offsetWidth; d.classList.add("go");
+  setTimeout(()=>d.remove(),1100);
+}
 
 /* ===================== STATE ===================== */
 let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set(), BOARD={}, pendingSubmit=null, dead=false;
@@ -1056,9 +1071,11 @@ function renderQuiz(){
       </div>
       <div class="progress"><i id="prog"></i></div>
       <div class="board" id="board"></div>
+      <div id="patient"></div>
       <div id="qArea" style="margin-top:16px"></div>
     </div>`;
   renderBoard();
+  mountPatient(); updateHP(0);
   updateCombo();
   if(actx && actx.state==="running") SFX.welcome();   // plays on Play again / New board (first start fires from the GO! button)
   setTimeout(()=>converse("Welcome to your shift, doctor!","Vitals are steady — let's keep 'em that way.",'good'),700);  // greet immediately so the banter is visible right away
@@ -1179,6 +1196,7 @@ function quizAnswer(o,b,item,cell,isBonus){
     b.classList.add("correct");
     streak++; maxStreak=Math.max(maxStreak,streak); correct++;
     recordStat(item.a,true);
+    wordZoom(item.a);
     const mult=multiplierFor(streak);
     const speedBonus=timed?Math.round(item.p*0.5*Math.max(0,(QTIME-elapsed)/QTIME)):0;
     let gained=Math.round((item.p+speedBonus)*mult*(isBonus?2:1));
