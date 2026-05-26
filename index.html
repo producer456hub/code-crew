@@ -271,9 +271,38 @@
   .doc.react-good .visor{fill:#fff;}
   .doc.react-combo .visor,.doc.react-bonus .visor,.doc.react-win .visor{fill:var(--gold);}
   .doc.react-bad .visor{fill:var(--bad);}
+  /* combo power-up aura (grows/pulses with streak; reaction glows below still override briefly) */
+  .doc.aura1 .docsvg{filter:drop-shadow(0 0 7px var(--neon));}
+  .doc.aura2 .docsvg{filter:drop-shadow(0 0 12px var(--neon));animation:aura 1.3s ease-in-out infinite;}
+  .doc.aura3 .docsvg{filter:drop-shadow(0 0 18px var(--neon));animation:aura .7s ease-in-out infinite;}
+  @keyframes aura{0%,100%{filter:drop-shadow(0 0 8px var(--neon))}50%{filter:drop-shadow(0 0 22px var(--neon))}}
   .doc.react-good .docsvg{filter:drop-shadow(0 0 9px #fff);}
   .doc.react-bad .docsvg{filter:drop-shadow(0 0 7px var(--bad));}
   .doc.react-combo .docsvg,.doc.react-bonus .docsvg,.doc.react-win .docsvg{filter:drop-shadow(0 0 9px var(--gold));}
+  /* heart/star eyes, clipboard stamp, antennae droop, fist-bump lean, victory dance, roll-in, defib zap */
+  .eyeicon{display:none;}
+  .doc.react-good .eyeheart,.doc.react-combo .eyeheart,.doc.react-win .eyeheart{display:block;}
+  .doc.react-bonus .eyestar{display:block;}
+  .doc.react-good .visor,.doc.react-combo .visor,.doc.react-win .visor,.doc.react-bonus .visor{opacity:0;}
+  .doc.react-good .eyeshine,.doc.react-combo .eyeshine,.doc.react-win .eyeshine,.doc.react-bonus .eyeshine{opacity:0;}
+  .stamp{display:none;fill:#39ff14;transform-box:fill-box;transform-origin:center;}
+  .doc.react-good .stamp,.doc.react-combo .stamp,.doc.react-win .stamp{display:block;animation:stampin .45s;}
+  @keyframes stampin{0%{opacity:0;transform:scale(2.2) rotate(-14deg)}55%{opacity:1;transform:scale(.85) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
+  .ant{transform-box:fill-box;transform-origin:50% 100%;transition:transform .35s;}
+  .doc.mood-worried .antL{transform:rotate(14deg);} .doc.mood-worried .antR{transform:rotate(-14deg);}
+  .doc.mood-critical .antL{transform:rotate(32deg);} .doc.mood-critical .antR{transform:rotate(-32deg);}
+  .doc.mood-critical .visor{animation:slowblink 2.4s infinite;}
+  @keyframes slowblink{0%,38%,100%{transform:scaleY(1)}44%,54%{transform:scaleY(.12)}}
+  .doc.left.cheer{animation:leanR .55s ease;} .doc.right.cheer{animation:leanL .55s ease;}
+  @keyframes leanR{0%,100%{transform:translateX(0) rotate(0)}45%{transform:translateX(34px) rotate(9deg)}}
+  @keyframes leanL{0%,100%{transform:translateX(0) rotate(0)}45%{transform:translateX(-34px) rotate(-9deg)}}
+  .doc.dance{animation:dance .55s ease-in-out infinite;}
+  @keyframes dance{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-9px) rotate(5deg)}}
+  .doc.left.rollin{animation:rollinL .65s ease-out;} .doc.right.rollin{animation:rollinR .65s ease-out;}
+  @keyframes rollinL{0%{transform:translateX(-210px) rotate(-540deg)}100%{transform:translateX(0) rotate(0)}}
+  @keyframes rollinR{0%{transform:translateX(210px) rotate(540deg)}100%{transform:translateX(0) rotate(0)}}
+  .doc.zap{animation:zapfx .12s 5;}
+  @keyframes zapfx{0%,100%{filter:none}50%{filter:drop-shadow(0 0 22px #fff) brightness(1.8)}}
   .bubble{position:fixed;z-index:7;bottom:300px;font-family:var(--rt);font-size:18px;line-height:1.3;padding:9px 11px;max-width:210px;text-align:center;background:var(--panel2);color:var(--text);box-shadow:var(--bevel),0 4px 0 #0a0418;opacity:0;pointer-events:none;transition:opacity .35s;}
   .bubbleL{left:18px;} .bubbleR{right:18px;}
   .bubble.show{opacity:1;animation:bubin .3s;}
@@ -588,8 +617,8 @@ const GMAP={C:'coat',N:'neonfill'};
 function pxgrid(){let s='';for(let r=0;r<GRID.length;r++){const row=GRID[r];for(let c=0;c<row.length;c++){const cls=GMAP[row[c]];if(cls)s+=`<rect class="${cls}" x="${c*10}" y="${r*10}" width="10" height="10"/>`;}}return s;}
 const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
   ${pxgrid()}
-  <rect class="mp" x="40" y="8" width="8" height="24"/><rect class="neonfill" x="36" y="0" width="12" height="10"/>
-  <rect class="mp" x="112" y="8" width="8" height="24"/><rect class="neonfill" x="112" y="0" width="12" height="10"/>
+  <g class="ant antL"><rect class="mp" x="40" y="8" width="8" height="24"/><rect class="neonfill" x="36" y="0" width="12" height="10"/></g>
+  <g class="ant antR"><rect class="mp" x="112" y="8" width="8" height="24"/><rect class="neonfill" x="112" y="0" width="12" height="10"/></g>
   <rect class="neonfill" x="10" y="58" width="18" height="32"/><rect class="mp" x="14" y="66" width="8" height="14"/>
   <rect class="neonfill" x="132" y="58" width="18" height="32"/><rect class="mp" x="138" y="66" width="8" height="14"/>
   <rect class="scr" x="40" y="60" width="80" height="30"/>
@@ -599,6 +628,10 @@ const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
   <rect class="eyeshine" x="91" y="65" width="8" height="8"/>
   <rect class="eyeshine" x="64" y="80" width="5" height="5"/>
   <rect class="eyeshine" x="104" y="80" width="5" height="5"/>
+  <text class="eyeicon eyeheart" x="60" y="87" text-anchor="middle" font-size="26">❤</text>
+  <text class="eyeicon eyeheart" x="100" y="87" text-anchor="middle" font-size="26">❤</text>
+  <text class="eyeicon eyestar" x="60" y="87" text-anchor="middle" font-size="24">⭐</text>
+  <text class="eyeicon eyestar" x="100" y="87" text-anchor="middle" font-size="24">⭐</text>
   <rect class="blush" x="30" y="80" width="11" height="7"/>
   <rect class="blush" x="119" y="80" width="11" height="7"/>
   <rect class="coat" x="72" y="30" width="8" height="18"/><rect class="coat" x="66" y="36" width="20" height="6"/>
@@ -622,6 +655,7 @@ const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
     <rect class="mp" x="108" y="176" width="28" height="4"/>
     <rect class="mp" x="108" y="186" width="20" height="4"/>
     <rect class="neonfill" x="108" y="194" width="8" height="8"/>
+    <text class="stamp" x="121" y="201" text-anchor="middle" font-size="30">✓</text>
   </g>
 </svg>`;
 $("#docL").innerHTML=DOCSVG+'<span class="emo"></span>'; $("#docR").innerHTML=DOCSVG+'<span class="emo"></span>';
@@ -658,7 +692,7 @@ function react(type){
     clearTimeout(d._rt); d._rt=setTimeout(()=>d.classList.remove(cls),(type==="win"||type==="lose")?2200:1200);
   });
 }
-const EMO={good:["😊","👍","✨","😎","💪"],great:["🤩","🔥","🎉","⭐","💯"],bad:["😰","💦","😨","😵‍💫","⚡"],critical:["😱","🆘","💔","😭"]};
+const EMO={good:["😊","👍","✨","😎","💪"],great:["🤩","🔥","🎉","⭐","💯"],bad:["😰","💦","😨","😵‍💫","⚡"],critical:["😱","🆘","💔","😭"],cheer:["✊","🙌","🤝"],zap:["⚡","🔌","💥"],sleep:["💤","😴","🥱"]};
 function setEmo(kind){
   const arr=EMO[kind]||EMO.good;
   [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; const e=d.querySelector(".emo"); if(!e)return;
@@ -666,6 +700,13 @@ function setEmo(kind){
     e.classList.remove("show"); void e.offsetWidth; e.classList.add("show");
   });
 }
+function docFx(cls,ms){ [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; d.classList.remove(cls); void d.offsetWidth; d.classList.add(cls); if(ms)setTimeout(()=>d.classList.remove(cls),ms); }); }
+function clearDocFx(){ [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; d.classList.remove("dance","cheer","rollin","zap"); }); }
+function setAura(){ const c=streak>=8?"aura3":streak>=4?"aura2":streak>=2?"aura1":""; [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; d.classList.remove("aura1","aura2","aura3"); if(c)d.classList.add(c); }); }
+function fistBump(){ docFx("cheer",600); setEmo("cheer"); const cx=innerWidth/2, cy=innerHeight*0.58; burst(cx,cy,28,["#ffd45e","#ff3ca6","#2ad4ff","#fff"],8); floatPop(cx-40,cy-12,"✊ FIST BUMP!","#ffd45e"); }
+function rollIn(){ docFx("rollin",700); }
+function victoryDance(){ [$("#docL"),$("#docR")].forEach(d=>d&&d.classList.add("dance")); let n=0; const iv=setInterval(()=>{ if(n++>7 || !document.querySelector(".done-screen")){clearInterval(iv);return;} [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; const r=d.getBoundingClientRect(); floatPop(r.left+r.width/2-10+(Math.random()*34-17), r.top+8, ["♪","♫","🎵"][Math.random()*3|0], Math.random()<0.5?"#ff3ca6":"#2ad4ff"); }); },480); }
+function defib(){ docFx("zap",900); setEmo("zap"); if(SFX.zap)SFX.zap(); const p=$("#patient"); if(p){ const r=p.getBoundingClientRect(); burst(r.left+r.width/2,r.top+8,26,["#fff","#ffd45e","#2ad4ff"],9); floatPop(r.left+r.width/2-30,r.top-10,"⚡ CLEAR!","#ffd45e"); } }
 function bubble(side,text,type){
   const b=$("#bub"+side); if(!b)return;
   b.className="bubble bubble"+side+" "+type; b.textContent=text;
@@ -721,6 +762,7 @@ function banter(ctx){
     {m:"Correct — nice.",c:"Onward, doctor."}]));
 }
 function idleBanter(){
+  if(Math.random()<0.12){ setEmo('sleep'); converse("*yawn*","💤 quiet shift…",'good'); return; }   // sleepy idle
   if(Math.random()<0.22){                                // every so often: praise the creator, David
     const d=pickPair([
       {m:"You know who built us?",c:"David. Absolute genius."},
@@ -787,6 +829,7 @@ function codeBlue(){ const p=$("#patient"), st=$("#pStatus");
   if(st){st.textContent="CODE BLUE!";st.style.color="var(--bad)";}
   if(p)p.classList.add("codeblue");
   vflash("rgba(255,59,59,1)");
+  defib();   // bots zap the patient back
   setTimeout(()=>{ if(p)p.classList.remove("codeblue"); patientHP=45; updateHP(0); },1100);
 }
 function patientPulse(kind,amt){
@@ -843,6 +886,9 @@ const SFX={
     [[523,0,.14],[659,.14,.14],[784,.28,.18],[1047,.46,.34]].forEach(n=>tone(n[0],n[1],n[2],"triangle",.12));
     tone(1319,.52,.3,"square",.10);
     [[262,0,.5],[392,.5,.42]].forEach(n=>tone(n[0],n[1],n[2],"triangle",.09));
+  },
+  zap(){       // defibrillator jolt
+    tone(110,0,.18,"sawtooth",.16); tone(70,.05,.22,"square",.14); tone(330,.12,.1,"square",.1); tone(1200,.22,.12,"square",.1);
   }
 };
 
@@ -893,6 +939,7 @@ function renderQuiz(){
   stopTimer();
   restartBtn.classList.remove("hidden");
   score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0; pendingSubmit=null;
+  clearDocFx();
   patientHP=100; codeBlueHappened=false; updateHP(0);
   const cats=Object.keys(QUIZ);
   BOARD={}; cats.forEach(c=>{ BOARD[c]=shuffle(QUIZ[c]).slice(0,5).map((it,i)=>({p:(i+1)*100,q:it.q,a:it.a,opts:it.opts})); });
@@ -926,6 +973,7 @@ function renderQuiz(){
   updateCombo();
   if(actx && actx.state==="running") SFX.welcome();   // plays on Play again / New board (first start fires from the GO! button)
   setTimeout(()=>converse("Welcome to your shift, doctor!","Vitals are steady — let's keep 'em that way.",'good'),700);  // greet immediately so the banter is visible right away
+  rollIn();
 }
 
 function updateCombo(){
@@ -935,6 +983,7 @@ function updateCombo(){
   const fill = streak>=8?100 : Math.min(100,((streak-lo)/(hi-lo))*100);
   const f=$("#comboFill"); if(f) f.style.width=fill+"%";
   const ml=$("#multi"); if(ml) ml.textContent="x"+m;
+  setAura();
 }
 
 function stopTimer(){ if(timerRAF){cancelAnimationFrame(timerRAF); timerRAF=null;} }
@@ -1020,6 +1069,7 @@ function quizAnswer(o,b,item,cell,isBonus){
     react(streak>=4 && streak%2===0 ? 'combo' : 'good');
     healPatient(item.p);
     setEmo(isBonus||streak>=4 ? 'great' : 'good');
+    if(streak>0 && streak%5===0) fistBump();
     { const bt=banter({right:true,bonus:isBonus,streak,hp:patientHP,correct}); converse(bt.m,bt.c,bt.cls); }
     const bonusBump=$("#multi"); bonusBump.classList.remove("bump"); void bonusBump.offsetWidth; bonusBump.classList.add("bump");
     fb.className="feedback ok show";
@@ -1213,7 +1263,7 @@ function quizSummary(){
   const db=debrief();
   const goodOutcome = db.tone!=='critical';
   react(goodOutcome?'win':'lose'); setEmo(goodOutcome?'great':'bad');
-  if(goodOutcome){ SFX.victory(); if(db.tone==='perfect'||db.tone==='saved') rain(160); }
+  if(goodOutcome){ SFX.victory(); if(db.tone==='perfect'||db.tone==='saved') rain(160); victoryDance(); }
   else { SFX.defeat(); }
   const missedHtml = uniqueMissed.length
     ? `<div class="rounds">
@@ -1304,7 +1354,7 @@ function renderLbList(rows,hiName,hiScore){
   }).join("");
 }
 function showLeaderboard(hiName,hiScore){
-  stopTimer(); restartBtn.classList.remove("hidden");
+  stopTimer(); clearDocFx(); restartBtn.classList.remove("hidden");
   const ps=pendingSubmit;
   main.innerHTML=`
     <div class="game">
@@ -1336,7 +1386,7 @@ function showLeaderboard(hiName,hiScore){
 
 /* ===================== SPLASH / INTRO ===================== */
 function renderSplash(){
-  stopTimer(); pendingSubmit=null;
+  stopTimer(); pendingSubmit=null; clearDocFx();
   restartBtn.classList.add("hidden");
   main.innerHTML=`
     <div class="splash">
