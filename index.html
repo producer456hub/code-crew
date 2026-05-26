@@ -155,7 +155,8 @@
   .lbcorrect{font-size:15px;color:var(--muted);}
   .lbrow.me{box-shadow:var(--bevel),0 0 14px var(--good);outline:2px solid var(--good);}
   .lbsubmit{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center;margin-top:20px;}
-  #lbName{font-family:var(--rt);font-size:20px;padding:12px 14px;background:#0c0518;color:var(--text);border:none;box-shadow:var(--bevel);width:190px;text-transform:uppercase;letter-spacing:1px;}
+  input,textarea{-webkit-user-select:text;user-select:text;}
+  #lbName{font-family:var(--rt);font-size:20px;padding:12px 14px;background:#0c0518;color:var(--text);border:none;box-shadow:var(--bevel);width:190px;text-transform:uppercase;letter-spacing:1px;-webkit-user-select:text;user-select:text;pointer-events:auto;touch-action:manipulation;}
   #lbName::placeholder{color:var(--muted);}
 
   .rounds{margin-top:22px;}
