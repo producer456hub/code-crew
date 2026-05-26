@@ -1,20 +1,31 @@
-# Code Quiz: Stat! 🚑
+# Code Quiz: Stat! 🦴
 
-A gamified, single-file study game for **57 anatomy & physiology terms** useful to **EMTs, ECG techs, and phlebotomists**.
+A gamified, single-file study game for **53 skeletal-system terms** from **Bio 40A, Chapters 6 & 7** — bone tissue and the axial skeleton.
 
 **▶ Play it:** https://producer456hub.github.io/code-crew/
 
 ## How to play
-Pick a tile from the 6-category board (a fresh **random board each game** is drawn from a 57-term bank) and answer the call before the timer runs out (the timer is optional — toggle **TIMED MODE** off any time).
+Pick a tile from the 6-category board (a fresh **random board each game** is drawn from a **106-question bank — two questions per term**, one on *structure* and one on *action/function*) and answer before the timer runs out (the timer is optional — toggle **TIMED MODE** off any time). Each question is multiple-choice with four options.
 
 - 🔥 **Combos** — consecutive correct answers raise your multiplier (up to ×3).
 - ⏱️ **Speed bonus** — faster answers score more.
 - ⚡ **Bonus tiles** — two random tiles each board pay **double points**.
-- ❤️ **Patient HP** — right answers heal the patient, wrong ones hurt them (scaled by tile value). Two pixel medic-bots react, banter, drop term facts & ECG tips, and deliver a **diagnosis** at shift's end.
+- ❤️ **Patient HP** — right answers heal the patient, wrong ones hurt them (scaled by tile value). Two pixel medic-bots react, banter, drop bone facts, and deliver a **diagnosis** at the end.
+- 🧠 **Adaptive** — terms you miss (or haven't seen) resurface more often until you nail them.
 - 🏅 **Ranks & 🏆 leaderboard** — finish to earn a rank, review missed terms, and add your name to the high-score board.
 
+## Categories (53 terms)
+| Category | What it covers |
+|---|---|
+| **Bone Formation** | ossification (endochondral/intramembranous), ossification centers, modeling, remodeling |
+| **Cells, Matrix & Marrow** | osteogenic cells, osteoid, perichondrium, nutrient foramen, projection, red/yellow marrow, hematopoiesis, osteoporosis |
+| **Growth Plate & Embryology** | the four epiphyseal-plate zones, notochord, somite, sclerotome, mesenchyme |
+| **Calcium & Hormones** | hyper-/hypocalcemia, calcium homeostasis, calcitriol, growth hormone, thyroxine (T4) |
+| **Skull** | cranial bones (frontal, occipital, parietal, ethmoid, sphenoid, temporal) + facial bones (maxilla, mandible, zygomatic, palatine, nasal, lacrimal, inferior nasal conchae, vomer) |
+| **Spine & Thorax** | axial skeleton, cervical/thoracic/lumbar vertebrae, sacrum, coccyx, ribs, sternum |
+
 ## High-score leaderboard
-By default scores save to **this device** (localStorage). To make the board **global** (everyone shares one leaderboard), wire it to a free Supabase project — Supabase is browser-writable with proper CORS, unlike the no-signup JSON stores. Setup (~3–5 min, no credit card):
+By default scores save to **this device** (localStorage). To make the board **global** (everyone shares one leaderboard), wire it to a free Supabase project. Setup (~3–5 min, no credit card):
 
 1. Create a free project at https://supabase.com.
 2. In the project's **SQL editor**, run:
@@ -37,10 +48,7 @@ By default scores save to **this device** (localStorage). To make the board **gl
 3. In **Project Settings → API**, copy the **Project URL** and the **anon public** key.
 4. Paste both into the `LB = { ... }` block at the top of the `<script>` in `index.html`, commit, and push.
 
-The `anon` key is meant to be public (client-side); Row Level Security above limits writes to sane values. Note: a public board can still be spammed — fine for a personal study game.
-
-## Terms covered
-Marrow & blood, calcium & hormones, bone development & ossification, growth-plate zones & embryology, and the full axial skeleton (skull, face, spine, chest).
+The `anon` key is meant to be public (client-side); Row Level Security above limits writes to sane values.
 
 ## Tech
 Pure HTML/CSS/JS in one file (`index.html`) — no build, no dependencies. Sound is synthesized via the Web Audio API; effects use a `<canvas>` particle system. Leaderboard uses Supabase's REST API (with a localStorage fallback). Touch-friendly + responsive.

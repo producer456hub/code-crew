@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Code Quiz: Stat! — 30 Terms for EMT · ECG · Phlebotomy</title>
+<title>Code Quiz: Stat! — Bones & the Axial Skeleton (Ch 6–7)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -480,7 +480,7 @@
 <div id="crt"></div>
 <div id="app">
   <header>
-    <div class="logo"><span class="pulse">♥</span> CODE QUIZ: STAT! <span class="tagline">EMT·ECG·PHLEB</span></div>
+    <div class="logo"><span class="pulse">♥</span> CODE QUIZ: STAT! <span class="tagline">BONES · SKELETON</span></div>
     <div class="spacer"></div>
     <button class="iconbtn" id="timerBtn" title="Timed mode on/off">⏱ TIMED MODE ON</button>
     <button class="iconbtn" id="muteBtn" title="Sound on/off">SND</button>
@@ -506,135 +506,187 @@ const LB = {
 
 /* ===================== TERM DEFINITIONS ===================== */
 const TERMS = {
-  "hematopoiesis":"Formation of blood cells (RBCs, WBCs, platelets) — happens in red marrow.",
-  "red marrow":"Active blood-cell-producing marrow; the source of a CBC's cells.",
-  "yellow marrow":"Fat-storage marrow that can convert back to red marrow under high demand.",
-  "nutrient foramen":"Opening where blood vessels enter a bone to supply the marrow.",
-  "hypercalcemia":"High blood calcium — SHORTENS the QT interval on the ECG.",
-  "hypocalcemia":"Low blood calcium — PROLONGS the QT interval; arrhythmia risk.",
-  "calcium homeostasis":"The body's balancing of blood calcium (PTH, calcitriol, calcitonin).",
-  "calcitriol":"Active vitamin D; raises blood calcium by boosting gut absorption.",
-  "thyroxine (T4)":"Thyroid hormone that drives metabolic & heart rate — too much = tachycardia.",
-  "osteoporosis":"Low bone density & high fracture risk — handle/move these patients gently.",
-  "axial skeleton":"Skull, vertebral column, and thoracic cage — the body's central trauma core.",
-  "cranial bones":"The 8 bones enclosing the brain.",
-  "frontal bone":"Forehead bone of the skull.",
-  "occipital bone":"Bone at the back/base of the skull.",
-  "parietal bone":"Paired bones forming the top and sides of the skull.",
-  "temporal bone":"Bone at the side of the skull (around the ear).",
-  "facial bones":"The 14 bones forming the face.",
-  "maxilla":"Upper jaw bone.",
-  "mandible":"Lower jaw — the only movable skull bone.",
-  "zygomatic bone":"Cheekbone.",
-  "nasal bone":"Paired bones forming the bridge of the nose.",
-  "vertebral column":"The spine — 26 bones protecting the spinal cord.",
-  "cervical":"7 neck vertebrae (C1–C7) — the C-spine you immobilize.",
-  "thoracic":"12 vertebrae (T1–T12) that anchor the ribs.",
-  "lumbar":"5 large lower-back vertebrae (L1–L5).",
-  "sacrum":"Fused triangular bone joining the spine to the pelvis.",
-  "coccyx":"Tailbone — the lowest part of the spine.",
-  "thoracic cage":"Ribs + sternum + thoracic vertebrae — protects heart & lungs.",
-  "ribs":"12 pairs of bones; intercostal spaces guide chest-lead placement.",
-  "sternum":"Breastbone — CPR compression landmark and reference for V1/V2 leads.",
-  "ossification":"The general process of bone formation (osteogenesis).",
-  "endochondral ossification":"Bone formation that replaces a hyaline-cartilage model — how most bones form.",
-  "intramembranous ossification":"Bone that forms directly within a fibrous membrane (flat skull bones).",
-  "ossification center":"The site where bone formation first begins in a developing bone.",
-  "primary ossification center":"First center of bone formation, in the shaft (diaphysis).",
-  "secondary ossification center":"Later center of bone formation, in the bone's ends (epiphyses).",
-  "perichondrium":"The connective-tissue sheath surrounding cartilage.",
-  "modeling":"Reshaping of bone during growth toward its adult form.",
-  "remodeling":"Lifelong replacement of old bone with new bone.",
-  "projection":"A bony marking that projects outward — often a muscle-attachment site.",
-  "osteoid":"The soft, unmineralized bone matrix before calcium is deposited.",
-  "osteogenic cell":"The bone stem cell that differentiates into bone-building osteoblasts.",
-  "reserve zone":"Growth-plate zone of resting cartilage anchoring it to the epiphysis.",
-  "proliferative zone":"Growth-plate zone where chondrocytes divide to lengthen the bone.",
-  "zone of maturation and hypertrophy":"Growth-plate zone where chondrocytes enlarge and mature.",
-  "zone of calcified matrix":"Growth-plate zone where the matrix calcifies and chondrocytes die.",
-  "notochord":"Embryonic rod that defines the body axis and induces spine formation.",
-  "somite":"Segmented blocks of mesoderm that form vertebrae, ribs, muscle, and dermis.",
-  "sclerotome":"The part of a somite that develops into vertebrae and ribs.",
-  "mesenchyme":"Embryonic connective tissue that gives rise to bone, cartilage, and blood.",
-  "growth hormone":"Pituitary hormone that stimulates growth of bone and tissue.",
-  "ethmoid bone":"Bone between the eyes forming part of the nasal cavity and orbits.",
-  "sphenoid bone":"Butterfly-shaped bone at the base/center of the skull.",
-  "palatine bone":"Bone forming the back of the hard palate and part of the nasal cavity.",
-  "lacrimal bone":"Smallest facial bone, in the medial orbit near the tear duct.",
-  "inferior nasal conchae":"Scroll-shaped bones on the lateral wall of the nasal cavity.",
-  "vomer":"Bone forming the inferior part of the nasal septum."
+  /* --- Bone Formation --- */
+  "endochondral ossification":"Bone formation in which a hyaline-cartilage model is gradually replaced by bone — forms most bones, including the long bones.",
+  "intramembranous ossification":"Bone that develops directly from sheets of mesenchymal connective tissue — forms the flat skull bones, mandible, and clavicles.",
+  "ossification":"The general process of bone tissue formation (osteogenesis).",
+  "ossification center":"A cluster of osteoblasts that appears early in development and begins secreting bone matrix.",
+  "primary ossification center":"The first center to ossify, located in the shaft (diaphysis) of a long bone.",
+  "secondary ossification center":"A center of bone formation in the ends (epiphyses) of a long bone, appearing around birth.",
+  "modeling":"Bone built by osteoblasts without prior resorption — shapes and enlarges bones during childhood growth.",
+  "remodeling":"The lifelong replacement of old bone with new bone; maintains calcium balance and repairs micro-damage.",
+  /* --- Cells, Matrix & Marrow --- */
+  "osteogenic cell":"An undifferentiated bone stem cell (in periosteum and endosteum) that divides into bone-building osteoblasts.",
+  "osteoid":"The soft, uncalcified organic matrix secreted by osteoblasts before mineral is deposited.",
+  "perichondrium":"The layer of dense irregular connective tissue surrounding cartilage; can become the bone-forming periosteum.",
+  "nutrient foramen":"A small opening on the shaft (diaphysis) where the main artery and vein enter the bone.",
+  "projection":"A bone marking that sticks out from the surface, often an attachment site for tendons and ligaments.",
+  "red marrow":"Highly vascular tissue in spongy bone; the main site of blood cell formation.",
+  "yellow marrow":"Fatty marrow in the medullary cavity of long bones that stores triglycerides for energy.",
+  "hematopoiesis":"The formation of blood cells — red cells, white cells, and platelets — in red marrow.",
+  "osteoporosis":"A disease of decreased bone mass and density, leaving bones brittle and prone to fracture.",
+  /* --- Growth Plate & Embryology --- */
+  "proliferative zone":"The growth-plate layer of stacked chondrocytes that divide rapidly to lengthen the bone.",
+  "reserve zone":"The growth-plate layer nearest the epiphysis that anchors the plate to the bone.",
+  "zone of calcified matrix":"The thin growth-plate layer nearest the diaphysis where the matrix calcifies and dead chondrocytes are replaced by bone.",
+  "zone of maturation and hypertrophy":"The growth-plate layer of enlarged, maturing chondrocytes that adds to a bone's length.",
+  "notochord":"A flexible rod in chordate embryos that gives early support and signals formation of the neural tube and spine.",
+  "somite":"A block of embryonic mesoderm that develops into vertebrae, ribs, skeletal muscle, and dermis.",
+  "sclerotome":"The medial part of a somite whose mesenchyme forms the vertebrae and ribs.",
+  "mesenchyme":"Embryonic connective tissue of undifferentiated cells that gives rise to bone, cartilage, blood, and more.",
+  /* --- Calcium & Hormones --- */
+  "hypercalcemia":"Abnormally high blood calcium; tends to make the nervous system sluggish (lethargy, slow reflexes).",
+  "hypocalcemia":"Abnormally low blood calcium; makes the nervous system overactive, causing muscle spasms and cramps.",
+  "calcium homeostasis":"The body's maintenance of a stable blood calcium level for nerves, muscle, and blood clotting.",
+  "calcitriol":"The active form of vitamin D; raises blood calcium by increasing absorption from the gut.",
+  "growth hormone":"An anterior-pituitary hormone that drives chondrocyte and osteoblast activity to lengthen and thicken bones.",
+  "thyroxine (T4)":"A thyroid hormone that promotes osteoblast activity and bone-matrix synthesis (and overall metabolism).",
+  /* --- Skull --- */
+  "frontal bone":"The bone forming the forehead and the roof of the orbits.",
+  "occipital bone":"The bone forming the back and base of the cranium; contains the foramen magnum for the spinal cord.",
+  "parietal bone":"One of the paired bones forming the upper sides and roof of the cranium.",
+  "ethmoid bone":"A light, sponge-like bone between the eyes forming part of the nasal cavity and orbits.",
+  "sphenoid bone":"A butterfly-shaped keystone bone at the skull base that articulates with all other cranial bones and houses the pituitary.",
+  "temporal bone":"The bone of the lower lateral skull and cranial floor; protects the middle/inner ear and meets the mandible.",
+  "maxilla":"The upper jaw (paired and fused); holds the upper teeth and forms the anterior hard palate.",
+  "mandible":"The U-shaped lower jaw — the only movable skull bone; holds the lower teeth.",
+  "zygomatic bone":"The cheekbone; forms the lateral orbit and part of the zygomatic arch.",
+  "palatine bone":"An L-shaped bone forming the back of the hard palate and part of the nasal cavity.",
+  "nasal bone":"One of the paired bones forming the bony bridge of the nose.",
+  "lacrimal bone":"A small, fragile bone in the medial orbit that helps drain tears into the nasal cavity.",
+  "inferior nasal conchae":"Paired scroll-shaped bones on the nasal cavity walls that warm, filter, and humidify air.",
+  "vomer":"A plow-shaped bone forming the lower part of the nasal septum.",
+  /* --- Spine & Thorax --- */
+  "axial skeleton":"The central axis of the body — the skull, vertebral column, and thoracic cage.",
+  "cervical":"The seven neck vertebrae (C1–C7); support the head and allow a wide range of movement.",
+  "thoracic":"The twelve vertebrae of the upper/mid back that articulate with the ribs.",
+  "lumbar":"The five large vertebrae of the lower back that bear most of the body's weight.",
+  "sacrum":"A triangular bone of five fused vertebrae that joins the spine to the pelvis.",
+  "coccyx":"The tailbone at the end of the spine; an attachment point for pelvic-floor muscles.",
+  "ribs":"Twelve pairs of curved bones forming the rib cage; protect the thoracic organs and aid breathing.",
+  "sternum":"The flat breastbone in the center of the anterior chest; anchors the costal cartilages of the ribs."
 };
 
-/* ===================== QUESTION BANK: pools per category; board picks 5 random each game ===================== */
+/* ===================== QUESTION BANK: two questions (structure + action) per term; board picks 5 random each game.
+   Each item: {term: TERMS key, q: prompt, a: correct full-text option, opts: 4 full-text options}. ===================== */
 const QUIZ={
+  "Bone Formation":[
+    {term:"endochondral ossification",q:"What is endochondral ossification?",a:"Bone developing from a cartilage model",opts:["Bone developing from a cartilage model","Bone forming directly from mesenchyme","The destruction of bone tissue","The calcification of the skin"]},
+    {term:"endochondral ossification",q:"What is the result of endochondral ossification?",a:"Forms most of the bones in the body, including long bones",opts:["Forms the flat bones of the skull","Forms most of the bones in the body, including long bones","Regulates calcium levels","Produces red blood cells"]},
+    {term:"intramembranous ossification",q:"What is intramembranous ossification?",a:"Bone development directly from sheets of mesenchymal connective tissue",opts:["Bone development directly from sheets of mesenchymal connective tissue","Bone replacing cartilage","The destruction of the skull","The formation of the spine"]},
+    {term:"intramembranous ossification",q:"What does intramembranous ossification do?",a:"It forms the flat bones of the skull, the mandible, and the clavicles",opts:["It forms the femur and tibia","It forms the flat bones of the skull, the mandible, and the clavicles","It repairs fractures","It produces blood cells"]},
+    {term:"ossification",q:"What is ossification?",a:"The process of bone tissue formation",opts:["The breakdown of cartilage","The process of bone tissue formation","The creation of blood cells","The absorption of calcium"]},
+    {term:"ossification",q:"What does ossification accomplish?",a:"It creates the skeletal system during embryonic development and facilitates bone repair",opts:["It creates the skeletal system during embryonic development and facilitates bone repair","It destroys the skeletal system","It replaces bone with muscle","It pumps blood"]},
+    {term:"ossification center",q:"What is an ossification center?",a:"A cluster of osteoblasts found in the early stages of bone development",opts:["A cluster of osteoblasts found in the early stages of bone development","A hole in the bone","The end of a long bone","A blood vessel"]},
+    {term:"ossification center",q:"What does an ossification center do?",a:"It serves as the starting point for bone matrix secretion in intramembranous ossification",opts:["It dissolves bone","It serves as the starting point for bone matrix secretion in intramembranous ossification","It produces cartilage","It anchors tendons"]},
+    {term:"primary ossification center",q:"What is the primary ossification center?",a:"The first area of a bone to start ossifying, typically located in the diaphysis",opts:["The first area of a bone to start ossifying, typically located in the diaphysis","The ends of the bone","The marrow cavity","A joint capsule"]},
+    {term:"primary ossification center",q:"What does the primary ossification center do?",a:"It initiates the replacement of the cartilage model with bone tissue in the shaft",opts:["It initiates the replacement of the cartilage model with bone tissue in the shaft","It stops bone growth","It creates the flat bones of the skull","It stores fat"]},
+    {term:"secondary ossification center",q:"What is the secondary ossification center?",a:"A region of bone development located in the epiphyses of long bones",opts:["A region of bone development located in the epiphyses of long bones","The main shaft of the bone","A hole for blood vessels","A cartilage model"]},
+    {term:"secondary ossification center",q:"What does the secondary ossification center do?",a:"It ossifies the ends of the bone shortly after birth",opts:["It ossifies the ends of the bone shortly after birth","It forms the skull","It stops bone lengthening","It creates red marrow"]},
+    {term:"modeling",q:"What is bone modeling?",a:"The process where bone is formed by osteoblasts without prior bone resorption",opts:["The breakdown of the skeleton","The process where bone is formed by osteoblasts without prior bone resorption","The replacement of old bone with new bone","The formation of the cartilage model"]},
+    {term:"modeling",q:"What is the primary function of bone modeling?",a:"To increase the size and alter the shape of bones during childhood growth",opts:["To heal a fracture","To increase the size and alter the shape of bones during childhood growth","To release calcium into the blood","To form joints"]},
+    {term:"remodeling",q:"What is bone remodeling?",a:"The ongoing replacement of old bone tissue by new bone tissue",opts:["The ongoing replacement of old bone tissue by new bone tissue","The initial formation of bone","The destruction of the entire skeleton","The conversion of bone to muscle"]},
+    {term:"remodeling",q:"What does bone remodeling do?",a:"It maintains calcium homeostasis and repairs micro-damages from mechanical stress",opts:["It stops all bone growth","It maintains calcium homeostasis and repairs micro-damages from mechanical stress","It creates cartilage","It causes osteoporosis"]},
+  ],
+  "Cells, Matrix & Marrow":[
+    {term:"osteogenic cell",q:"What is an osteogenic cell?",a:"An undifferentiated stem cell found in the periosteum and endosteum",opts:["A mature bone cell","A bone-destroying cell","An undifferentiated stem cell found in the periosteum and endosteum","A red blood cell"]},
+    {term:"osteogenic cell",q:"What is the function of an osteogenic cell?",a:"To divide and differentiate into osteoblasts to build new bone",opts:["To dissolve calcium","To divide and differentiate into osteoblasts to build new bone","To store fat","To transport oxygen"]},
+    {term:"osteoid",q:"What is osteoid?",a:"The uncalcified, organic matrix of bone secreted by osteoblasts",opts:["Calcified bone matrix","The uncalcified, organic matrix of bone secreted by osteoblasts","The membrane surrounding a bone","A type of joint"]},
+    {term:"osteoid",q:"What does osteoid do?",a:"It provides the framework that subsequently calcifies to form hard bone tissue",opts:["It destroys old bone","It acts as a blood vessel","It provides the framework that subsequently calcifies to form hard bone tissue","It produces cartilage"]},
+    {term:"perichondrium",q:"What is the perichondrium?",a:"A layer of dense irregular connective tissue surrounding cartilage",opts:["The marrow cavity","A layer of dense irregular connective tissue surrounding cartilage","The fluid inside a joint","A cluster of osteoclasts"]},
+    {term:"perichondrium",q:"What role does the perichondrium play in bone development?",a:"It encapsulates the cartilage model and eventually transforms into the bone-producing periosteum",opts:["It destroys the epiphyseal plate","It encapsulates the cartilage model and eventually transforms into the bone-producing periosteum","It stores calcium","It forms red blood cells"]},
+    {term:"nutrient foramen",q:"What is a nutrient foramen?",a:"A small opening in the middle of the external surface of the diaphysis",opts:["A type of bone cell","A layer of cartilage","A small opening in the middle of the external surface of the diaphysis","A groove in the skull"]},
+    {term:"nutrient foramen",q:"What does the nutrient foramen do?",a:"Provides a passageway for the major artery and vein that supply the bone",opts:["Connects bones together","Provides a passageway for the major artery and vein that supply the bone","Secretes bone matrix","Stores yellow marrow"]},
+    {term:"projection",q:"Anatomically, what is a bone projection?",a:"An area of a bone that points or sticks out above the rest of the surface",opts:["A hole in a bone","An area of a bone that points or sticks out above the rest of the surface","A flat area","A joint cavity"]},
+    {term:"projection",q:"What is the function of a projection?",a:"To provide attachment points for tendons and ligaments",opts:["To hold bone marrow","To provide attachment points for tendons and ligaments","To produce blood","To lighten the skull"]},
+    {term:"red marrow",q:"What is red marrow?",a:"A highly vascularized connective tissue found within the spongy bone",opts:["A highly vascularized connective tissue found within the spongy bone","A nerve fiber","The membrane covering the bone","Solid calcified matrix"]},
+    {term:"red marrow",q:"What is the main function of red marrow?",a:"It is the primary site of hematopoiesis (blood cell production)",opts:["To store triglycerides","It is the primary site of hematopoiesis (blood cell production)","To connect bones","To absorb shock"]},
+    {term:"yellow marrow",q:"What is yellow marrow?",a:"Connective tissue found in the medullary cavity of long bones",opts:["Connective tissue found in the medullary cavity of long bones","Tissue found in the skull","The outer membrane of the bone","A type of joint fluid"]},
+    {term:"yellow marrow",q:"What is the primary function of yellow marrow?",a:"To store triglycerides (fat) that can serve as an energy source",opts:["To produce red blood cells","To store triglycerides (fat) that can serve as an energy source","To calcify bone","To anchor tendons"]},
+    {term:"hematopoiesis",q:"What is hematopoiesis?",a:"The process of blood cell formation",opts:["The breakdown of old bone","The process of blood cell formation","The hardening of cartilage","The storage of fat"]},
+    {term:"hematopoiesis",q:"What does hematopoiesis do?",a:"Supplies the body with new erythrocytes, leukocytes, and platelets",opts:["Supplies the body with new erythrocytes, leukocytes, and platelets","Increases bone density","Lengthens the bone","Fuses the growth plate"]},
+    {term:"osteoporosis",q:"What is osteoporosis?",a:"A disease characterized by a decrease in bone mass and density",opts:["A disease characterized by a decrease in bone mass and density","A disease of excessive bone growth","An infection of the bone marrow","A type of blood cancer"]},
+    {term:"osteoporosis",q:"What happens to the skeleton due to osteoporosis?",a:"Bones become brittle, fragile, and highly susceptible to fractures",opts:["Bones become abnormally thick","Bones become brittle, fragile, and highly susceptible to fractures","Bones turn into cartilage","Joints fuse together"]},
+  ],
+  "Growth Plate & Embryology":[
+    {term:"proliferative zone",q:"What is the proliferative zone?",a:"A layer of the epiphyseal plate containing stacks of chondrocytes",opts:["A layer of the epiphyseal plate containing stacks of chondrocytes","The center of the bone shaft","The outer layer of the skull","A layer of fat"]},
+    {term:"proliferative zone",q:"What happens in the proliferative zone?",a:"Chondrocytes undergo rapid mitosis to lengthen the bone",opts:["Bone is destroyed","Chondrocytes undergo rapid mitosis to lengthen the bone","Blood is produced","Calcium is released"]},
+    {term:"reserve zone",q:"What is the reserve zone?",a:"The region of the epiphyseal plate closest to the epiphyseal end",opts:["The region of the epiphyseal plate closest to the epiphyseal end","The middle of the diaphysis","The lining of the medullary cavity","A cluster of osteoclasts"]},
+    {term:"reserve zone",q:"What is the function of the reserve zone?",a:"It anchors the epiphyseal plate to the osseous tissue of the epiphysis",opts:["It actively produces bone","It anchors the epiphyseal plate to the osseous tissue of the epiphysis","It destroys cartilage","It stores blood"]},
+    {term:"zone of calcified matrix",q:"What is the zone of calcified matrix?",a:"The layer of the epiphyseal plate closest to the diaphysis",opts:["The layer of the epiphyseal plate closest to the diaphysis","The very top of the epiphysis","The middle of the skull","The exterior of the bone"]},
+    {term:"zone of calcified matrix",q:"What occurs in the zone of calcified matrix?",a:"Dead chondrocytes are encased in calcified matrix, which osteoblasts then replace with bone",opts:["Rapid cell division","Dead chondrocytes are encased in calcified matrix, which osteoblasts then replace with bone","Fat is stored","Tendons attach"]},
+    {term:"zone of maturation and hypertrophy",q:"What is the zone of maturation and hypertrophy?",a:"A layer in the epiphyseal plate containing enlarged, older chondrocytes",opts:["A layer in the epiphyseal plate containing enlarged, older chondrocytes","A layer of osteoclasts","The outer bone layer","The marrow cavity"]},
+    {term:"zone of maturation and hypertrophy",q:"What is the function of the zone of maturation and hypertrophy?",a:"The cells enlarge and accumulate lipids, contributing to the longitudinal growth of the bone",opts:["To produce red blood cells","The cells enlarge and accumulate lipids, contributing to the longitudinal growth of the bone","To destroy the epiphyseal plate","To store calcium"]},
+    {term:"notochord",q:"What is the notochord?",a:"A flexible, rod-like structure found in the embryos of all chordates",opts:["A flexible, rod-like structure found in the embryos of all chordates","A mature bone cell","The fluid in a joint","A muscle fiber"]},
+    {term:"notochord",q:"What does the notochord do?",a:"It provides initial structural support and signals the formation of the neural tube and vertebral column",opts:["It provides initial structural support and signals the formation of the neural tube and vertebral column","It destroys old bone","It produces blood","It stores fat"]},
+    {term:"somite",q:"What is a somite?",a:"A block of mesoderm tissue found in early developing embryos",opts:["A block of mesoderm tissue found in early developing embryos","A fully formed bone","A type of nerve","A blood vessel"]},
+    {term:"somite",q:"What do somites do?",a:"They differentiate into the vertebrae, ribs, skeletal muscles, and dermis of the skin",opts:["They differentiate into the vertebrae, ribs, skeletal muscles, and dermis of the skin","They destroy cartilage","They form the brain","They filter blood"]},
+    {term:"sclerotome",q:"What is the sclerotome?",a:"The medial portion of a somite consisting of mesenchymal cells",opts:["The medial portion of a somite consisting of mesenchymal cells","The outer layer of the skin","The lining of the stomach","A type of mature bone"]},
+    {term:"sclerotome",q:"What does the sclerotome do?",a:"It gives rise to the bone and cartilage of the vertebral column and ribs",opts:["It gives rise to the bone and cartilage of the vertebral column and ribs","It forms the heart","It produces saliva","It forms the eyes"]},
+    {term:"mesenchyme",q:"What is mesenchyme?",a:"An embryonic connective tissue composed of undifferentiated cells",opts:["An embryonic connective tissue composed of undifferentiated cells","A fully ossified bone","A mature muscle cell","A red blood cell"]},
+    {term:"mesenchyme",q:"What does mesenchyme do?",a:"It differentiates into various tissues, including bone, cartilage, and the lymphatic and circulatory systems",opts:["It differentiates into various tissues, including bone, cartilage, and the lymphatic and circulatory systems","It conducts electrical impulses","It breaks down food","It stores calcium"]},
+  ],
   "Calcium & Hormones":[
-    {q:"High blood calcium that SHORTENS the QT interval.",a:"hypercalcemia",opts:["hypercalcemia","hypocalcemia","calcitriol"]},
-    {q:"Low blood calcium that PROLONGS the QT interval.",a:"hypocalcemia",opts:["hypocalcemia","hypercalcemia","thyroxine (T4)"]},
-    {q:"Excess of this thyroid hormone drives tachycardia on the monitor.",a:"thyroxine (T4)",opts:["thyroxine (T4)","growth hormone","calcitriol"]},
-    {q:"Active vitamin D — raises blood calcium by boosting gut absorption.",a:"calcitriol",opts:["calcitriol","thyroxine (T4)","hypercalcemia"]},
-    {q:"The body's balancing act on blood calcium (PTH, calcitriol, calcitonin).",a:"calcium homeostasis",opts:["calcium homeostasis","hematopoiesis","hypocalcemia"]},
-    {q:"Pituitary hormone that stimulates growth of bone and tissue.",a:"growth hormone",opts:["growth hormone","thyroxine (T4)","calcitriol"]},
+    {term:"hypercalcemia",q:"What defines hypercalcemia?",a:"Abnormally high levels of calcium in the blood",opts:["Abnormally high levels of calcium in the blood","Low bone density","High levels of thyroid hormone","Low blood calcium"]},
+    {term:"hypercalcemia",q:"What effect does hypercalcemia have on the body?",a:"Underactive nervous system, lethargy, and sluggish reflexes",opts:["Overactive nervous system","Underactive nervous system, lethargy, and sluggish reflexes","Severe muscle spasms","Rapid bone growth"]},
+    {term:"hypocalcemia",q:"What is hypocalcemia?",a:"Abnormally low levels of calcium in the blood",opts:["High bone mass","Low levels of oxygen in the blood","Abnormally low levels of calcium in the blood","Excess bone calcification"]},
+    {term:"hypocalcemia",q:"What is a primary consequence of hypocalcemia?",a:"It leads to muscle spasms, cramps, and an overactive nervous system",opts:["It leads to muscle spasms, cramps, and an overactive nervous system","It causes lethargy","It triggers osteoporosis","It halts bone elongation"]},
+    {term:"calcium homeostasis",q:"What is calcium homeostasis?",a:"The process of maintaining a stable, normal concentration of calcium in the blood",opts:["The process of maintaining a stable, normal concentration of calcium in the blood","The extreme loss of calcium","The hardening of bone","The production of blood"]},
+    {term:"calcium homeostasis",q:"What does calcium homeostasis do for the body?",a:"It ensures the proper functioning of the nervous system, muscle contractions, and blood coagulation",opts:["It halts bone growth","It ensures the proper functioning of the nervous system, muscle contractions, and blood coagulation","It causes rickets","It breaks down the skeleton"]},
+    {term:"calcitriol",q:"What is calcitriol?",a:"The active form of vitamin D",opts:["The active form of vitamin D","A type of bone","An osteoclast","The matrix of cartilage"]},
+    {term:"calcitriol",q:"What is the primary action of calcitriol?",a:"It stimulates the absorption of calcium and phosphate from the digestive tract",opts:["It destroys bone","It stimulates the absorption of calcium and phosphate from the digestive tract","It lowers blood calcium","It forms the skull"]},
+    {term:"growth hormone",q:"What is growth hormone in the context of the skeletal system?",a:"A hormone secreted by the anterior pituitary gland",opts:["A hormone secreted by the anterior pituitary gland","A bone cell","A type of marrow","A mineral"]},
+    {term:"growth hormone",q:"What does growth hormone do to bones?",a:"It triggers chondrocyte proliferation and osteoblast activity to lengthen and thicken bones",opts:["It destroys them","It triggers chondrocyte proliferation and osteoblast activity to lengthen and thicken bones","It decreases blood calcium","It fuses joints"]},
+    {term:"thyroxine (T4)",q:"What is thyroxine (T4)?",a:"A hormone produced by the thyroid gland",opts:["A hormone produced by the thyroid gland","A bone-building cell","A section of the spine","A digestive enzyme"]},
+    {term:"thyroxine (T4)",q:"How does thyroxine affect the skeletal system?",a:"It promotes osteoblastic activity and the synthesis of bone matrix",opts:["It stunts growth","It promotes osteoblastic activity and the synthesis of bone matrix","It causes osteoporosis","It destroys cartilage"]},
   ],
-  "Marrow & Blood":[
-    {q:"The marrow that actively produces blood cells.",a:"red marrow",opts:["red marrow","yellow marrow","nutrient foramen"]},
-    {q:"The process of forming blood cells — RBCs, WBCs, and platelets.",a:"hematopoiesis",opts:["hematopoiesis","ossification","remodeling"]},
-    {q:"Fatty marrow that converts back to red marrow under high demand.",a:"yellow marrow",opts:["yellow marrow","red marrow","osteoid"]},
-    {q:"The opening where vessels enter a bone to reach the marrow.",a:"nutrient foramen",opts:["nutrient foramen","ossification center","projection"]},
-    {q:"Low bone density and high fracture risk — move these patients gently.",a:"osteoporosis",opts:["osteoporosis","hypocalcemia","remodeling"]},
-    {q:"The soft, unmineralized bone matrix before calcium is deposited.",a:"osteoid",opts:["osteoid","osteogenic cell","red marrow"]},
-    {q:"The bone stem cell that becomes bone-building osteoblasts.",a:"osteogenic cell",opts:["osteogenic cell","osteoid","hematopoiesis"]},
+  "Skull":[
+    {term:"frontal bone",q:"What is the frontal bone?",a:"The bone that forms the forehead and the roof of the orbits",opts:["The bone forming the back of the skull","The bone that forms the forehead and the roof of the orbits","The lower jaw","A bone in the neck"]},
+    {term:"frontal bone",q:"What does the frontal bone do?",a:"It protects the anterior portion of the brain and supports the upper face",opts:["It protects the anterior portion of the brain and supports the upper face","It allows for chewing","It protects the spinal cord","It houses the inner ear"]},
+    {term:"occipital bone",q:"What is the occipital bone?",a:"The bone forming the posterior skull and posterior base of the cranial cavity",opts:["The bone forming the posterior skull and posterior base of the cranial cavity","The cheekbone","The upper jaw","A rib"]},
+    {term:"occipital bone",q:"What is a key function of the occipital bone?",a:"It protects the visual cortex and provides an opening (foramen magnum) for the spinal cord",opts:["It protects the visual cortex and provides an opening (foramen magnum) for the spinal cord","It holds the upper teeth","It forms the bridge of the nose","It allows the jaw to open"]},
+    {term:"parietal bone",q:"What is the parietal bone?",a:"One of the two large bones forming the upper lateral sides and roof of the cranium",opts:["One of the two large bones forming the upper lateral sides and roof of the cranium","The bone forming the chin","A vertebra","A bone in the arm"]},
+    {term:"parietal bone",q:"What does the parietal bone do?",a:"It forms the bulk of the cranial vault to protect the cerebral hemispheres",opts:["It forms the bulk of the cranial vault to protect the cerebral hemispheres","It produces tears","It supports the tongue","It allows for smelling"]},
+    {term:"ethmoid bone",q:"What is the ethmoid bone?",a:"A sponge-like bone located between the eyes and forming part of the nasal cavity",opts:["A sponge-like bone located between the eyes and forming part of the nasal cavity","The tailbone","The collarbone","The lower jaw"]},
+    {term:"ethmoid bone",q:"What is the function of the ethmoid bone?",a:"It supports the nasal cavity and provides a surface for the olfactory nerves to pass through",opts:["It supports the nasal cavity and provides a surface for the olfactory nerves to pass through","It protects the heart","It houses the pituitary gland","It connects the ribs"]},
+    {term:"sphenoid bone",q:"What is the sphenoid bone?",a:"A butterfly-shaped bone at the center of the skull base",opts:["A butterfly-shaped bone at the center of the skull base","A bone in the foot","The knee cap","The cheekbone"]},
+    {term:"sphenoid bone",q:"What does the sphenoid bone do?",a:"It acts as a keystone, articulating with all other cranial bones and housing the pituitary gland",opts:["It acts as a keystone, articulating with all other cranial bones and housing the pituitary gland","It forms the lower jaw","It drains tears","It protects the lungs"]},
+    {term:"temporal bone",q:"What is the temporal bone?",a:"The bone forming the lower lateral sides of the skull and part of the cranial floor",opts:["The bone forming the lower lateral sides of the skull and part of the cranial floor","The bone on the top of the head","The breastbone","The upper jaw"]},
+    {term:"temporal bone",q:"What is the function of the temporal bone?",a:"It protects the middle and inner ear structures and articulates with the mandible",opts:["It protects the middle and inner ear structures and articulates with the mandible","It forms the forehead","It holds the upper teeth","It protects the spinal cord"]},
+    {term:"maxilla",q:"What is the maxilla?",a:"The upper jaw bone formed by the fusion of two maxillary bones",opts:["The upper jaw bone formed by the fusion of two maxillary bones","The lower jaw","The collarbone","The shoulder blade"]},
+    {term:"maxilla",q:"What does the maxilla do?",a:"It holds the upper teeth in place and forms the anterior hard palate",opts:["It holds the upper teeth in place and forms the anterior hard palate","It allows the head to nod","It protects the brain","It houses the inner ear"]},
+    {term:"mandible",q:"What is the mandible?",a:"The U-shaped bone forming the lower jaw",opts:["The upper jaw","The U-shaped bone forming the lower jaw","The cheekbone","The forehead"]},
+    {term:"mandible",q:"What is the primary function of the mandible?",a:"It holds the lower teeth and moves to facilitate chewing and speaking",opts:["It holds the lower teeth and moves to facilitate chewing and speaking","It protects the eyes","It houses the olfactory nerves","It forms the roof of the mouth"]},
+    {term:"zygomatic bone",q:"What is the zygomatic bone?",a:"The facial bone commonly known as the cheekbone",opts:["The facial bone commonly known as the cheekbone","The tailbone","The lower jaw","A bone in the nose"]},
+    {term:"zygomatic bone",q:"What does the zygomatic bone do?",a:"It forms the lateral wall of the eye orbit and part of the zygomatic arch for muscle attachment",opts:["It forms the lateral wall of the eye orbit and part of the zygomatic arch for muscle attachment","It holds the lower teeth","It protects the inner ear","It forms the hard palate"]},
+    {term:"palatine bone",q:"What is the palatine bone?",a:"An L-shaped facial bone located in the posterior nasal cavity",opts:["An L-shaped facial bone located in the posterior nasal cavity","The collarbone","The kneecap","The jawbone"]},
+    {term:"palatine bone",q:"What does the palatine bone do?",a:"It forms the posterior portion of the hard palate and part of the nasal cavity floor",opts:["It forms the posterior portion of the hard palate and part of the nasal cavity floor","It allows the jaw to move","It holds the brain","It houses the pituitary gland"]},
+    {term:"nasal bone",q:"What is the nasal bone?",a:"One of the two small bones that form the bony bridge of the nose",opts:["One of the two small bones that form the bony bridge of the nose","The cheekbone","The upper jaw","The back of the skull"]},
+    {term:"nasal bone",q:"What is the function of the nasal bone?",a:"It supports the cartilages that form the lateral walls of the nose",opts:["It supports the cartilages that form the lateral walls of the nose","It holds the teeth","It protects the ear","It allows for chewing"]},
+    {term:"lacrimal bone",q:"What is the lacrimal bone?",a:"A small, fragile bone situated in the anterior medial wall of the orbit",opts:["A small, fragile bone situated in the anterior medial wall of the orbit","A large bone in the leg","The lower jaw","The breastbone"]},
+    {term:"lacrimal bone",q:"What does the lacrimal bone do?",a:"It houses the lacrimal sac, which drains tears into the nasal cavity",opts:["It houses the lacrimal sac, which drains tears into the nasal cavity","It produces saliva","It protects the brain","It forms the cheek"]},
+    {term:"inferior nasal conchae",q:"What are the inferior nasal conchae?",a:"Paired, scroll-like bones located in the lateral walls of the nasal cavity",opts:["Paired, scroll-like bones located in the lateral walls of the nasal cavity","Bones in the ear","Vertebrae in the neck","Bones of the wrist"]},
+    {term:"inferior nasal conchae",q:"What do the inferior nasal conchae do?",a:"They increase the surface area of the nasal cavity to warm, filter, and humidify inhaled air",opts:["They increase the surface area of the nasal cavity to warm, filter, and humidify inhaled air","They hold the teeth","They protect the heart","They articulate with the femur"]},
+    {term:"vomer",q:"What is the vomer?",a:"A small, plow-shaped facial bone located in the midline of the nasal cavity",opts:["A small, plow-shaped facial bone located in the midline of the nasal cavity","The upper jaw","A rib","The tailbone"]},
+    {term:"vomer",q:"What does the vomer do?",a:"It forms the inferior and posterior portion of the nasal septum",opts:["It forms the inferior and posterior portion of the nasal septum","It drains tears","It houses the inner ear","It forms the forehead"]},
   ],
-  "Bone Development":[
-    {q:"The general term for bone formation.",a:"ossification",opts:["ossification","hematopoiesis","modeling"]},
-    {q:"Bone formation that replaces a hyaline-cartilage model (most bones).",a:"endochondral ossification",opts:["endochondral ossification","intramembranous ossification","remodeling"]},
-    {q:"Bone that forms directly within a fibrous membrane (flat skull bones).",a:"intramembranous ossification",opts:["intramembranous ossification","endochondral ossification","modeling"]},
-    {q:"The site where bone formation first begins in a developing bone.",a:"ossification center",opts:["ossification center","nutrient foramen","perichondrium"]},
-    {q:"The first ossification center, located in the shaft (diaphysis).",a:"primary ossification center",opts:["primary ossification center","secondary ossification center","ossification center"]},
-    {q:"Ossification center appearing later, in the bone's ends (epiphyses).",a:"secondary ossification center",opts:["secondary ossification center","primary ossification center","ossification center"]},
-    {q:"The connective-tissue sheath surrounding cartilage.",a:"perichondrium",opts:["perichondrium","osteoid","ossification center"]},
-    {q:"Reshaping of bone during growth toward its adult form.",a:"modeling",opts:["modeling","remodeling","ossification"]},
-    {q:"Lifelong replacement of old bone with new bone.",a:"remodeling",opts:["remodeling","modeling","ossification"]},
-    {q:"A bone marking that projects outward — often a muscle-attachment site.",a:"projection",opts:["projection","nutrient foramen","ossification center"]},
-  ],
-  "Growth & Origins":[
-    {q:"Growth-plate zone of resting cartilage anchoring it to the epiphysis.",a:"reserve zone",opts:["reserve zone","proliferative zone","zone of calcified matrix"]},
-    {q:"Growth-plate zone where cartilage cells divide to lengthen the bone.",a:"proliferative zone",opts:["proliferative zone","reserve zone","zone of maturation and hypertrophy"]},
-    {q:"Growth-plate zone where chondrocytes enlarge (hypertrophy).",a:"zone of maturation and hypertrophy",opts:["zone of maturation and hypertrophy","proliferative zone","zone of calcified matrix"]},
-    {q:"Growth-plate zone where the matrix calcifies and chondrocytes die.",a:"zone of calcified matrix",opts:["zone of calcified matrix","reserve zone","zone of maturation and hypertrophy"]},
-    {q:"The embryonic rod that defines the body axis and induces the spine.",a:"notochord",opts:["notochord","somite","sclerotome"]},
-    {q:"Segmented blocks of mesoderm that give rise to vertebrae and ribs.",a:"somite",opts:["somite","notochord","mesenchyme"]},
-    {q:"The part of a somite that develops into vertebrae and ribs.",a:"sclerotome",opts:["sclerotome","somite","notochord"]},
-    {q:"Embryonic connective tissue that becomes bone, cartilage, and blood.",a:"mesenchyme",opts:["mesenchyme","osteoid","notochord"]},
-  ],
-  "The Skull":[
-    {q:"The forehead bone.",a:"frontal bone",opts:["frontal bone","parietal bone","occipital bone"]},
-    {q:"The bone at the back and base of the skull.",a:"occipital bone",opts:["occipital bone","frontal bone","temporal bone"]},
-    {q:"Paired bones forming the top and sides of the skull.",a:"parietal bone",opts:["parietal bone","temporal bone","frontal bone"]},
-    {q:"The bone at the side of the skull, around the ear.",a:"temporal bone",opts:["temporal bone","parietal bone","sphenoid bone"]},
-    {q:"Bone between the eyes forming part of the nasal cavity and orbits.",a:"ethmoid bone",opts:["ethmoid bone","sphenoid bone","vomer"]},
-    {q:"The butterfly-shaped bone at the base/center of the skull.",a:"sphenoid bone",opts:["sphenoid bone","ethmoid bone","temporal bone"]},
-    {q:"Collective name for the 8 bones enclosing the brain.",a:"cranial bones",opts:["cranial bones","facial bones","axial skeleton"]},
-    {q:"Skull + vertebral column + thoracic cage together.",a:"axial skeleton",opts:["axial skeleton","cranial bones","thoracic cage"]},
-  ],
-  "Face, Spine & Chest":[
-    {q:"The lower jaw — the only movable skull bone.",a:"mandible",opts:["mandible","maxilla","zygomatic bone"]},
-    {q:"The upper jaw bone.",a:"maxilla",opts:["maxilla","mandible","palatine bone"]},
-    {q:"The cheekbone.",a:"zygomatic bone",opts:["zygomatic bone","temporal bone","nasal bone"]},
-    {q:"Paired bones forming the bridge of the nose.",a:"nasal bone",opts:["nasal bone","vomer","lacrimal bone"]},
-    {q:"Bone forming the posterior part of the hard palate.",a:"palatine bone",opts:["palatine bone","maxilla","vomer"]},
-    {q:"The small facial bone in the inner orbit, near the tear duct.",a:"lacrimal bone",opts:["lacrimal bone","nasal bone","ethmoid bone"]},
-    {q:"Scroll-shaped bones on the side wall of the nasal cavity.",a:"inferior nasal conchae",opts:["inferior nasal conchae","vomer","nasal bone"]},
-    {q:"Bone forming the bottom of the nasal septum.",a:"vomer",opts:["vomer","nasal bone","palatine bone"]},
-    {q:"Collective name for the 14 bones of the face.",a:"facial bones",opts:["facial bones","cranial bones","thoracic cage"]},
-    {q:"The spine — 26 bones protecting the spinal cord.",a:"vertebral column",opts:["vertebral column","thoracic cage","axial skeleton"]},
-    {q:"The 7 neck vertebrae (C1–C7) immobilized first in trauma.",a:"cervical",opts:["cervical","thoracic","lumbar"]},
-    {q:"The 12 vertebrae that anchor the ribs.",a:"thoracic",opts:["thoracic","cervical","lumbar"]},
-    {q:"The 5 large lower-back vertebrae (L1–L5).",a:"lumbar",opts:["lumbar","sacrum","thoracic"]},
-    {q:"The fused triangular bone joining the spine to the pelvis.",a:"sacrum",opts:["sacrum","coccyx","lumbar"]},
-    {q:"The tailbone — the lowest part of the spine.",a:"coccyx",opts:["coccyx","sacrum","lumbar"]},
-    {q:"Ribs + sternum + thoracic vertebrae shielding the heart and lungs.",a:"thoracic cage",opts:["thoracic cage","vertebral column","axial skeleton"]},
-    {q:"12 pairs of bones whose intercostal spaces guide chest-lead placement.",a:"ribs",opts:["ribs","sternum","thoracic cage"]},
-    {q:"The breastbone — your CPR compression landmark.",a:"sternum",opts:["sternum","ribs","vertebral column"]},
+  "Spine & Thorax":[
+    {term:"axial skeleton",q:"What structures make up the axial skeleton?",a:"The skull, vertebral column, and thoracic cage",opts:["The limbs and girdles","The skull, vertebral column, and thoracic cage","Only the spine","The arms and legs"]},
+    {term:"axial skeleton",q:"What is the main function of the axial skeleton?",a:"To form the central axis of the body and protect the brain, spinal cord, and heart",opts:["To allow for running and jumping","To form the central axis of the body and protect the brain, spinal cord, and heart","To produce hormones","To connect the arms to the body"]},
+    {term:"cervical",q:"What are the cervical vertebrae?",a:"The seven vertebrae making up the neck region of the spine",opts:["The seven vertebrae making up the neck region of the spine","The bones of the lower back","The tailbone","The ribs"]},
+    {term:"cervical",q:"What do the cervical vertebrae do?",a:"They support the weight of the head and allow for a wide range of head movements",opts:["They support the weight of the head and allow for a wide range of head movements","They connect to the pelvis","They protect the heart","They absorb the shock of walking"]},
+    {term:"thoracic",q:"What are the thoracic vertebrae?",a:"The twelve vertebrae located in the upper and middle back",opts:["The twelve vertebrae located in the upper and middle back","The bones of the neck","The bones of the skull","The bones of the pelvis"]},
+    {term:"thoracic",q:"What is a primary function of the thoracic vertebrae?",a:"They articulate with the ribs to help form the protective thoracic cage",opts:["They articulate with the ribs to help form the protective thoracic cage","They support the head","They form the jaw","They connect to the legs"]},
+    {term:"lumbar",q:"What are the lumbar vertebrae?",a:"The five large vertebrae located in the lower back region",opts:["The five large vertebrae located in the lower back region","The bones of the neck","The ribs","The tailbone"]},
+    {term:"lumbar",q:"What do the lumbar vertebrae do?",a:"They support the majority of the body's weight and absorb stress when lifting",opts:["They support the majority of the body's weight and absorb stress when lifting","They protect the brain","They form the rib cage","They allow the head to nod"]},
+    {term:"sacrum",q:"What is the sacrum?",a:"A triangular bone formed by the fusion of five sacral vertebrae at the base of the spine",opts:["A triangular bone formed by the fusion of five sacral vertebrae at the base of the spine","The upper jaw","The collarbone","The breastbone"]},
+    {term:"sacrum",q:"What does the sacrum do?",a:"It connects the vertebral column to the pelvis and stabilizes the pelvic girdle",opts:["It connects the vertebral column to the pelvis and stabilizes the pelvic girdle","It protects the lungs","It allows for chewing","It drains tears"]},
+    {term:"coccyx",q:"What is the coccyx?",a:"The terminal end of the spine, commonly known as the tailbone",opts:["The terminal end of the spine, commonly known as the tailbone","The top vertebra in the neck","The cheekbone","A bone in the arm"]},
+    {term:"coccyx",q:"What is the function of the coccyx?",a:"It provides an attachment point for various muscles, tendons, and ligaments of the pelvic floor",opts:["It provides an attachment point for various muscles, tendons, and ligaments of the pelvic floor","It protects the heart","It supports the head","It articulates with the ribs"]},
+    {term:"ribs",q:"What are the ribs?",a:"Twelve pairs of long, curved bones that form the rib cage",opts:["Twelve pairs of long, curved bones that form the rib cage","The bones of the spine","The bones of the skull","The bones of the pelvis"]},
+    {term:"ribs",q:"What do the ribs do?",a:"They protect the heart and lungs and aid in respiration by expanding the chest cavity",opts:["They protect the heart and lungs and aid in respiration by expanding the chest cavity","They support the head","They allow for walking","They connect the arms to the body"]},
+    {term:"sternum",q:"What is the sternum?",a:"A long, flat bone located in the center of the anterior chest",opts:["A long, flat bone located in the center of the anterior chest","The lower jaw","A vertebra","The tailbone"]},
+    {term:"sternum",q:"What does the sternum do?",a:"It protects the anterior heart and serves as an attachment point for the costal cartilages of the ribs",opts:["It protects the anterior heart and serves as an attachment point for the costal cartilages of the ribs","It houses the pituitary gland","It protects the spinal cord","It allows the head to turn"]},
   ],
 };
 
@@ -718,12 +770,12 @@ const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
   </g>
 </svg>`;
 $("#docL").innerHTML=DOCSVG+'<span class="emo"></span>'; $("#docR").innerHTML=DOCSVG+'<span class="emo"></span>';
-/* anatomically-shaped ECG trace: P wave, QRS complex (Q dip, tall R, S dip), T wave, on a baseline */
-function ecgPath(mx,my,mw,mh){
-  const base=my+mh*0.60, h=mh*0.42;   // isoelectric baseline + R-wave amplitude
-  // [x-fraction of one beat, y offset * h]  (negative = upward)
-  const pat=[[0,0],[.10,0],[.15,-.18],[.20,-.22],[.25,0],[.40,0],[.44,.10],[.49,-1],[.55,.32],[.60,0],[.74,0],[.82,-.30],[.88,-.34],[.95,0],[1,0]];
-  const beatW=34; let d="", started=false;
+/* generic monitor activity trace — a gentle rolling waveform (no specific clinical meaning) */
+function wavePath(mx,my,mw,mh){
+  const base=my+mh*0.55, h=mh*0.28;   // baseline + gentle amplitude
+  // [x-fraction of one cycle, y offset * h]  (negative = upward)
+  const pat=[[0,0],[.12,-.7],[.25,0],[.37,.7],[.5,0],[.62,-.7],[.75,0],[.87,.7],[1,0]];
+  const beatW=44; let d="", started=false;
   for(let bx=mx+3; bx<mx+mw-4; bx+=beatW){
     for(const p of pat){ const X=bx+p[0]*beatW; if(X>mx+mw-3) break; const Y=base+p[1]*h; d+=(started?" L":"M")+X.toFixed(1)+" "+Y.toFixed(1); started=true; }
   }
@@ -740,7 +792,7 @@ function buildCity(){
     if(Math.abs(mx+mw/2 - W/2) < 46) continue;                                                // skip behind the cross
     s+=`<rect x="${mx}" y="${my}" width="${mw}" height="${mh}" fill="#04140d" stroke="#1f7a4d" stroke-width="1"/>`;
     const col=i%2?'#2ad4ff':'#39ff14';
-    s+=`<path d="${ecgPath(mx,my,mw,mh)}" fill="none" stroke="${col}" stroke-width="1.5" opacity=".78"/>`;
+    s+=`<path d="${wavePath(mx,my,mw,mh)}" fill="none" stroke="${col}" stroke-width="1.5" opacity=".78"/>`;
   }
   for(let i=0;i<2;i++){ const bx=64+i*232, by=204;                                            // beds + IV stands
     s+=`<rect x="${bx}" y="${by}" width="120" height="10" fill="#2a2440"/>`;
@@ -870,14 +922,16 @@ function idleBanter(){
     converse(d.m,d.c,'bonus');
     return;
   }
-  if(Math.random()<0.28){                                // explain the letters of an ECG
+  if(Math.random()<0.28){                                // quick bone & skeleton fact exchanges
     const e=pickPair([
-      {m:"Quick — the P wave?",c:"Atrial depolarization: the atria firing."},
-      {m:"What's the QRS complex?",c:"Ventricular depolarization — that big spike."},
-      {m:"And the T wave?",c:"Ventricular repolarization — the heart's reset."},
-      {m:"The PR interval shows…",c:"Atria-to-ventricle conduction time."},
-      {m:"That QT interval?",c:"Depol to repol — watch it with calcium swings!"},
-      {m:"Ever spot a U wave?",c:"Late repolarization — a small bump after the T."}
+      {m:"Quick — how do most bones form?",c:"Endochondral — bone replacing a cartilage model."},
+      {m:"Where are blood cells made?",c:"Red marrow — that's hematopoiesis."},
+      {m:"What's the skull's keystone bone?",c:"The sphenoid — it touches every other cranial bone."},
+      {m:"How many cervical vertebrae?",c:"Seven — C1 through C7, holding up the head."},
+      {m:"Active vitamin D is called…?",c:"Calcitriol — it pulls calcium in from the gut."},
+      {m:"Which marrow stores fat?",c:"Yellow marrow, in the medullary cavity."},
+      {m:"What lengthens a growing bone?",c:"The proliferative zone of the growth plate."},
+      {m:"What forms the lower jaw?",c:"The mandible — the only movable skull bone."}
     ]);
     converse(e.m,e.c,'good');
     return;
@@ -1052,7 +1106,7 @@ function recordStat(t,right){
 function weightedPick(items,n){   // pick n distinct items, biased by termWeight (no replacement)
   const pool=items.slice(), out=[];
   while(out.length<n && pool.length){
-    const ws=pool.map(it=>termWeight(it.a)); let total=ws.reduce((a,b)=>a+b,0), r=Math.random()*total, i=0;
+    const ws=pool.map(it=>termWeight(it.term)); let total=ws.reduce((a,b)=>a+b,0), r=Math.random()*total, i=0;
     while(i<ws.length-1 && r>ws[i]){ r-=ws[i]; i++; }
     out.push(pool[i]); pool.splice(i,1);
   }
@@ -1067,7 +1121,7 @@ function renderQuiz(){
   clearDocFx();
   patientHP=100; codeBlueHappened=false; updateHP(0);
   const cats=Object.keys(QUIZ);
-  BOARD={}; cats.forEach(c=>{ BOARD[c]=weightedPick(QUIZ[c],5).map((it,i)=>({p:(i+1)*100,q:it.q,a:it.a,opts:it.opts})); });
+  BOARD={}; cats.forEach(c=>{ BOARD[c]=weightedPick(QUIZ[c],5).map((it,i)=>({p:(i+1)*100,term:it.term,q:it.q,a:it.a,opts:it.opts})); });
   bonusCells=new Set(); const all=[]; cats.forEach((c,ci)=>[0,1,2,3,4].forEach(r=>all.push(ci+"-"+r)));
   shuffle(all).slice(0,2).forEach(k=>bonusCells.add(k));
   main.innerHTML=`
@@ -1210,7 +1264,7 @@ function quizAnswer(o,b,item,cell,isBonus){
   if(isRight){
     b.classList.add("correct");
     streak++; maxStreak=Math.max(maxStreak,streak); correct++;
-    recordStat(item.a,true);
+    recordStat(item.term,true);
     const mult=multiplierFor(streak);
     const speedBonus=timed?Math.round(item.p*0.5*Math.max(0,(QTIME-elapsed)/QTIME)):0;
     let gained=Math.round((item.p+speedBonus)*mult*(isBonus?2:1));
@@ -1219,7 +1273,7 @@ function quizAnswer(o,b,item,cell,isBonus){
     if(streak>=2 && streak%2===0) SFX.combo(streak);
     const rect=b.getBoundingClientRect();
     const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-    wordZoom(item.a,cx,cy);
+    wordZoom(item.term,cx,cy);
     burst(cx,cy,isBonus?40:24,isBonus?["#b388ff","#ffd45e","#fff"]:["#ff3ca6","#ffd45e","#2ad4ff"],isBonus?9:6);
     floatPop(cx-10,cy-10,"+"+gained,isBonus?"#b388ff":"#2ad4ff");
     animateNum($("#qScore"),score);
@@ -1231,16 +1285,15 @@ function quizAnswer(o,b,item,cell,isBonus){
     { const bt=banter({right:true,bonus:isBonus,streak,hp:patientHP,correct}); converse(bt.m,bt.c,bt.cls); }
     const bonusBump=$("#multi"); bonusBump.classList.remove("bump"); void bonusBump.offsetWidth; bonusBump.classList.add("bump");
     fb.className="feedback ok show";
-    fb.innerHTML=`✅ <span class="term">${item.a}</span>
-      <div class="defmain">${TERMS[item.a]||''}</div>
-      <div class="learnrow">${wikiLink(item.a,"🔎 Read more about "+item.a)}</div>
-      <span style="color:var(--muted);font-size:17px">+${item.p} base${speedBonus?` · +${speedBonus} speed`:''}${mult>1?` · ×${mult} combo`:''}${isBonus?' · ⚡×2 bonus':''} = <b style="color:var(--gold)">+${gained}</b></span>
-      ${optDefs(item)}`;
+    fb.innerHTML=`✅ <span class="term">${item.term}</span>
+      <div class="defmain">${TERMS[item.term]||''}</div>
+      <div class="learnrow">${wikiLink(item.term,"🔎 Read more about "+item.term)}</div>
+      <span style="color:var(--muted);font-size:17px">+${item.p} base${speedBonus?` · +${speedBonus} speed`:''}${mult>1?` · ×${mult} combo`:''}${isBonus?' · ⚡×2 bonus':''} = <b style="color:var(--gold)">+${gained}</b></span>`;
   }else{
     if(b) b.classList.add("wrong");
     $("#qChoices").querySelectorAll(".choice").forEach(x=>{if(x.textContent===item.a)x.classList.add("correct");});
-    missed.push(item.a);
-    recordStat(item.a,false);
+    missed.push(item.term);
+    recordStat(item.term,false);
     streak=0;
     const lost=Math.min(score,item.p);                 // don't drop below zero
     score-=lost;
@@ -1252,10 +1305,10 @@ function quizAnswer(o,b,item,cell,isBonus){
     setEmo(patientHP<=20 ? 'critical' : 'bad');
     { const bt=banter({right:false,timedOut,hp:patientHP,streak,correct}); converse(bt.m,bt.c,bt.cls); }
     fb.className="feedback no show";
-    fb.innerHTML=`${timedOut?'⏱️ <b>OUT OF TIME!</b> ':'❌ '}Correct answer: <span class="term">${item.a}</span>
-      <div class="defmain">${TERMS[item.a]||''}</div>
-      <div class="learnrow">${wikiLink(item.a,"🔎 Read more about "+item.a)}</div>
-      <span style="color:var(--muted);font-size:17px">−${lost} points · combo reset.</span>${optDefs(item)}`;
+    fb.innerHTML=`${timedOut?'⏱️ <b>OUT OF TIME!</b> ':'❌ '}Correct answer: <b style="color:var(--good)">${item.a}</b>
+      <div class="defmain"><span class="term">${item.term}</span> — ${TERMS[item.term]||''}</div>
+      <div class="learnrow">${wikiLink(item.term,"🔎 Read more about "+item.term)}</div>
+      <span style="color:var(--muted);font-size:17px">−${lost} points · combo reset.</span>`;
   }
   updateCombo();
   cleared++;
@@ -1283,91 +1336,96 @@ function rankFor(c){
 }
 
 /* ---- end-of-shift doctor debrief ---- */
-const CAT_OF={}; Object.keys(QUIZ).forEach(c=>QUIZ[c].forEach(it=>CAT_OF[it.a]=c));
+const CAT_OF={}; Object.keys(QUIZ).forEach(c=>QUIZ[c].forEach(it=>CAT_OF[it.term]=c));
 const DOMAIN={
-  "Calcium & Hormones":"an electrolyte/hormone crisis",
-  "Marrow & Blood":"a blood disorder",
-  "Bone Development":"a bone-formation problem",
-  "Growth & Origins":"a developmental bone problem",
-  "The Skull":"a head injury",
-  "Face, Spine & Chest":"trauma to the face, spine, or chest"
+  "Bone Formation":"bone formation",
+  "Cells, Matrix & Marrow":"bone cells & marrow",
+  "Growth Plate & Embryology":"the growth plate & embryology",
+  "Calcium & Hormones":"calcium & hormones",
+  "Skull":"the skull bones",
+  "Spine & Thorax":"the spine & rib cage"
 };
 const DANGER={
-  "red marrow":"blood-cell production shutting down","hematopoiesis":"the marrow failing to make new blood",
-  "yellow marrow":"marrow reserves never kicking in","osteoporosis":"a brittle bone shattering during transfer",
-  "nutrient foramen":"the bone's blood supply being cut off",
-  "hypercalcemia":"a calcium spike stalling the heart","hypocalcemia":"a prolonged QT sliding into a lethal arrhythmia",
-  "calcium homeostasis":"calcium swinging dangerously out of balance","calcitriol":"a vitamin-D–driven calcium collapse",
-  "thyroxine (T4)":"a thyroid storm racing the heart",
-  "frontal bone":"an unmanaged skull fracture","occipital bone":"a bleed at the base of the skull",
-  "parietal bone":"a depressed skull fracture","temporal bone":"a temporal bleed beside the ear",
-  "cranial bones":"an unrecognized skull fracture","facial bones":"a collapsing facial airway",
-  "maxilla":"an unstable mid-face fracture","mandible":"a broken jaw blocking the airway",
-  "zygomatic bone":"untreated facial trauma","nasal bone":"a nasal fracture obstructing the airway",
-  "cervical":"an unstabilized C-spine risking paralysis","thoracic":"a mid-spine fracture",
-  "lumbar":"a lower-spine injury","sacrum":"a pelvic-junction fracture","coccyx":"a tailbone injury",
-  "vertebral column":"an unprotected spinal cord",
-  "sternum":"ineffective chest compressions","ribs":"a flail chest and punctured lung",
-  "thoracic cage":"a crushed chest","axial skeleton":"catastrophic core trauma"
+  "endochondral ossification":"long bones failing to form","intramembranous ossification":"the flat skull bones failing to ossify",
+  "ossification":"bone formation grinding to a halt","ossification center":"bone never starting to lay down",
+  "primary ossification center":"the bone shaft never ossifying","secondary ossification center":"the bone ends never ossifying",
+  "modeling":"bones growing into the wrong shape","remodeling":"micro-damage never getting repaired",
+  "osteogenic cell":"no stem cells left to rebuild bone","osteoid":"bone matrix that never hardened",
+  "perichondrium":"cartilage left without its protective sheath","nutrient foramen":"the bone's blood supply cut off",
+  "projection":"muscles and tendons with nothing to anchor to",
+  "red marrow":"the body's blood factory failing","yellow marrow":"fat reserves with no blood backup",
+  "hematopoiesis":"blood-cell production shutting down","osteoporosis":"a brittle bone giving way",
+  "proliferative zone":"a growth plate that can't lengthen the bone","reserve zone":"the growth plate tearing free of the bone",
+  "zone of calcified matrix":"cartilage that never becomes bone","zone of maturation and hypertrophy":"bone growth stalling out",
+  "notochord":"the embryonic body axis never forming","somite":"the building blocks of the spine never forming",
+  "sclerotome":"the vertebrae and ribs never developing","mesenchyme":"the source tissue for the skeleton never differentiating",
+  "hypercalcemia":"blood calcium climbing dangerously high","hypocalcemia":"a calcium crash triggering muscle spasms",
+  "calcium homeostasis":"calcium spiraling out of balance","calcitriol":"vitamin D failing to keep calcium up",
+  "growth hormone":"a hormone imbalance stunting the skeleton","thyroxine (T4)":"a thyroid imbalance derailing bone metabolism",
+  "frontal bone":"an exposed, unprotected forehead","occipital bone":"a vulnerable skull base",
+  "parietal bone":"a fragile cranial vault","temporal bone":"damage near the ear and skull floor",
+  "ethmoid bone":"a collapse between the eyes","sphenoid bone":"the skull's keystone giving way",
+  "maxilla":"an unstable upper jaw","mandible":"a broken lower jaw","zygomatic bone":"a shattered cheekbone",
+  "palatine bone":"a failing roof of the mouth","nasal bone":"a caved-in nasal bridge",
+  "lacrimal bone":"tears with nowhere to drain","inferior nasal conchae":"unfiltered air hitting the lungs","vomer":"a collapsed nasal septum",
+  "axial skeleton":"the body's core support failing","cervical":"an unstable neck","thoracic":"a mid-back injury",
+  "lumbar":"a failing lower back","sacrum":"the spine-pelvis junction giving way","coccyx":"a tailbone injury",
+  "ribs":"an unprotected heart and lungs","sternum":"an exposed chest"
 };
 const RELEVANCE={
-  "hematopoiesis":"Phlebotomy — it's what a CBC reflects: blood cells born in red marrow.",
-  "red marrow":"Phlebotomy — the active blood-cell factory behind every draw result.",
-  "yellow marrow":"Phlebotomy — fatty reserve that turns red when the body needs more cells.",
-  "nutrient foramen":"Phlebotomy/EMT — where vessels enter bone; tied to marrow supply & IO access.",
-  "osteoporosis":"EMT — brittle bones; lift and move these patients gently to avoid fractures.",
-  "hypercalcemia":"ECG — high calcium SHORTENS the QT interval; catch it on the monitor.",
-  "hypocalcemia":"ECG — low calcium PROLONGS the QT; a real arrhythmia risk.",
-  "calcium homeostasis":"ECG/labs — calcium balance directly drives heart rhythm.",
-  "calcitriol":"ECG/labs — active vitamin D raises calcium, tying into rhythm stability.",
-  "thyroxine (T4)":"ECG — thyroid hormone sets heart rate; too much means tachycardia.",
-  "frontal bone":"EMT — forehead landmark when assessing head trauma.",
-  "occipital bone":"EMT — back-of-skull landmark; bleeds here are serious.",
-  "parietal bone":"EMT — top/side skull landmark for impact injuries.",
-  "temporal bone":"EMT — side of skull by the ear; fractures risk major bleeds.",
-  "cranial bones":"EMT — the 8 bones shielding the brain: core of head-injury checks.",
-  "facial bones":"EMT — facial fractures can threaten the airway.",
-  "maxilla":"EMT — upper-jaw fractures can compromise the airway.",
-  "mandible":"EMT — jaw injuries affect airway and breathing.",
-  "zygomatic bone":"EMT — cheekbone, a common facial-trauma landmark.",
-  "nasal bone":"EMT — nasal fractures can obstruct breathing.",
-  "cervical":"EMT — the C-spine you immobilize FIRST to prevent paralysis.",
-  "thoracic":"EMT — mid-spine that anchors the ribs.",
-  "lumbar":"EMT — lower-back spine, a frequent injury site.",
-  "sacrum":"EMT — the spine-to-pelvis junction.",
-  "coccyx":"EMT — tailbone; think fall-onto-buttocks injuries.",
-  "vertebral column":"EMT — protects the spinal cord; the reason for spinal precautions.",
-  "sternum":"ECG/EMT — CPR compression landmark AND the reference for V1/V2 lead placement.",
-  "ribs":"ECG/EMT — intercostal spaces guide chest-lead placement; fractures endanger the lungs.",
-  "thoracic cage":"EMT — protects the heart & lungs; framework for chest-trauma assessment.",
-  "axial skeleton":"EMT — skull + spine + chest: the body's central trauma core.",
-  "ossification":"A&P foundation — how the skeleton is built and repaired.",
-  "endochondral ossification":"Explains how long bones (most of the skeleton) form from cartilage.",
-  "intramembranous ossification":"Explains how flat bones like the skull form.",
-  "ossification center":"Foundational for reading bone growth on imaging.",
-  "primary ossification center":"Helps interpret pediatric bone development on X-rays.",
-  "secondary ossification center":"Marks growing bone ends — relevant to growth-plate injuries.",
-  "perichondrium":"Background for cartilage growth and healing.",
-  "modeling":"Explains how growing bones change shape.",
-  "remodeling":"Key to fracture healing and to osteoporosis.",
-  "projection":"Surface landmarks used to locate structures on a patient.",
-  "osteoid":"Bone-matrix context behind calcium & vitamin-D labs.",
-  "osteogenic cell":"The starting point of bone growth and repair.",
-  "reserve zone":"Growth-plate anatomy — relevant to pediatric fractures.",
-  "proliferative zone":"Why children's bones grow in length.",
-  "zone of maturation and hypertrophy":"Part of how long bones elongate.",
-  "zone of calcified matrix":"Final growth-plate zone before bone replaces cartilage.",
-  "notochord":"Embryologic origin of the vertebral column.",
-  "somite":"How the spine and ribs become segmented in development.",
-  "sclerotome":"Direct embryologic origin of the axial skeleton.",
-  "mesenchyme":"The source tissue for the whole skeleton and blood.",
-  "growth hormone":"Endocrine — excess or deficiency shows up in growth & metabolism.",
-  "ethmoid bone":"EMT — mid-face/orbit anatomy in facial trauma.",
-  "sphenoid bone":"EMT — central skull base; basal fractures are serious.",
-  "palatine bone":"EMT — palate/airway anatomy.",
-  "lacrimal bone":"EMT — orbital anatomy in facial trauma.",
-  "inferior nasal conchae":"EMT — nasal airway anatomy.",
-  "vomer":"EMT — nasal septum; deviation and fractures."
+  "endochondral ossification":"How most of your skeleton — including every long bone — is built from a cartilage template.",
+  "intramembranous ossification":"Explains how flat bones like the skull and clavicles form without a cartilage stage.",
+  "ossification":"The umbrella process behind building and repairing the entire skeleton.",
+  "ossification center":"Where bone first starts laying down — the seed of a new bone.",
+  "primary ossification center":"The shaft's first bone; the basis for reading bone development on X-rays.",
+  "secondary ossification center":"Marks the growing ends of a bone; tied to growth-plate development.",
+  "modeling":"Why a child's bones change shape, not just size, as they grow.",
+  "remodeling":"The lifelong turnover that heals micro-cracks and keeps blood calcium steady.",
+  "osteogenic cell":"The stem cell every osteoblast comes from — the start of bone growth and repair.",
+  "osteoid":"The soft scaffold that hardens into bone; central to mineralization and vitamin-D balance.",
+  "perichondrium":"Cartilage's wrapper that becomes the bone-building periosteum.",
+  "nutrient foramen":"The doorway for a bone's blood supply — no blood, no living bone.",
+  "projection":"Surface landmarks where muscles and ligaments grab on; key to naming bone features.",
+  "red marrow":"Your blood-cell factory — every red cell, white cell, and platelet starts here.",
+  "yellow marrow":"The fatty energy reserve that can switch back to red marrow when blood is needed.",
+  "hematopoiesis":"The whole reason marrow matters — it makes your blood.",
+  "osteoporosis":"The classic bone-loss disease; understanding remodeling explains why it happens.",
+  "proliferative zone":"Where dividing cartilage cells actually make a child's bones longer.",
+  "reserve zone":"The anchor that holds the growth plate to the end of the bone.",
+  "zone of calcified matrix":"The hand-off point where cartilage becomes bone at the growth plate.",
+  "zone of maturation and hypertrophy":"The swelling cartilage cells that drive a bone's increase in length.",
+  "notochord":"The embryonic rod that lays out the body axis and triggers the spine to form.",
+  "somite":"The segmented blocks that become vertebrae, ribs, muscle, and skin.",
+  "sclerotome":"The exact part of a somite that turns into the vertebrae and ribs.",
+  "mesenchyme":"The embryonic source tissue for bone, cartilage, blood, and more.",
+  "hypercalcemia":"Too much blood calcium — it slows the nervous system down.",
+  "hypocalcemia":"Too little blood calcium — nerves and muscles go into overdrive.",
+  "calcium homeostasis":"The balance the skeleton helps maintain so nerves, muscles, and clotting work.",
+  "calcitriol":"Active vitamin D — the hormone that pulls calcium in from your gut.",
+  "growth hormone":"The pituitary signal that makes bones grow longer and thicker.",
+  "thyroxine (T4)":"Thyroid hormone that keeps bone-building and metabolism on track.",
+  "axial skeleton":"The body's central column — skull, spine, and rib cage — that protects vital organs.",
+  "frontal bone":"Your forehead and the roof of your eye sockets.",
+  "occipital bone":"The back of the skull, with the hole the spinal cord passes through.",
+  "parietal bone":"The paired bones that make up most of the cranial roof.",
+  "ethmoid bone":"The delicate bone between the eyes that the smell nerves pass through.",
+  "sphenoid bone":"The keystone bone that locks the cranium together and cradles the pituitary.",
+  "temporal bone":"Houses your hearing and balance organs and meets the jaw.",
+  "maxilla":"The upper jaw that holds your top teeth and forms the front of the palate.",
+  "mandible":"The only movable skull bone — your lower jaw for chewing and speaking.",
+  "zygomatic bone":"Your cheekbone and part of a major muscle-attachment arch.",
+  "palatine bone":"Forms the back of the roof of your mouth.",
+  "nasal bone":"The little bones that make the bridge of your nose.",
+  "lacrimal bone":"The tiny orbital bone that channels your tears into the nose.",
+  "inferior nasal conchae":"Scroll bones that warm and humidify the air you breathe.",
+  "vomer":"The bone that forms the bottom of your nasal septum.",
+  "cervical":"The seven neck vertebrae that hold up and turn your head.",
+  "thoracic":"The twelve vertebrae that anchor your ribs.",
+  "lumbar":"The big lower-back vertebrae that carry most of your weight.",
+  "sacrum":"The fused wedge of bone that links your spine to your pelvis.",
+  "coccyx":"Your tailbone and an anchor for pelvic-floor muscles.",
+  "ribs":"The cage that shields your heart and lungs and moves air in and out.",
+  "sternum":"The breastbone that the ribs attach to in front."
 };
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
 function culprit(){
@@ -1375,7 +1433,7 @@ function culprit(){
   const tally={}; uniq.forEach(t=>{const c=CAT_OF[t]; tally[c]=(tally[c]||0)+1;});
   let topCat=null,topN=0; Object.keys(tally).forEach(c=>{if(tally[c]>topN){topN=tally[c];topCat=c;}});
   let term=null,topP=-1;
-  uniq.filter(t=>CAT_OF[t]===topCat).forEach(t=>{ const p=((BOARD[topCat]||[]).find(i=>i.a===t)||{}).p||0; if(p>topP){topP=p;term=t;} });
+  uniq.filter(t=>CAT_OF[t]===topCat).forEach(t=>{ const p=((BOARD[topCat]||[]).find(i=>i.term===t)||{}).p||0; if(p>topP){topP=p;term=t;} });
   return {cat:topCat, domain:DOMAIN[topCat], term, danger:DANGER[term]||("complications from "+DOMAIN[topCat])};
 }
 function debrief(died){
@@ -1556,13 +1614,13 @@ function renderSplash(){
     <div class="splash">
       <div class="splash-bots">${repAvatar('#ff3ca6')}${repAvatar('#2ad4ff')}</div>
       <h1 class="splash-title">CODE QUIZ: STAT!</h1>
-      <p class="splash-sub">A retro med-sim study game · EMT · ECG Tech · Phlebotomist</p>
+      <p class="splash-sub">A retro anatomy study game · Bones &amp; the Axial Skeleton</p>
       <div class="splash-card">
         <p>🩺 Tap tiles on the board and answer the A&amp;P call before the timer runs out.</p>
         <p>🔥 Chain right answers for <b>combo multipliers</b> · ⚡ <b>bonus tiles</b> pay double.</p>
         <p>❤️ Correct answers <b>heal</b> the patient; wrong ones <b>hurt</b> them (more for higher tiles) — <b>if they flatline, it's game over.</b></p>
         <p>🤖 Dr. Magenta &amp; Dr. Cyan quiz you and call the diagnosis at shift's end.</p>
-        <p>💬 <b>Watch their banter during play</b> — between calls they drop term facts and ECG tips, so pausing pays off.</p>
+        <p>💬 <b>Watch their banter during play</b> — between calls they drop bone facts, so pausing pays off.</p>
         <p>🧠 The board <b>adapts</b> — terms you miss (or haven't seen) show up more often until you nail them.</p>
         <p style="color:var(--muted)">⏱ Prefer no pressure? Toggle <b>TIMED MODE</b> off any time.</p>
       </div>
