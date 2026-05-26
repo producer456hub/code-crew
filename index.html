@@ -412,10 +412,22 @@
     header{padding:8px 10px;gap:7px;}
     header .logo{font-size:11px;gap:6px;}
     header .tagline{display:none;}
-    .iconbtn,.backbtn{font-size:9px;padding:8px;}
-    main{padding:12px 10px 112px;}
-    #ticker{font-size:15px;top:50px;bottom:auto;padding:8px 11px;}
-    .game h2{font-size:13px;}
+    .iconbtn,.backbtn{font-size:0;padding:9px 10px;}        /* icon-only on phone — hide the long labels */
+    #timerBtn::before{content:"⏱";font-size:16px;line-height:1;}
+    #muteBtn::before{content:"🔊";font-size:14px;line-height:1;}
+    #muteBtn.btn-off::before{content:"🔇";}
+    #restartBtn::before{content:"↻";font-size:14px;line-height:1;color:var(--phos);}
+    .iconbtn.btn-off::before{opacity:.4;}                   /* dim the icon when that mode is OFF */
+    main{padding:12px 10px 110px;}
+    #ticker{font-size:14px;top:48px;bottom:auto;padding:6px 10px;max-width:none;width:calc(100% - 12px);
+            box-shadow:var(--bevel),0 0 10px rgba(255,212,94,.18);line-height:1.25;}
+    #ticker b{font-size:9px;margin-right:5px;}
+    .game.play{display:flex;flex-direction:column;}         /* lets the HP bar sit right under the score */
+    .game.play h2{display:none;}                            /* the header already reads CODE QUIZ: STAT! */
+    .game.play .sub{order:0;font-size:14px;margin:0 0 9px;line-height:1.3;}
+    .game.play .stats{order:1;} .game.play #patient{order:2;}
+    .game.play .progress{order:3;} .game.play .board{order:4;} .game.play #qArea{order:5;}
+    .game h2{font-size:13px;}                                /* other screens keep a visible title */
     .game .sub{font-size:15px;}
     .splash-title{font-size:19px;}
     .splash-sub{font-size:16px;}
@@ -423,9 +435,13 @@
     .splash-bots .repface{width:66px;}
     .splash-ask{font-size:12px;}
     .splash-go{font-size:18px;padding:14px 34px;}
-    .stat{font-size:14px;padding:5px 8px;} .stat b{font-size:11px;}
-    .combo{margin-left:0;width:100%;justify-content:flex-start;}
-    .combobar{width:90px;}
+    .stats{gap:6px;margin-bottom:8px;align-items:center;}
+    .stat{font-size:12px;padding:4px 7px;border-left-width:3px;} .stat b{font-size:11px;}
+    .combo{margin-left:auto;width:auto;gap:6px;justify-content:flex-end;}
+    .combo .lab{display:none;}                              /* the bar + multiplier are self-explanatory */
+    .combobar{width:52px;height:12px;}
+    .multi{font-size:11px;padding:4px 7px;}
+    .progress{height:10px;margin:0 0 9px;}
     .board{gap:4px;}
     .cat{font-size:10px;min-height:34px;padding:4px 1px;line-height:1.05;}
     .cell{font-size:13px;padding:12px 1px;}
@@ -434,11 +450,12 @@
     .feedback{font-size:16px;}
     .doc{width:54px;}
     .doc.left{left:2px;} .doc.right{right:2px;}
-    #patient{gap:8px;padding:6px 8px;}
-    .pscreen{width:44px;height:44px;}
-    .pface{width:40px;height:40px;}
-    .phpbar{width:92px;}
-    .plabel{font-size:8px;margin-bottom:3px;} .pstatus{font-size:9px;margin-top:3px;}
+    #patient{gap:8px;padding:5px 10px;width:100%;max-width:none;margin:0 0 9px;
+             justify-content:flex-start;border-left-width:3px;}
+    #patient::before{content:"♥";color:var(--bad);font-size:14px;line-height:1;text-shadow:0 0 7px var(--bad);}
+    .pscreen,.plabel,.pstatus{display:none;}                /* slim HP strip: drop the face + labels on phone */
+    .pinfo{flex:1;}
+    .phpbar{width:100%;height:12px;}
     .verdict{font-size:16px;padding:12px;}
     .diagnosis{font-size:18px;} .diagnosis b{font-size:12px;}
     .rep-bubble{font-size:16px;padding:9px 10px;} .rep-bubble b{font-size:10px;}
@@ -797,7 +814,7 @@ function tick(who,text){
   const t=$("#ticker"); if(!t)return;
   const col=who==="M"?"#ff3ca6":"#2ad4ff", name=who==="M"?"DR. MAGENTA":"DR. CYAN";
   const line=`<div class="tk-line"><b style="color:${col}">${name}</b> ${text}</div>`;
-  if(who==="M") t.innerHTML=line;        // new exchange starts with Magenta
+  if(who==="M" || isMobileBoard()) t.innerHTML=line;  // phone: one line at a time (less clutter); desktop stacks the exchange
   else t.innerHTML+=line;                // Cyan's reply appends below — both stay visible
   t.classList.remove("on"); void t.offsetWidth; t.classList.add("on");
   clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),6500);  // auto-hide after the exchange
@@ -927,10 +944,10 @@ function hurtPatient(p){ const amt=Math.round(p/30); updateHP(-amt); patientPuls
 /* ===================== SOUND ENGINE (chiptune synth, no files) ===================== */
 let actx=null, soundOn=true;
 const muteBtn=$("#muteBtn");
-muteBtn.onclick=()=>{soundOn=!soundOn; muteBtn.textContent=soundOn?"SND":"MUTE";};
+muteBtn.onclick=()=>{soundOn=!soundOn; muteBtn.textContent=soundOn?"SND":"MUTE"; muteBtn.classList.toggle("btn-off",!soundOn);};
 let timed=true; try{ timed=localStorage.getItem('cc_timed')!=='off'; }catch(e){}
 const timerBtn=$("#timerBtn");
-function updTimerBtn(){ if(timerBtn) timerBtn.textContent=timed?"⏱ TIMED MODE ON":"⏱ TIMED MODE OFF"; }
+function updTimerBtn(){ if(timerBtn){ timerBtn.textContent=timed?"⏱ TIMED MODE ON":"⏱ TIMED MODE OFF"; timerBtn.classList.toggle("btn-off",!timed); } }
 if(timerBtn) timerBtn.onclick=()=>{ timed=!timed; try{localStorage.setItem('cc_timed',timed?'on':'off');}catch(e){} updTimerBtn(); };
 updTimerBtn();
 function initAudio(){ if(!actx){ try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(actx&&actx.state==="suspended") actx.resume(); }
@@ -1054,7 +1071,7 @@ function renderQuiz(){
   bonusCells=new Set(); const all=[]; cats.forEach((c,ci)=>[0,1,2,3,4].forEach(r=>all.push(ci+"-"+r)));
   shuffle(all).slice(0,2).forEach(k=>bonusCells.add(k));
   main.innerHTML=`
-    <div class="game">
+    <div class="game play">
       <h2>📋 CODE QUIZ: STAT!</h2>
       <p class="sub">Pick a value, stack combos, keep the patient alive. ⚡ tiles pay double · ⏱ toggles the timer.</p>
       <div class="stats">
