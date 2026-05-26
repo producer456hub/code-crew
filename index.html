@@ -1103,12 +1103,13 @@ function recordStat(t,right){
   s.seen++; if(right){ s.correct++; s.streak++; } else { s.wrong++; s.streak=0; } s.last=Date.now();
   saveStats();
 }
-function weightedPick(items,n){   // pick n distinct items, biased by termWeight (no replacement)
+function weightedPick(items,n){   // pick n items with DISTINCT terms, biased by termWeight (no replacement)
   const pool=items.slice(), out=[];
   while(out.length<n && pool.length){
     const ws=pool.map(it=>termWeight(it.term)); let total=ws.reduce((a,b)=>a+b,0), r=Math.random()*total, i=0;
     while(i<ws.length-1 && r>ws[i]){ r-=ws[i]; i++; }
-    out.push(pool[i]); pool.splice(i,1);
+    const chosen=pool[i]; out.push(chosen);
+    for(let k=pool.length-1;k>=0;k--){ if(pool[k].term===chosen.term) pool.splice(k,1); }  // drop this term's other question too, so a term can't appear twice on one board
   }
   return out;
 }
