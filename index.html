@@ -908,6 +908,7 @@ function renderQuiz(){
   cells.forEach((c,i)=>{ c.style.animationDelay=(i*18)+"ms"; c.classList.add("in"); c.onclick=()=>quizOpen(c); });
   updateCombo();
   if(actx && actx.state==="running") SFX.welcome();   // plays on Play again / New board (first start fires from the GO! button)
+  setTimeout(()=>converse("Welcome to your shift, doctor!","Vitals are steady — let's keep 'em that way.",'good'),700);  // greet immediately so the banter is visible right away
 }
 
 function updateCombo(){
