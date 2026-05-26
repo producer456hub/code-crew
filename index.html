@@ -389,7 +389,8 @@
   .game h2{text-shadow:0 0 6px var(--quiz),2px 0 rgba(255,60,166,.4),-2px 0 rgba(42,212,255,.4);}
   header .logo{text-shadow:0 0 8px var(--phos),2px 0 rgba(255,60,166,.4),-2px 0 rgba(42,212,255,.35);}
 
-  body.focus #city, body.focus #grid, body.focus #scanbar, body.focus #crt{display:none !important;}  /* focus mode: clean background */
+  #city,#grid{transition:opacity .8s ease;}                       /* backdrop shows at the start... */
+  body.playing #city, body.playing #grid{opacity:0;}              /* ...then fades out once you open the first question */
   #fx{position:fixed;inset:0;pointer-events:none;z-index:40;}
   footer{font-family:var(--rt);padding:10px 18px;text-align:center;color:var(--muted);font-size:17px;border-top:4px solid var(--line);position:relative;z-index:2;}
   ::-webkit-scrollbar{width:12px;height:12px;}
@@ -464,7 +465,6 @@
   <header>
     <div class="logo"><span class="pulse">♥</span> CODE QUIZ: STAT! <span class="tagline">EMT·ECG·PHLEB</span></div>
     <div class="spacer"></div>
-    <button class="iconbtn" id="focusBtn" title="Hide the background (focus mode)">👁 FOCUS</button>
     <button class="iconbtn" id="timerBtn" title="Timed mode on/off">⏱ TIMED MODE ON</button>
     <button class="iconbtn" id="muteBtn" title="Sound on/off">SND</button>
     <button class="backbtn hidden" id="restartBtn">↻ NEW</button>
@@ -928,11 +928,6 @@ function hurtPatient(p){ const amt=Math.round(p/30); updateHP(-amt); patientPuls
 let actx=null, soundOn=true;
 const muteBtn=$("#muteBtn");
 muteBtn.onclick=()=>{soundOn=!soundOn; muteBtn.textContent=soundOn?"SND":"MUTE";};
-let focusMode=false; try{ focusMode=localStorage.getItem('cc_focus')==='on'; }catch(e){}
-const focusBtn=$("#focusBtn");
-function updFocus(){ document.body.classList.toggle("focus",focusMode); if(focusBtn) focusBtn.textContent=focusMode?"👁 FOCUS ✓":"👁 FOCUS"; }
-if(focusBtn) focusBtn.onclick=()=>{ focusMode=!focusMode; try{localStorage.setItem('cc_focus',focusMode?'on':'off');}catch(e){} updFocus(); };
-updFocus();
 let timed=true; try{ timed=localStorage.getItem('cc_timed')!=='off'; }catch(e){}
 const timerBtn=$("#timerBtn");
 function updTimerBtn(){ if(timerBtn) timerBtn.textContent=timed?"⏱ TIMED MODE ON":"⏱ TIMED MODE OFF"; }
@@ -1051,6 +1046,7 @@ function renderQuiz(){
   stopTimer();
   restartBtn.classList.remove("hidden");
   score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0; pendingSubmit=null; dead=false; mobileCat=null;
+  document.body.classList.remove("playing");   // backdrop visible again at the start of each game
   clearDocFx();
   patientHP=100; codeBlueHappened=false; updateHP(0);
   const cats=Object.keys(QUIZ);
@@ -1128,6 +1124,7 @@ function stopTimer(){ if(timerRAF){cancelAnimationFrame(timerRAF); timerRAF=null
 
 function quizOpen(cell){
   if(dead || cell.classList.contains("used"))return;
+  document.body.classList.add("playing");   // fade out the backdrop on first question
   stopTimer(); lastActivity=Date.now();
   initAudio(); SFX.click();
   cell.classList.add("flip");
