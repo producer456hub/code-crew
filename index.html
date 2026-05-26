@@ -205,9 +205,11 @@
   @keyframes floatup{0%{transform:translateY(0) scale(.6);opacity:0}20%{transform:translateY(-8px) scale(1.1);opacity:1}100%{transform:translateY(-70px) scale(1);opacity:0}}
 
   /* ===== cyberpunk medics ===== */
-  .doc{position:fixed;bottom:30px;width:150px;z-index:3;pointer-events:none;--neon:#ff3ca6;transform-origin:bottom center;animation:docbob 3.4s ease-in-out infinite;}
-  .doc.left{left:24px;}
-  .doc.right{right:24px;--neon:#2ad4ff;animation-delay:.7s;}
+  .doc{position:fixed;bottom:30px;width:150px;z-index:3;pointer-events:none;--neon:#ff3ca6;transform-origin:bottom center;animation:docbob 3.4s ease-in-out infinite;transition:left .35s ease,right .35s ease;}
+  .doc.left{left:40px;}
+  .doc.right{right:40px;--neon:#2ad4ff;animation-delay:.7s;}
+  .doc.tuck.left{left:-52px;}    /* slide out of the way while a question is open */
+  .doc.tuck.right{right:-52px;}
   .doc.right .docsvg{transform:scaleX(-1);}
   .docsvg{width:100%;height:auto;display:block;filter:drop-shadow(0 0 3px var(--neon));}
   .emo{position:absolute;top:-12px;left:50%;font-size:32px;opacity:0;pointer-events:none;line-height:1;filter:drop-shadow(0 0 4px rgba(0,0,0,.5));}
@@ -759,7 +761,8 @@ function setEmo(kind){
   });
 }
 function docFx(cls,ms){ [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; d.classList.remove(cls); void d.offsetWidth; d.classList.add(cls); if(ms)setTimeout(()=>d.classList.remove(cls),ms); }); }
-function clearDocFx(){ [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; d.classList.remove("dance","cheer","rollin","zap"); }); }
+function clearDocFx(){ [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; d.classList.remove("dance","cheer","rollin","zap","tuck"); }); }
+function tuckDocs(on){ [$("#docL"),$("#docR")].forEach(d=>{ if(d) d.classList.toggle("tuck",!!on); }); }
 function setAura(){ const c=streak>=8?"aura3":streak>=4?"aura2":streak>=2?"aura1":""; [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return; d.classList.remove("aura1","aura2","aura3"); if(c)d.classList.add(c); }); }
 function fistBump(){ docFx("cheer",600); setEmo("cheer"); const cx=innerWidth/2, cy=innerHeight*0.58; burst(cx,cy,28,["#ffd45e","#ff3ca6","#2ad4ff","#fff"],8); floatPop(cx-40,cy-12,"✊ FIST BUMP!","#ffd45e"); }
 function rollIn(){ docFx("rollin",700); }
@@ -1089,11 +1092,11 @@ function quizOpen(cell){
     b.onclick=()=>quizAnswer(o,b,item,cell,isBonus);
     $("#qChoices").appendChild(b);
   });
-  { const bd=$("#board"); if(bd) bd.classList.add("dim"); }   // spotlight the Q&A
+  { const bd=$("#board"); if(bd) bd.classList.add("dim"); tuckDocs(true); }   // spotlight the Q&A, bots slide aside
   const qc=$("#qClose"); if(qc) qc.onclick=()=>{   // back out without using the tile
     stopTimer(); qToken++; answered=true;
     cell.classList.remove("flip");
-    const bd=$("#board"); if(bd) bd.classList.remove("dim");
+    const bd=$("#board"); if(bd) bd.classList.remove("dim"); tuckDocs(false);
     const a=$("#qArea"); if(a) a.innerHTML="";
   };
   qStart=Date.now();
@@ -1125,7 +1128,7 @@ function optDefs(item){   // definitions of the OTHER options (distractors), as 
 }
 function quizAnswer(o,b,item,cell,isBonus){
   if(answered)return; answered=true; stopTimer();
-  { const bd=$("#board"); if(bd) bd.classList.remove("dim"); }
+  { const bd=$("#board"); if(bd) bd.classList.remove("dim"); tuckDocs(false); }
   $("#qChoices").querySelectorAll(".choice").forEach(x=>x.onclick=null);
   const fb=$("#qFb");
   cell.classList.add("used");
