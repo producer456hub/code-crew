@@ -682,26 +682,28 @@ const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
   </g>
 </svg>`;
 $("#docL").innerHTML=DOCSVG+'<span class="emo"></span>'; $("#docR").innerHTML=DOCSVG+'<span class="emo"></span>';
-/* pixel cyberpunk hospital skyline backdrop (built once) */
+/* pixel cyberpunk hospital INTERIOR backdrop (built once) */
 function buildCity(){
   const W=480,H=260; let s=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMax slice" class="citysvg">`;
-  let x=-12;
-  while(x<W){
-    const bw=24+(Math.random()*36|0), bh=70+(Math.random()*150|0), by=H-bh;
-    s+=`<rect x="${x}" y="${by}" width="${bw-3}" height="${bh}" fill="#0d0a18"/>`;
-    const col=Math.random()<.5?'#ff3ca6':'#2ad4ff';
-    s+=`<rect x="${x}" y="${by}" width="${bw-3}" height="2" fill="${col}" opacity=".55"/>`;
-    for(let wy=by+8; wy<H-4; wy+=9){
-      for(let wx=x+4; wx<x+bw-6; wx+=8){
-        if(Math.random()<.42){
-          const wc=Math.random()<.45?'#ff3ca6':(Math.random()<.5?'#2ad4ff':'#ffd45e');
-          s+=`<rect x="${wx}" y="${wy}" width="3" height="4" fill="${wc}" opacity="${(.3+Math.random()*.5).toFixed(2)}"/>`;
-        }
-      }
-    }
-    x+=bw;
+  s+=`<rect x="0" y="0" width="${W}" height="${H}" fill="#0c0a16"/>`;                       // wall
+  for(let i=0;i<5;i++) s+=`<rect x="${18+i*96}" y="9" width="66" height="4" fill="#2ad4ff" opacity=".35"/>`;  // ceiling light strips
+  s+=`<rect x="0" y="170" width="${W}" height="3" fill="#ff3ca6" opacity=".45"/>`;          // baseboard neon
+  s+=`<g class="hcross"><rect x="${W/2-6}" y="38" width="12" height="44"/><rect x="${W/2-22}" y="54" width="44" height="12"/></g>`;  // cross sign
+  for(let i=0;i<4;i++){ const mw=70,mh=40,mx=36+i*122,my=96;                                 // wall vital monitors
+    if(Math.abs(mx+mw/2 - W/2) < 46) continue;                                                // skip behind the cross
+    s+=`<rect x="${mx}" y="${my}" width="${mw}" height="${mh}" fill="#04140d" stroke="#1f7a4d" stroke-width="1"/>`;
+    const col=i%2?'#2ad4ff':'#39ff14'; let d=`M${mx+4} ${my+mh-13}`;
+    for(let px=mx+4; px<mx+mw-8; px+=20) d+=` l6 0 l2 -16 l3 18 l3 -7 l6 0`;
+    s+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="1.5" opacity=".7"/>`;
   }
-  s+=`<g class="hcross"><rect x="${W/2-5}" y="34" width="10" height="40"/><rect x="${W/2-20}" y="49" width="40" height="10"/></g>`;
+  for(let i=0;i<2;i++){ const bx=64+i*232, by=204;                                            // beds + IV stands
+    s+=`<rect x="${bx}" y="${by}" width="120" height="10" fill="#2a2440"/>`;
+    s+=`<rect x="${bx+6}" y="${by-15}" width="108" height="17" rx="4" fill="#cdd9e8" opacity=".22"/>`;
+    s+=`<rect x="${bx+8}" y="${by-13}" width="26" height="13" rx="3" fill="#cdd9e8" opacity=".4"/>`;
+    s+=`<rect x="${bx+4}" y="${by-16}" width="112" height="2" fill="#2ad4ff" opacity=".4"/>`;
+    s+=`<rect x="${bx}" y="${by+10}" width="6" height="18" fill="#2a2440"/><rect x="${bx+114}" y="${by+10}" width="6" height="18" fill="#2a2440"/>`;
+    const ix=bx+132; s+=`<rect x="${ix}" y="${by-52}" width="3" height="76" fill="#9fb2c9" opacity=".5"/><rect x="${ix-6}" y="${by-60}" width="14" height="16" rx="2" fill="#2ad4ff" opacity=".45"/>`;
+  }
   return s+`</svg>`;
 }
 (function(){ const c=document.getElementById("city"); if(c) c.innerHTML=buildCity(); })();
