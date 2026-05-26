@@ -204,9 +204,9 @@
   @keyframes floatup{0%{transform:translateY(0) scale(.6);opacity:0}20%{transform:translateY(-8px) scale(1.1);opacity:1}100%{transform:translateY(-70px) scale(1);opacity:0}}
 
   /* ===== cyberpunk medics ===== */
-  .doc{position:fixed;bottom:30px;width:150px;z-index:3;pointer-events:none;--neon:#ff3ca6;animation:docbob 3.4s ease-in-out infinite;}
-  .doc.left{left:12px;}
-  .doc.right{right:12px;--neon:#2ad4ff;animation-delay:.7s;}
+  .doc{position:fixed;bottom:30px;width:150px;z-index:3;pointer-events:none;--neon:#ff3ca6;transform-origin:bottom center;animation:docbob 3.4s ease-in-out infinite;}
+  .doc.left{left:24px;}
+  .doc.right{right:24px;--neon:#2ad4ff;animation-delay:.7s;}
   .doc.right .docsvg{transform:scaleX(-1);}
   .docsvg{width:100%;height:auto;display:block;filter:drop-shadow(0 0 3px var(--neon));}
   .emo{position:absolute;top:-12px;left:50%;font-size:32px;opacity:0;pointer-events:none;line-height:1;filter:drop-shadow(0 0 4px rgba(0,0,0,.5));}
@@ -260,8 +260,8 @@
   .doc.react-bonus{animation:dochop .36s 4;}
   .doc.react-win{animation:dochop .5s 6;}
   .doc.react-bad{animation:docshake .4s 2;}
-  @keyframes dochop{0%{transform:translateY(0)}30%{transform:translateY(-18px)}60%{transform:translateY(0)}}
-  @keyframes docshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+  @keyframes dochop{0%{transform:translateY(0) scale(1)}30%{transform:translateY(-20px) scale(1.22)}60%{transform:translateY(0) scale(1.08)}100%{transform:translateY(0) scale(1)}}
+  @keyframes docshake{0%,100%{transform:translateX(0) scale(1)}20%{transform:translateX(-8px) scale(1.12)}60%{transform:translateX(8px) scale(1.12)}}
   .doc.react-good .armR,.doc.react-combo .armR,.doc.react-bonus .armR,.doc.react-win .armR{animation:armwave .5s ease 2;}
   @keyframes armwave{0%{transform:rotate(0)}25%{transform:rotate(-60deg)}50%{transform:rotate(-40deg)}75%{transform:rotate(-60deg)}100%{transform:rotate(-46deg)}}
   .doc.react-bad .armR{animation:armflail .22s ease 3;}
@@ -689,7 +689,7 @@ function react(type){
   [$("#docL"),$("#docR")].forEach(d=>{ if(!d)return;
     d.classList.remove("react-good","react-bad","react-combo","react-bonus","react-win");
     void d.offsetWidth; d.classList.add(cls);
-    clearTimeout(d._rt); d._rt=setTimeout(()=>d.classList.remove(cls),(type==="win"||type==="lose")?2200:1200);
+    clearTimeout(d._rt); d._rt=setTimeout(()=>d.classList.remove(cls),(type==="win"||type==="lose")?2400:1600);
   });
 }
 const EMO={good:["😊","👍","✨","😎","💪"],great:["🤩","🔥","🎉","⭐","💯"],bad:["😰","💦","😨","😵‍💫","⚡"],critical:["😱","🆘","💔","😭"],cheer:["✊","🙌","🤝"],zap:["⚡","🔌","💥"],sleep:["💤","😴","🥱"]};
