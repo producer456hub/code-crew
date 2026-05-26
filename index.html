@@ -104,11 +104,11 @@
   .feedback.ok{background:#0a2230;border-left:5px solid var(--good);}
   .feedback.no{background:#2c0a10;border-left:5px solid var(--bad);}
   .feedback .term{font-family:var(--px);font-size:13px;color:var(--gold);text-shadow:0 0 2px var(--gold);}
-  .defs{margin-top:12px;display:grid;gap:7px;text-align:left;border-top:1px solid var(--line);padding-top:10px;}
-  .optdef{font-size:17px;line-height:1.35;color:var(--muted);}
+  .defmain{font-size:20px;line-height:1.45;margin:9px 0 7px;color:var(--text);}
+  .defs{margin-top:12px;display:grid;gap:6px;text-align:left;border-top:1px solid var(--line);padding-top:10px;}
+  .defslabel{font-family:var(--px);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:2px;}
+  .optdef{font-size:16px;line-height:1.35;color:var(--muted);}
   .optdef b{color:var(--text);}
-  .optdef.ok{color:var(--text);}
-  .optdef.ok b{color:var(--good);}
 
   /* board */
   .board{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
@@ -982,8 +982,10 @@ function quizOpen(cell){
   }
 }
 
-function optDefs(item){   // show every option's definition after answering (learn the distractors too)
-  return `<div class="defs">${item.opts.map(o=>`<div class="optdef${o===item.a?' ok':''}">${o===item.a?'✓':'•'} <b>${o}</b> — ${TERMS[o]||''}</div>`).join("")}</div>`;
+function optDefs(item){   // definitions of the OTHER options (distractors), as a secondary note
+  const others=item.opts.filter(o=>o!==item.a);
+  if(!others.length) return "";
+  return `<div class="defs"><div class="defslabel">THE OTHER OPTIONS</div>${others.map(o=>`<div class="optdef">• <b>${o}</b> — ${TERMS[o]||''}</div>`).join("")}</div>`;
 }
 function quizAnswer(o,b,item,cell,isBonus){
   if(answered)return; answered=true; stopTimer();
@@ -1014,7 +1016,8 @@ function quizAnswer(o,b,item,cell,isBonus){
     { const bt=banter({right:true,bonus:isBonus,streak,hp:patientHP,correct}); converse(bt.m,bt.c,bt.cls); }
     const bonusBump=$("#multi"); bonusBump.classList.remove("bump"); void bonusBump.offsetWidth; bonusBump.classList.add("bump");
     fb.className="feedback ok show";
-    fb.innerHTML=`✅ <span class="term">${item.a}</span><br>
+    fb.innerHTML=`✅ <span class="term">${item.a}</span>
+      <div class="defmain">${TERMS[item.a]||''}</div>
       <span style="color:var(--muted);font-size:17px">+${item.p} base${speedBonus?` · +${speedBonus} speed`:''}${mult>1?` · ×${mult} combo`:''}${isBonus?' · ⚡×2 bonus':''} = <b style="color:var(--gold)">+${gained}</b></span>
       ${optDefs(item)}`;
   }else{
@@ -1032,7 +1035,9 @@ function quizAnswer(o,b,item,cell,isBonus){
     setEmo(patientHP<=20 ? 'critical' : 'bad');
     { const bt=banter({right:false,timedOut,hp:patientHP,streak,correct}); converse(bt.m,bt.c,bt.cls); }
     fb.className="feedback no show";
-    fb.innerHTML=`${timedOut?'⏱️ <b>OUT OF TIME!</b> ':'❌ '}Correct answer: <span class="term">${item.a}</span><br><span style="color:var(--muted);font-size:17px">−${lost} points · combo reset.</span>${optDefs(item)}`;
+    fb.innerHTML=`${timedOut?'⏱️ <b>OUT OF TIME!</b> ':'❌ '}Correct answer: <span class="term">${item.a}</span>
+      <div class="defmain">${TERMS[item.a]||''}</div>
+      <span style="color:var(--muted);font-size:17px">−${lost} points · combo reset.</span>${optDefs(item)}`;
   }
   updateCombo();
   cleared++;
