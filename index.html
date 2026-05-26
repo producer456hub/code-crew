@@ -822,15 +822,16 @@ function updateHP(delta){
   patientHP=Math.max(0,Math.min(100,patientHP+delta));
   const f=$("#phpFill"); if(f){ f.style.width=patientHP+"%"; f.style.background=patientHP>60?"var(--good)":patientHP>30?"var(--gold)":"var(--bad)"; }
   docMood();
-  if(patientHP<=0 && delta<0) codeBlue(); else refreshStatus();
+  if(patientHP<=0 && delta<0) gameOver(); else refreshStatus();
 }
-function codeBlue(){ const p=$("#patient"), st=$("#pStatus");
-  codeBlueHappened=true;
-  if(st){st.textContent="CODE BLUE!";st.style.color="var(--bad)";}
-  if(p)p.classList.add("codeblue");
-  vflash("rgba(255,59,59,1)");
-  defib();   // bots zap the patient back
-  setTimeout(()=>{ if(p)p.classList.remove("codeblue"); patientHP=45; updateHP(0); },1100);
+function gameOver(){            // patient flatlines -> you lose (no revive)
+  if(dead) return; dead=true;
+  codeBlueHappened=true; stopTimer();
+  const p=$("#patient"), st=$("#pStatus");
+  if(st){ st.textContent="FLATLINE"; st.style.color="var(--bad)"; }
+  if(p) p.classList.add("codeblue");
+  defib(); vflash("rgba(255,59,59,1)");   // last-ditch shock — it fails
+  setTimeout(()=>{ if(p)p.classList.remove("codeblue"); quizSummary(true); }, 1400);
 }
 function patientPulse(kind,amt){
   const p=$("#patient"); if(!p)return;
@@ -930,7 +931,7 @@ function floatPop(x,y,text,color){
 }
 
 /* ===================== STATE ===================== */
-let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set(), BOARD={}, pendingSubmit=null;
+let score=0, cleared=0, correct=0, missed=[], streak=0, maxStreak=0, bonusCells=new Set(), BOARD={}, pendingSubmit=null, dead=false;
 let timerRAF=null, qStart=0, answered=false, qToken=0;
 
 function multiplierFor(s){ return s>=8?3 : s>=6?2.5 : s>=4?2 : s>=2?1.5 : 1; }
@@ -938,7 +939,7 @@ function multiplierFor(s){ return s>=8?3 : s>=6?2.5 : s>=4?2 : s>=2?1.5 : 1; }
 function renderQuiz(){
   stopTimer();
   restartBtn.classList.remove("hidden");
-  score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0; pendingSubmit=null;
+  score=0; cleared=0; correct=0; missed=[]; streak=0; maxStreak=0; pendingSubmit=null; dead=false;
   clearDocFx();
   patientHP=100; codeBlueHappened=false; updateHP(0);
   const cats=Object.keys(QUIZ);
@@ -989,7 +990,7 @@ function updateCombo(){
 function stopTimer(){ if(timerRAF){cancelAnimationFrame(timerRAF); timerRAF=null;} }
 
 function quizOpen(cell){
-  if(cell.classList.contains("used"))return;
+  if(dead || cell.classList.contains("used"))return;
   stopTimer(); lastActivity=Date.now();
   initAudio(); SFX.click();
   cell.classList.add("flip");
@@ -1219,9 +1220,13 @@ function culprit(){
   uniq.filter(t=>CAT_OF[t]===topCat).forEach(t=>{ const p=((BOARD[topCat]||[]).find(i=>i.a===t)||{}).p||0; if(p>topP){topP=p;term=t;} });
   return {cat:topCat, domain:DOMAIN[topCat], term, danger:DANGER[term]||("complications from "+DOMAIN[topCat])};
 }
-function debrief(){
+function debrief(died){
   const cu=culprit(); let verdict,tone,lineM,lineC;
-  if(correct===TOTAL){
+  if(died){
+    tone="critical"; verdict="💀 PATIENT LOST";
+    lineM=cu?`We lost them on the table — likely ${cu.danger}.`:"We lost them on the table.";
+    lineC=cu?`Hit the books on ${cu.domain} (start with "${cu.term}"). We don't lose the next one.`:"Regroup, doctor — next shift we save them.";
+  } else if(correct===TOTAL){
     tone="perfect"; verdict="DISCHARGED — FULL RECOVERY";
     lineM="Patient walked out in perfect health. Flawless shift, Doctor.";
     lineC="Thirty for thirty — the vitals never dipped once. Bravo!";
@@ -1240,7 +1245,7 @@ function debrief(){
   }
   const diagnosis = cu ? cap(cu.danger) : "Patient made a full recovery — no complications.";
   const diagLabel = tone==="perfect" ? "OUTCOME" : tone==="critical" ? "PROBABLE CAUSE OF ARREST" : "CLOSE CALL";
-  if(codeBlueHappened && tone!=="perfect") lineM="We coded on the table — "+lineM.charAt(0).toLowerCase()+lineM.slice(1);
+  if(codeBlueHappened && !died && tone!=="perfect") lineM="We coded on the table — "+lineM.charAt(0).toLowerCase()+lineM.slice(1);
   return {verdict,tone,lineM,lineC,diagnosis,diagLabel};
 }
 function repAvatar(neon){
@@ -1255,13 +1260,13 @@ function repAvatar(neon){
   return `<span class="repbot" style="--neon:${neon}"><svg viewBox="0 0 ${8*P} ${head.length*P}" class="repface">${s}</svg></span>`;
 }
 
-function quizSummary(){
+function quizSummary(died){
   stopTimer();
   pendingSubmit={score,correct};                 // offer to submit on the leaderboard screen
   const rank=rankFor(correct);
   const uniqueMissed=[...new Set(missed)];
-  const db=debrief();
-  const goodOutcome = db.tone!=='critical';
+  const db=debrief(died);
+  const goodOutcome = !died && db.tone!=='critical';
   react(goodOutcome?'win':'lose'); setEmo(goodOutcome?'great':'bad');
   if(goodOutcome){ SFX.victory(); if(db.tone==='perfect'||db.tone==='saved') rain(160); victoryDance(); }
   else { SFX.defeat(); }
@@ -1396,7 +1401,7 @@ function renderSplash(){
       <div class="splash-card">
         <p>🩺 Tap tiles on the board and answer the A&amp;P call before the timer runs out.</p>
         <p>🔥 Chain right answers for <b>combo multipliers</b> · ⚡ <b>bonus tiles</b> pay double.</p>
-        <p>❤️ Correct answers <b>heal</b> the patient; wrong ones <b>hurt</b> them — keep them alive!</p>
+        <p>❤️ Correct answers <b>heal</b> the patient; wrong ones <b>hurt</b> them (more for higher tiles) — <b>if they flatline, it's game over.</b></p>
         <p>🤖 Dr. Magenta &amp; Dr. Cyan quiz you and call the diagnosis at shift's end.</p>
         <p>💬 <b>Watch their banter during play</b> — between calls they drop term facts and ECG tips, so pausing pays off.</p>
         <p style="color:var(--muted)">⏱ Prefer no pressure? Toggle <b>TIMED MODE</b> off any time.</p>
