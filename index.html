@@ -682,6 +682,17 @@ const DOCSVG=`<svg viewBox="0 0 160 240" class="docsvg">
   </g>
 </svg>`;
 $("#docL").innerHTML=DOCSVG+'<span class="emo"></span>'; $("#docR").innerHTML=DOCSVG+'<span class="emo"></span>';
+/* anatomically-shaped ECG trace: P wave, QRS complex (Q dip, tall R, S dip), T wave, on a baseline */
+function ecgPath(mx,my,mw,mh){
+  const base=my+mh*0.60, h=mh*0.42;   // isoelectric baseline + R-wave amplitude
+  // [x-fraction of one beat, y offset * h]  (negative = upward)
+  const pat=[[0,0],[.10,0],[.15,-.18],[.20,-.22],[.25,0],[.40,0],[.44,.10],[.49,-1],[.55,.32],[.60,0],[.74,0],[.82,-.30],[.88,-.34],[.95,0],[1,0]];
+  const beatW=34; let d="", started=false;
+  for(let bx=mx+3; bx<mx+mw-4; bx+=beatW){
+    for(const p of pat){ const X=bx+p[0]*beatW; if(X>mx+mw-3) break; const Y=base+p[1]*h; d+=(started?" L":"M")+X.toFixed(1)+" "+Y.toFixed(1); started=true; }
+  }
+  return d;
+}
 /* pixel cyberpunk hospital INTERIOR backdrop (built once) */
 function buildCity(){
   const W=480,H=260; let s=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMax slice" class="citysvg">`;
@@ -692,9 +703,8 @@ function buildCity(){
   for(let i=0;i<4;i++){ const mw=70,mh=40,mx=36+i*122,my=96;                                 // wall vital monitors
     if(Math.abs(mx+mw/2 - W/2) < 46) continue;                                                // skip behind the cross
     s+=`<rect x="${mx}" y="${my}" width="${mw}" height="${mh}" fill="#04140d" stroke="#1f7a4d" stroke-width="1"/>`;
-    const col=i%2?'#2ad4ff':'#39ff14'; let d=`M${mx+4} ${my+mh-13}`;
-    for(let px=mx+4; px<mx+mw-8; px+=20) d+=` l6 0 l2 -16 l3 18 l3 -7 l6 0`;
-    s+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="1.5" opacity=".7"/>`;
+    const col=i%2?'#2ad4ff':'#39ff14';
+    s+=`<path d="${ecgPath(mx,my,mw,mh)}" fill="none" stroke="${col}" stroke-width="1.5" opacity=".78"/>`;
   }
   for(let i=0;i<2;i++){ const bx=64+i*232, by=204;                                            // beds + IV stands
     s+=`<rect x="${bx}" y="${by}" width="120" height="10" fill="#2a2440"/>`;
